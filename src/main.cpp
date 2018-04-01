@@ -139,6 +139,7 @@ void ResetSimulation()
   {
     grapher->RegisterDataSource(*i);
     grapher->RegisterDataSources((*i)->sensors);
+    grapher->RegisterDataSource((*i)->estimator);
   }
 }
 

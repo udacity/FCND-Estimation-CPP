@@ -1,6 +1,7 @@
-[ComplementaryAttitude]
-tau = .1;
-
 [QuadEstimatorEKF]
 InitState = 0, 0, 0, 0, 0, 0, 0
 InitStdDevs = 100, 100, 100, 10, 10, 10, 1
+
+dtIMU = 0.002
+attitudeTau = .2
+

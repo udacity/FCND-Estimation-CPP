@@ -7,7 +7,9 @@
 #include "Utility/StringUtils.h"
 #include "ControllerFactory.h"
 
+#include "QuadEstimatorEKF.h"
 #include "SimulatedGPS.h"
+#include "SimulatedIMU.h"
 
 #ifdef _MSC_VER //  visual studio
 #pragma warning(disable: 4267 4244 4996)
@@ -108,6 +110,10 @@ int QuadDynamics::Initialize()
     SLR_WARNING1("Failed to create controller for %s", _name.c_str());
   }
 
+  string estConfig = config->Get(_name + ".Estimator", "QuadEstimatorEKF");
+  // TODO: only EKF supported for now
+  estimator.reset(new QuadEstimatorEKF(estConfig, _name));
+
   _lastPosFollowErr = 0;
 
   V3F ypr = config->Get(_name + ".InitialYPR", V3F());
@@ -130,6 +136,9 @@ int QuadDynamics::Initialize()
   shared_ptr<SimulatedGPS> simGPS(new SimulatedGPS(config->Get(_name + ".SimGPSConfig", "SimGPS"),_name));
   sensors.push_back(simGPS);
 
+  shared_ptr<SimulatedIMU> simIMU(new SimulatedIMU(config->Get(_name + ".SimIMUConfig", "SimIMU"), _name));
+  sensors.push_back(simIMU);
+
   return 1;
 }
 
@@ -151,15 +160,9 @@ void QuadDynamics::Run(float dt, float simulationTime, int &idum, V3F externalFo
 			const float c = expf(-dt/0.004f); // the real gyro filter has 250Hz bandwidth
 			_rawGyro = (1.f-c)*newRawGyro + c*_rawGyro;
 
-			// ... accelerometer (no noise currently)
-      
-      V3F bodyAcc = quat.Rotate_ItoB(V3F(acc));
-			V3F rawAccel = V3F( bodyAcc);
-      rawAccel.constrain(-6.f*9.81f, 6.f*9.81f);
-
       for (auto i = sensors.begin(); i != sensors.end(); i++)
       {
-        (*i)->Update(*this, _estimator, controllerUpdateInterval, idum);
+        (*i)->Update(*this, estimator, controllerUpdateInterval, idum);
       }
 
 			// This is the update of the onboard controller -- runs timeout logic, sensor filtering, estimation, 

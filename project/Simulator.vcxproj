@@ -34,7 +34,7 @@
     <ClCompile Include="..\src\MavlinkNode\MavlinkTranslation.cpp" />
     <ClCompile Include="..\src\MavlinkNode\PracticalSocket.cpp" />
     <ClCompile Include="..\src\QuadControl.cpp" />
-    <ClCompile Include="..\src\QuadEKFEstimator.cpp" />
+    <ClCompile Include="..\src\QuadEstimatorEKF.cpp" />
     <ClCompile Include="..\src\Simulation\BaseDynamics.cpp" />
     <ClCompile Include="..\src\Simulation\QuadDynamics.cpp" />
     <ClCompile Include="..\src\Simulation\Simulator.cpp" />
@@ -69,10 +69,11 @@
     <ClInclude Include="..\src\MavlinkNode\UDPPacket.h" />
     <ClInclude Include="..\src\OnboardControls.h" />
     <ClInclude Include="..\src\QuadControl.h" />
-    <ClInclude Include="..\src\QuadEKFEstimator.h" />
+    <ClInclude Include="..\src\QuadEstimatorEKF.h" />
     <ClInclude Include="..\src\Simulation\BaseDynamics.h" />
     <ClInclude Include="..\src\Simulation\QuadDynamics.h" />
     <ClInclude Include="..\src\Simulation\SimulatedGPS.h" />
+    <ClInclude Include="..\src\Simulation\SimulatedIMU.h" />
     <ClInclude Include="..\src\Simulation\SimulatedQuadSensor.h" />
     <ClInclude Include="..\src\Simulation\Simulator.h" />
     <ClInclude Include="..\src\Trajectory.h" />

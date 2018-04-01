@@ -5,21 +5,18 @@
 #include "Math/Random.h"
 #include "BaseQuadEstimator.h"
 
-class SimulatedGPS : public SimulatedQuadSensor
+class SimulatedIMU : public SimulatedQuadSensor
 { 
 public:
-  SimulatedGPS(string config, string name) : SimulatedQuadSensor(config, name) { Init(); }
+  SimulatedIMU(string config, string name) : SimulatedQuadSensor(config, name) { Init(); }
 
   virtual void Init()
   {
     SimulatedQuadSensor::Init();
     ParamsHandle paramSys = SimpleConfig::GetInstance();
-    _posStd = paramSys->Get(_config + ".PosStd", V3F(1, 1, 3));
-    _posRandomWalkStd = paramSys->Get(_config + ".PosRandomWalkStd", V3F(0, 0, 0));
-    _velStd = paramSys->Get(_config + ".VelStd", V3F(.1f, .1f, .3f));
+    _accelStd = paramSys->Get(_config + ".AccelStd", V3F());
+    _gyroStd = paramSys->Get(_config + ".GyroStd", V3F());
     _gpsDT = paramSys->Get(_config + ".dt", .1f);
-    
-    _posRandomWalk = V3F();
   }
 
   // if it's time, generates a new sensor measurement, saves it internally (for graphing), and calls appropriate estimator update function
@@ -33,20 +30,20 @@ public:
 
     _timeAccum = (_timeAccum - _gpsDT);
     
-    // position
-    _posRandomWalk += V3F(gasdev_f(idum), gasdev_f(idum), gasdev_f(idum)) * _posRandomWalkStd;
-    V3F posError = V3F(gasdev_f(idum), gasdev_f(idum), gasdev_f(idum)) * _posStd + _posRandomWalk;
-    _posMeas = quad.Position() + posError;
+    // accelerometer
+    V3F accelError = V3F(gasdev_f(idum), gasdev_f(idum), gasdev_f(idum)) * _accelStd;
+    _accelMeas = quad.Attitude().Rotate_ItoB(quad.Acceleration() + V3F(0,0,9.81f)) + accelError;
+    _accelMeas.constrain(-6.f*9.81f, 6.f*9.81f);
 
-    // velocity
-    V3F velError = V3F(gasdev_f(idum), gasdev_f(idum), gasdev_f(idum)) * _velStd;
-    _velMeas = quad.Velocity() + velError;
+    // rate gyro
+    V3F gyroError = V3F(gasdev_f(idum), gasdev_f(idum), gasdev_f(idum)) * _gyroStd;
+    _gyroMeas = quad.Omega() + gyroError;
 
     _freshMeas = true;
 
     if (estimator)
     {
-      estimator->UpdateFromGPS(_posMeas, _velMeas);
+      estimator->UpdateFromIMU(_accelMeas, _gyroMeas);
     }
   };
 
@@ -63,12 +60,12 @@ public:
     if (ToUpper(leftPart) == ToUpper(_name))
     {
 #define GETTER_HELPER(A,B) if (SLR::ToUpper(rightPart) == SLR::ToUpper(A)){ ret=(B); return true; }
-      GETTER_HELPER("GPS.X", _posMeas.x);
-      GETTER_HELPER("GPS.Y", _posMeas.y);
-      GETTER_HELPER("GPS.Z", _posMeas.z);
-      GETTER_HELPER("GPS.VX", _velMeas.x);
-      GETTER_HELPER("GPS.VY", _velMeas.y);
-      GETTER_HELPER("GPS.VZ", _velMeas.z);
+      GETTER_HELPER("IMU.AX", _accelMeas.x);
+      GETTER_HELPER("IMU.AY", _accelMeas.y);
+      GETTER_HELPER("IMU.AZ", _accelMeas.z);
+      GETTER_HELPER("IMU.GX", _gyroMeas.x);
+      GETTER_HELPER("IMU.GY", _gyroMeas.y);
+      GETTER_HELPER("IMU.GZ", _gyroMeas.z);
 #undef GETTER_HELPER
     }
     return false; 
@@ -77,18 +74,16 @@ public:
   virtual vector<string> GetFields() const 
   { 
     vector<string> ret = SimulatedQuadSensor::GetFields();
-    ret.push_back(_name + ".GPS.x");
-    ret.push_back(_name + ".GPS.y");
-    ret.push_back(_name + ".GPS.z");
-    ret.push_back(_name + ".GPS.vx");
-    ret.push_back(_name + ".GPS.vy");
-    ret.push_back(_name + ".GPS.vz");
+    ret.push_back(_name + ".IMU.ax");
+    ret.push_back(_name + ".IMU.ay");
+    ret.push_back(_name + ".IMU.az");
+    ret.push_back(_name + ".IMU.gx");
+    ret.push_back(_name + ".IMU.gy");
+    ret.push_back(_name + ".IMU.gz");
     return ret;
   };
 
-  V3F _posMeas, _velMeas;
-  V3F _posRandomWalk;
-  V3F _posStd, _velStd;
-  V3F _posRandomWalkStd;
+  V3F _accelMeas, _gyroMeas;
+  V3F _accelStd, _gyroStd;
   float _gpsDT;
 };

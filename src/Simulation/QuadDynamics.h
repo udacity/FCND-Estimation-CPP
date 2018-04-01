@@ -69,7 +69,7 @@ public:
 	float GetArmLength() const { return L; }
 
   ControllerHandle controller;
-  shared_ptr<BaseQuadEstimator> _estimator;
+  shared_ptr<BaseQuadEstimator> estimator;
   
   friend class Visualizer_GLUT;
 

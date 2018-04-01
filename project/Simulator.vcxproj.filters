@@ -90,7 +90,7 @@
     <ClCompile Include="..\src\BaseQuadEstimator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\QuadEKFEstimator.cpp" />
+    <ClCompile Include="..\src\QuadEstimatorEKF.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Math\Quaternion.h">
@@ -199,12 +199,15 @@
     <ClInclude Include="..\src\BaseController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\QuadEKFEstimator.h" />
     <ClInclude Include="..\src\Simulation\SimulatedQuadSensor.h">
       <Filter>Simulation</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Simulation\SimulatedGPS.h">
       <Filter>Simulation</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Simulation\SimulatedIMU.h">
+      <Filter>Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\QuadEstimatorEKF.h" />
   </ItemGroup>
 </Project>
