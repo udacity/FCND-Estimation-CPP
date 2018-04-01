@@ -7,6 +7,8 @@
 #include "Utility/StringUtils.h"
 #include "ControllerFactory.h"
 
+#include "SimulatedGPS.h"
+
 #ifdef _MSC_VER //  visual studio
 #pragma warning(disable: 4267 4244 4996)
 #endif
@@ -122,6 +124,12 @@ int QuadDynamics::Initialize()
   //followed_traj->SetLogFile(followedTrajFile);
   followedTrajectoryCallback = MakeDelegate(_followed_traj.get(), &Trajectory::AddTrajectoryPoint);
 
+  // SENSORS
+  sensors.clear();
+
+  shared_ptr<SimulatedGPS> simGPS(new SimulatedGPS(config->Get(_name + ".SimGPSConfig", "SimGPS"),_name));
+  sensors.push_back(simGPS);
+
   return 1;
 }
 
@@ -147,20 +155,15 @@ void QuadDynamics::Run(float dt, float simulationTime, int &idum, V3F externalFo
       
       V3F bodyAcc = quat.Rotate_ItoB(V3F(acc));
 			V3F rawAccel = V3F( bodyAcc);
-			rawAccel.constrain(-6.f*9.81f,6.f*9.81f);
+      rawAccel.constrain(-6.f*9.81f, 6.f*9.81f);
 
-
-      // TODO: run callbacks to update sensors
-			// push this into the HAL to the simulated onboard controller
-			//_onboard.SetIMU_AG(rawAccel,_rawGyro);
-
-      //_onboard.SetRangeSensor(pos.z);
-      //V3F vel_body = quat.Rotate_ItoB(vel);
-      //_onboard.SetOpticalFlow(vel.x,vel.y); // todo - optical flow also sees rotation, and there's a scale thing here..
+      for (auto i = sensors.begin(); i != sensors.end(); i++)
+      {
+        (*i)->Update(*this, _estimator, controllerUpdateInterval, idum);
+      }
 
 			// This is the update of the onboard controller -- runs timeout logic, sensor filtering, estimation, 
 			// controller, and produces a new set of motor commands
-			//_onboard.RunEstimation();
 			if (updateIdealStateCallback) 
 			{
 				updateIdealStateCallback(Position(), Velocity(), quat, Omega());

@@ -21,9 +21,6 @@
     <Filter Include="Simulation">
       <UniqueIdentifier>{88cbfddc-fe69-4464-a3fd-f995b25f94e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Controllers">
-      <UniqueIdentifier>{666f7e33-1df4-4d84-9213-33cbea3f186d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="MavlinkNode">
       <UniqueIdentifier>{82326395-02a1-491a-81e9-94fe51c40cbd}</UniqueIdentifier>
     </Filter>
@@ -90,6 +87,10 @@
     <ClCompile Include="..\src\Math\Geometry.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\BaseQuadEstimator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\QuadEKFEstimator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Math\Quaternion.h">
@@ -173,9 +174,6 @@
     <ClInclude Include="..\src\Simulation\BaseDynamics.h">
       <Filter>Simulation</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\BaseController.h">
-      <Filter>Controllers</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Drawing\AbsThreshold.h">
       <Filter>Drawing</Filter>
     </ClInclude>
@@ -194,6 +192,19 @@
     </ClInclude>
     <ClInclude Include="..\src\MavlinkNode\MavlinkTranslation.h">
       <Filter>MavlinkNode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\BaseQuadEstimator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\BaseController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\QuadEKFEstimator.h" />
+    <ClInclude Include="..\src\Simulation\SimulatedQuadSensor.h">
+      <Filter>Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Simulation\SimulatedGPS.h">
+      <Filter>Simulation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

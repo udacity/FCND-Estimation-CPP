@@ -240,7 +240,6 @@ bool SimpleConfig::GetFloatVector(const string& param, vector<float>& ret)
   return true;
 }
 
-
 float SimpleConfig::Get(const string& param, float defaultRet)
 {
   this->GetFloat(param,defaultRet);

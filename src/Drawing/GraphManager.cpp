@@ -80,6 +80,11 @@ void GraphManager::UpdateData(double time)
   {
     graph2->Update(time, _sources);
   }
+
+  for (auto i = _sources.begin(); i != _sources.end(); i++)
+  {
+    (*i)->FinalizeDataFrame();
+  }
 }
 
 void GraphManager::DrawUpdate()

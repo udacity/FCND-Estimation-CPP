@@ -6,6 +6,7 @@
 // random number routines from Numerical Recipes
 double gasdev(int &idum);
 double ran1(int &idum);
+inline float gasdev_f(int &idum) { return (float)gasdev(idum); }
 
 inline float ran1_inRange(float min, float max, int& idum)
 {

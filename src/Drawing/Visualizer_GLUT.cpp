@@ -76,8 +76,8 @@ void _g_OnExit()
   exit(0);
 }
 
-bool _g_keySpecialStates[246];
-bool _g_keyStates[256];
+bool _g_keySpecialStates[246] = { 0 };
+bool _g_keyStates[256] = { 0 };
 
 void _g_OnKeyPressed(unsigned char key, int x, int y) {
   _g_keyStates[key] = true; // Set the state of the current key to pressed  

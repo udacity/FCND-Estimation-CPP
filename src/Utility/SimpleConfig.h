@@ -2,6 +2,7 @@
 
 #include <map>
 #include <vector>
+#include "matrix/math.hpp"
 using std::vector;
 using std::map;
 
@@ -25,6 +26,19 @@ public:
   bool GetString(const string& param, string& ret);
   bool GetV3F(const string& param, V3F& ret);
   bool GetFloatVector(const string& param, vector<float>& ret);
+  
+  template<size_t N>
+  inline bool GetFloatVector(const string& param, matrix::Vector<float, N>& ret)
+  {
+    vector<float> tmp;
+    if (!GetFloatVector(param, tmp)) return false;
+    if (tmp.size() != N) return false;
+    for (size_t i = 0; i < N; i++)
+    {
+      ret(i) = tmp[i];
+    }
+    return true;
+  }
 
   // convenience always-returning functions, with defaults
   float Get(const string& param, float defaultRet);
