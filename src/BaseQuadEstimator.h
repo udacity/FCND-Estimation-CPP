@@ -10,7 +10,7 @@ public:
 
   virtual void Init() {};
 
-  virtual void Predict(float dt, V3F gyro, V3F accel) {};
+  virtual void Predict(float dt, V3F accel, V3F gyro) {};
   
   virtual void UpdateFromIMU(V3F accel, V3F gyro) {};
   virtual void UpdateFromGPS(V3F pos, V3F vel) {};

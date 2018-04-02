@@ -43,6 +43,7 @@ public:
 
     if (estimator)
     {
+      estimator->Predict(dt, _accelMeas, _gyroMeas);
       estimator->UpdateFromIMU(_accelMeas, _gyroMeas);
     }
   };
