@@ -21,11 +21,11 @@
     <Filter Include="Simulation">
       <UniqueIdentifier>{88cbfddc-fe69-4464-a3fd-f995b25f94e1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Controllers">
-      <UniqueIdentifier>{666f7e33-1df4-4d84-9213-33cbea3f186d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="MavlinkNode">
       <UniqueIdentifier>{82326395-02a1-491a-81e9-94fe51c40cbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="matrix">
+      <UniqueIdentifier>{c9eb02fe-ae85-41a1-bccc-a1aaaacbb9c5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +90,10 @@
     <ClCompile Include="..\src\Math\Geometry.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\BaseQuadEstimator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\QuadEstimatorEKF.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Math\Quaternion.h">
@@ -173,9 +177,6 @@
     <ClInclude Include="..\src\Simulation\BaseDynamics.h">
       <Filter>Simulation</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\BaseController.h">
-      <Filter>Controllers</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Drawing\AbsThreshold.h">
       <Filter>Drawing</Filter>
     </ClInclude>
@@ -195,5 +196,68 @@
     <ClInclude Include="..\src\MavlinkNode\MavlinkTranslation.h">
       <Filter>MavlinkNode</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\BaseQuadEstimator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\BaseController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Simulation\SimulatedQuadSensor.h">
+      <Filter>Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Simulation\SimulatedGPS.h">
+      <Filter>Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Simulation\SimulatedIMU.h">
+      <Filter>Simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\QuadEstimatorEKF.h" />
+    <ClInclude Include="..\lib\matrix\helper_functions.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\matrix\integration.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\matrix\math.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\matrix\Matrix.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\matrix\Quaternion.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\matrix\Scalar.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\matrix\SquareMatrix.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\matrix\Vector.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\matrix\Vector2.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\matrix\Vector3.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\matrix\AxisAngle.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\matrix\Dcm.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\matrix\Euler.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\matrix\filter.hpp">
+      <Filter>matrix</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\lib\matrix\LICENSE">
+      <Filter>matrix</Filter>
+    </None>
   </ItemGroup>
 </Project>

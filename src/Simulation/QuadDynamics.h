@@ -12,6 +12,10 @@ using namespace fastdelegate;
 class QuadDynamics;
 typedef shared_ptr<QuadDynamics> QuadcopterHandle;
 
+class SimulatedGPS;
+class BaseQuadEstimator;
+class SimulatedQuadSensor;
+
 class QuadDynamics : public BaseDynamics
 {
 public:
@@ -65,8 +69,12 @@ public:
 	float GetArmLength() const { return L; }
 
   ControllerHandle controller;
+  shared_ptr<BaseQuadEstimator> estimator;
   
   friend class Visualizer_GLUT;
+
+  // sensors
+  vector<shared_ptr<SimulatedQuadSensor> > sensors;
 
 protected:
   matrix::Vector<float, 4> motorCmdsN;
@@ -98,4 +106,7 @@ protected:
 
   V3F color;  
   string _flightMode;
+
+  
+  
 };

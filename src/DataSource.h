@@ -12,8 +12,11 @@ public:
   {
     return false;
   }
+
   virtual vector<string> GetFields() const
   {
     return vector<string>();
   }
+
+  virtual void FinalizeDataFrame() {}
 };

@@ -36,6 +36,7 @@ public:
 
   V3F Position() const { return pos; };
   V3F Velocity() const { return vel; };
+  V3F Acceleration() const { return acc; };
   V3F Omega() const { return omega; };
   Quaternion<float> Attitude() const { return quat; }
 

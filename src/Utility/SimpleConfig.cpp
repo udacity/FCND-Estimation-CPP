@@ -225,7 +225,7 @@ bool SimpleConfig::GetFloatVector(const string& param, vector<float>& ret)
   string s = i->second;
   vector<string> spl = SLR::Split(s, ',');
   ret.clear();
-  for (unsigned i = 0; i < s.size(); i++)
+  for (unsigned i = 0; i < spl.size(); i++)
   {
     try
     {
@@ -239,7 +239,6 @@ bool SimpleConfig::GetFloatVector(const string& param, vector<float>& ret)
   }
   return true;
 }
-
 
 float SimpleConfig::Get(const string& param, float defaultRet)
 {
