@@ -24,6 +24,7 @@ public:
 
   // attitude filter state
   float pitchEst, rollEst;
+  float accelPitch, accelRoll; // raw pitch/roll angles as calculated from last accelerometer.. purely for graphing.
 
   // generic update
   template<size_t numZ> 

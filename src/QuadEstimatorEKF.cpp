@@ -39,11 +39,11 @@ void QuadEstimatorEKF::Init()
 
 void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
 {
-  float pitchMeas = atan2f(-accel.x, accel.z);
-  pitchEst = attitudeTau / (attitudeTau + dtIMU) * (pitchEst + dtIMU * gyro.y) + dtIMU / (attitudeTau + dtIMU) * pitchMeas;
+  accelPitch = atan2f(-accel.x, accel.z);
+  pitchEst = attitudeTau / (attitudeTau + dtIMU) * (pitchEst + dtIMU * gyro.y) + dtIMU / (attitudeTau + dtIMU) * accelPitch;
 
-  float rollMeas = atan2f(accel.y, accel.z);
-  rollEst = attitudeTau / (attitudeTau + dtIMU) * (rollEst + dtIMU * gyro.x) + dtIMU / (attitudeTau + dtIMU) * rollMeas;
+  accelRoll = atan2f(accel.y, accel.z);
+  rollEst = attitudeTau / (attitudeTau + dtIMU) * (rollEst + dtIMU * gyro.x) + dtIMU / (attitudeTau + dtIMU) * accelRoll;
 }
 
 void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
@@ -178,12 +178,22 @@ bool QuadEstimatorEKF::GetData(const string& name, float& ret) const
     GETTER_HELPER("Est.x", state(0));
     GETTER_HELPER("Est.y", state(1));
     GETTER_HELPER("Est.z", state(2));
-
     GETTER_HELPER("Est.vx", state(3));
     GETTER_HELPER("Est.vy", state(4));
     GETTER_HELPER("Est.vz", state(5));
+    GETTER_HELPER("Est.yaw", state(6));
     
-    GETTER_HELPER("Est.sig.x", sqrtf(cov(0,0)));
+    GETTER_HELPER("Est.S.x", sqrtf(cov(0,0)));
+    GETTER_HELPER("Est.S.y", sqrtf(cov(1, 1)));
+    GETTER_HELPER("Est.S.z", sqrtf(cov(2, 2)));
+    GETTER_HELPER("Est.S.vx", sqrtf(cov(3, 3)));
+    GETTER_HELPER("Est.S.vy", sqrtf(cov(4, 4)));
+    GETTER_HELPER("Est.S.vz", sqrtf(cov(5, 5)));
+    GETTER_HELPER("Est.S.yaw", sqrtf(cov(6, 6)));
+
+    // diagnostic variables
+    GETTER_HELPER("Est.D.AccelPitch", accelPitch);
+    GETTER_HELPER("Est.D.AccelRoll", accelRoll);
     //todo
 #undef GETTER_HELPER
   }
@@ -203,12 +213,16 @@ vector<string> QuadEstimatorEKF::GetFields() const
   ret.push_back(_name + ".Est.vy");
   ret.push_back(_name + ".Est.vz");
 
-  ret.push_back(_name + ".Est.sig.x");
-  ret.push_back(_name + ".Est.sig.y");
-  ret.push_back(_name + ".Est.sig.z");
-  ret.push_back(_name + ".Est.sig.vx");
-  ret.push_back(_name + ".Est.sig.vy");
-  ret.push_back(_name + ".Est.sig.vz");
-  ret.push_back(_name + ".Est.sig.yaw");
+  ret.push_back(_name + ".Est.S.x");
+  ret.push_back(_name + ".Est.S.y");
+  ret.push_back(_name + ".Est.S.z");
+  ret.push_back(_name + ".Est.S.vx");
+  ret.push_back(_name + ".Est.S.vy");
+  ret.push_back(_name + ".Est.S.vz");
+  ret.push_back(_name + ".Est.S.yaw");
+
+  // diagnostic variables
+  ret.push_back(_name + ".Est.D.AccelPitch");
+  ret.push_back(_name + ".Est.D.AccelRoll");
   return ret;
 };

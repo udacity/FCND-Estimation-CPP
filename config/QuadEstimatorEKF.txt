@@ -3,5 +3,5 @@ InitState = 0, 0, 0, 0, 0, 0, 0
 InitStdDevs = 10, 10, 10, 1, 1, 1, 1
 
 dtIMU = 0.002
-attitudeTau = .2
+attitudeTau = 3
 

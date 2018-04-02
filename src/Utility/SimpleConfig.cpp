@@ -132,14 +132,35 @@ void SimpleConfig::ParseLine(const string& filename, const string& s, int lineNu
     return;
   }
 
+  bool addCmd = false;
+  if (leftPart[leftPart.size() - 1] == '+')
+  {
+    addCmd = true;
+    leftPart = Trim(leftPart.substr(0, leftPart.size() - 1));
+  }
+
+  string paramName=leftPart;
   if (curNamespace != "")
   {
-    _params[curNamespace + "." + leftPart] = rightPart;
+    paramName = curNamespace + "." + leftPart;
   }
-  else
+
+  if (addCmd)
   {
-    _params[leftPart] = rightPart;
+    // find highest integer X such that paramName.X exists
+    string s = paramName + ".1";
+    int i = 1;
+    while (_params.find(s) != _params.end())
+    {
+      char buf[10];
+      i++;
+      sprintf_s(buf, 10, ".%d", i);
+      s = paramName + buf;
+    }
+    paramName = s;
   }
+
+  _params[paramName] = rightPart;
 }
 
 void SimpleConfig::CopyNamespaceParams(const string& fromNamespace, const string& toNamespace)
