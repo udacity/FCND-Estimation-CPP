@@ -1,4 +1,5 @@
 X_EstimatorAtt
+X_EstimatorAttPitch
 X_TestMavlink
 X_TestManyQuads
 X_EstimatorGPS

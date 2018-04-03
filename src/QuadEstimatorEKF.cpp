@@ -39,11 +39,11 @@ void QuadEstimatorEKF::Init()
 
 void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
 {
-  accelPitch = atan2f(-accel.x, accel.z);
-  pitchEst = attitudeTau / (attitudeTau + dtIMU) * (pitchEst + dtIMU * gyro.y) + dtIMU / (attitudeTau + dtIMU) * accelPitch;
+	accelRoll = atan2f(accel.y, accel.z);
+	rollEst = attitudeTau / (attitudeTau + dtIMU) * (rollEst + dtIMU * gyro.x) + dtIMU / (attitudeTau + dtIMU) * accelRoll;
 
-  accelRoll = atan2f(accel.y, accel.z);
-  rollEst = attitudeTau / (attitudeTau + dtIMU) * (rollEst + dtIMU * gyro.x) + dtIMU / (attitudeTau + dtIMU) * accelRoll;
+  accelPitch = atan2f(-accel.x, 9.81f);
+  pitchEst = attitudeTau / (attitudeTau + dtIMU) * (pitchEst + dtIMU * gyro.y) + dtIMU / (attitudeTau + dtIMU) * accelPitch;
 }
 
 void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)

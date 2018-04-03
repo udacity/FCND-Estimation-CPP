@@ -18,9 +18,8 @@ Quad.InitialPos=0,0,-1
 QuadControlParams.Trajectory=traj/CircleNoFF.txt
 
 # graphing commands
-Commands += AddGraph1.Quad.Est.D.AccelRoll
-Commands += AddGraph1.Quad.Roll
-Commands += AddGraph1.Quad.Est.Roll
+Commands += AddGraph1.Quad.IMU.GY
+Commands += AddGraph1.Quad.Omega.Y
 Commands += AddGraph2.Quad.Est.D.AccelPitch
 Commands += AddGraph2.Quad.Pitch
 Commands += AddGraph2.Quad.Est.Pitch
