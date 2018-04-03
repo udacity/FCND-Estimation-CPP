@@ -31,6 +31,8 @@
 		DB49FB81202A0CC700DED4E6 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DB49FB67202A0CC600DED4E6 /* Camera.cpp */; };
 		DB49FB82202A0CC700DED4E6 /* SimpleConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DB49FB6C202A0CC600DED4E6 /* SimpleConfig.cpp */; };
 		DB49FB83202A0CC700DED4E6 /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DB49FB6F202A0CC600DED4E6 /* Timer.cpp */; };
+		DB56307920743A730070F86B /* QuadEstimatorEKF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DB56307520743A730070F86B /* QuadEstimatorEKF.cpp */; };
+		DB56307A20743A730070F86B /* BaseQuadEstimator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DB56307820743A730070F86B /* BaseQuadEstimator.cpp */; };
 		DBD204F32036369000E0F55A /* QuadControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DBD204F22036369000E0F55A /* QuadControl.cpp */; };
 /* End PBXBuildFile section */
 
@@ -115,6 +117,16 @@
 		DB49FB6F202A0CC600DED4E6 /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
 		DB49FB70202A0CC600DED4E6 /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
 		DB49FB71202A0CC600DED4E6 /* VehicleDatatypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VehicleDatatypes.h; sourceTree = "<group>"; };
+		DB56306F20743A190070F86B /* 6_EstimatorEKF.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 6_EstimatorEKF.txt; path = ../config/6_EstimatorEKF.txt; sourceTree = "<group>"; };
+		DB56307020743A190070F86B /* QuadEstimatorEKF.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = QuadEstimatorEKF.txt; path = ../config/QuadEstimatorEKF.txt; sourceTree = "<group>"; };
+		DB56307120743A1A0070F86B /* SimulatedSensors.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SimulatedSensors.txt; path = ../config/SimulatedSensors.txt; sourceTree = "<group>"; };
+		DB56307220743A4E0070F86B /* SimulatedGPS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimulatedGPS.h; sourceTree = "<group>"; };
+		DB56307320743A4E0070F86B /* SimulatedQuadSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimulatedQuadSensor.h; sourceTree = "<group>"; };
+		DB56307420743A4E0070F86B /* SimulatedIMU.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimulatedIMU.h; sourceTree = "<group>"; };
+		DB56307520743A730070F86B /* QuadEstimatorEKF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadEstimatorEKF.cpp; sourceTree = "<group>"; };
+		DB56307620743A730070F86B /* BaseQuadEstimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseQuadEstimator.h; sourceTree = "<group>"; };
+		DB56307720743A730070F86B /* QuadEstimatorEKF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadEstimatorEKF.h; sourceTree = "<group>"; };
+		DB56307820743A730070F86B /* BaseQuadEstimator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseQuadEstimator.cpp; sourceTree = "<group>"; };
 		DBD204F12036369000E0F55A /* QuadControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadControl.h; sourceTree = "<group>"; };
 		DBD204F22036369000E0F55A /* QuadControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadControl.cpp; sourceTree = "<group>"; };
 		DBD204F4203636AA00E0F55A /* 2_AttitudeControl.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 2_AttitudeControl.txt; path = ../config/2_AttitudeControl.txt; sourceTree = "<group>"; };
@@ -147,10 +159,13 @@
 				DBD204F6203636AA00E0F55A /* 3_PositionControl.txt */,
 				DBD204F7203636AA00E0F55A /* 4_Nonidealities.txt */,
 				DBD204F8203636AA00E0F55A /* 5_TrajectoryFollow.txt */,
-				DBD204F9203636AA00E0F55A /* QuadControlParams.txt */,
-				DBD204F5203636AA00E0F55A /* Scenarios.txt */,
+				DB56306F20743A190070F86B /* 6_EstimatorEKF.txt */,
 				DB3198A320334078008ACD56 /* QuadPhysicalParams.txt */,
+				DBD204F9203636AA00E0F55A /* QuadControlParams.txt */,
+				DB56307020743A190070F86B /* QuadEstimatorEKF.txt */,
+				DB56307120743A1A0070F86B /* SimulatedSensors.txt */,
 				DB31989E20334078008ACD56 /* Simulation.txt */,
+				DBD204F5203636AA00E0F55A /* Scenarios.txt */,
 			);
 			name = config;
 			sourceTree = "<group>";
@@ -199,16 +214,20 @@
 		DB49FB34202A0CC600DED4E6 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				DB47A218205151CB00F34E67 /* MavlinkNode */,
-				DBD204F22036369000E0F55A /* QuadControl.cpp */,
 				DBD204F12036369000E0F55A /* QuadControl.h */,
+				DBD204F22036369000E0F55A /* QuadControl.cpp */,
+				DB56307720743A730070F86B /* QuadEstimatorEKF.h */,
+				DB56307520743A730070F86B /* QuadEstimatorEKF.cpp */,
+				DB56307620743A730070F86B /* BaseQuadEstimator.h */,
+				DB56307820743A730070F86B /* BaseQuadEstimator.cpp */,
+				DB49FB48202A0CC600DED4E6 /* main.cpp */,
+				DB47A218205151CB00F34E67 /* MavlinkNode */,
 				DB49FB35202A0CC600DED4E6 /* BaseController.cpp */,
 				DB49FB36202A0CC600DED4E6 /* BaseController.h */,
 				DB49FB37202A0CC600DED4E6 /* Common.h */,
 				DB49FB38202A0CC600DED4E6 /* ControllerFactory.h */,
 				DB49FB39202A0CC600DED4E6 /* DataSource.h */,
 				DB49FB3A202A0CC600DED4E6 /* Drawing */,
-				DB49FB48202A0CC600DED4E6 /* main.cpp */,
 				DB49FB49202A0CC600DED4E6 /* Math */,
 				DB49FB59202A0CC600DED4E6 /* Simulation */,
 				DB49FB64202A0CC600DED4E6 /* Trajectory.cpp */,
@@ -264,6 +283,9 @@
 		DB49FB59202A0CC600DED4E6 /* Simulation */ = {
 			isa = PBXGroup;
 			children = (
+				DB56307220743A4E0070F86B /* SimulatedGPS.h */,
+				DB56307420743A4E0070F86B /* SimulatedIMU.h */,
+				DB56307320743A4E0070F86B /* SimulatedQuadSensor.h */,
 				DB49FB5A202A0CC600DED4E6 /* BaseDynamics.cpp */,
 				DB49FB5B202A0CC600DED4E6 /* BaseDynamics.h */,
 				DB49FB5C202A0CC600DED4E6 /* opticalflow.cpp */,
@@ -321,7 +343,7 @@
 		DB49FAD6202A039100DED4E6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = Fotokite;
 				TargetAttributes = {
 					DB49FADD202A039100DED4E6 = {
@@ -370,10 +392,12 @@
 				DB49FB75202A0CC700DED4E6 /* GLUTMenu.cpp in Sources */,
 				DB49FB73202A0CC700DED4E6 /* ColorUtils.cpp in Sources */,
 				DB49FB82202A0CC700DED4E6 /* SimpleConfig.cpp in Sources */,
+				DB56307A20743A730070F86B /* BaseQuadEstimator.cpp in Sources */,
 				DB49FB83202A0CC700DED4E6 /* Timer.cpp in Sources */,
 				DBD204F32036369000E0F55A /* QuadControl.cpp in Sources */,
 				DB49FB79202A0CC700DED4E6 /* main.cpp in Sources */,
 				DB47A225205152DE00F34E67 /* Geometry.cpp in Sources */,
+				DB56307920743A730070F86B /* QuadEstimatorEKF.cpp in Sources */,
 				DB49FB76202A0CC700DED4E6 /* Graph.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -395,6 +419,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -402,6 +427,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -450,6 +476,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -457,6 +484,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
