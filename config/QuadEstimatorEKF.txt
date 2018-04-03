@@ -2,6 +2,12 @@
 InitState = 0, 0, 0, 0, 0, 0, 0
 InitStdDevs = 10, 10, 10, 1, 1, 1, 1
 
+QPosXY = .1
+QPosZ = .1
+QVelXY = .1
+QVelZ = .1
+QYaw = .05
+
 dtIMU = 0.002
 attitudeTau = 3
 
