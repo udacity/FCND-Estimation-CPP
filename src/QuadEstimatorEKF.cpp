@@ -39,11 +39,28 @@ void QuadEstimatorEKF::Init()
 
 void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
 {
-	accelRoll = atan2f(accel.y, accel.z);
-	rollEst = attitudeTau / (attitudeTau + dtIMU) * (rollEst + dtIMU * gyro.x) + dtIMU / (attitudeTau + dtIMU) * accelRoll;
+	// FUTURE NOTE TO STUDENT:
+	// You can try using a small-angle approximation (treat pitch and roll as completely separate) but 
+	// for any interesting "dynamic" trajectories this can break down quickly. Try doing a more proper
+	// gyro integration based on the rotation matrix instead
 
-  accelPitch = atan2f(-accel.x, 9.81f);
-  pitchEst = attitudeTau / (attitudeTau + dtIMU) * (pitchEst + dtIMU * gyro.y) + dtIMU / (attitudeTau + dtIMU) * accelPitch;
+	// SMALL ANGLE GYRO INTEGRATION:
+	//float predictedPitch = pitchEst + dtIMU * gyro.y;
+	//float predictedRoll = rollEst + dtIMU * gyro.x;
+
+	// BETTER INTEGRATION:
+	Quaternion<float> quat = Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, state(6));
+	quat.IntegrateBodyRate(gyro, dtIMU);
+	float predictedPitch = quat.Pitch();
+	float predictedRoll = quat.Roll();
+
+	// CALCULATE UPDATE
+	accelRoll = atan2f(accel.y, accel.z);
+	accelPitch = atan2f(-accel.x, 9.81f);
+
+	// FUSE INTEGRATION AND UPDATE
+	rollEst = attitudeTau / (attitudeTau + dtIMU) * (predictedRoll) + dtIMU / (attitudeTau + dtIMU) * accelRoll;
+  pitchEst = attitudeTau / (attitudeTau + dtIMU) * (predictedPitch) + dtIMU / (attitudeTau + dtIMU) * accelPitch;
 }
 
 void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
