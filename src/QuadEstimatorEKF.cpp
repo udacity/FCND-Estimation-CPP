@@ -61,6 +61,9 @@ void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
 	// FUSE INTEGRATION AND UPDATE
 	rollEst = attitudeTau / (attitudeTau + dtIMU) * (predictedRoll) + dtIMU / (attitudeTau + dtIMU) * accelRoll;
   pitchEst = attitudeTau / (attitudeTau + dtIMU) * (predictedPitch) + dtIMU / (attitudeTau + dtIMU) * accelPitch;
+
+	// YAW -- TODO - weird that it's here..
+	state(6) = quat.Yaw();
 }
 
 void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
@@ -75,14 +78,14 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   newState(2) += state(5)*dt;
 
   // integrate velocity
-  Quaternion<float> att = SLR::Quaternion<float>::FromEulerYPR(state(6), pitchEst, rollEst);
-  V3F accelGlobal = att.Rotate_BtoI(accel) - V3F(0, 0, 9.81f);
-  newState(3) += accelGlobal[0] * dt;
-  newState(4) += accelGlobal[1] * dt;
-  newState(5) += accelGlobal[2] * dt;
+  Quaternion<float> att = SLR::Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, state(6));
+  accelG = att.Rotate_BtoI(accel) - V3F(0, 0, 9.81f);
+  newState(3) += accelG[0] * dt;
+  newState(4) += accelG[1] * dt;
+  newState(5) += accelG[2] * dt;
 
-  // yaw
-  newState(6) += att.Rotate_BtoI(gyro).z * dt;
+  // yaw - done in UpdateFromIMU
+  //newState(6) += att.Rotate_BtoI(gyro).z * dt;
 
   // TRANSITION MATRIX JACOBIAN
 
@@ -117,6 +120,7 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   gPrime(5, 6) = Rbg_prime_times_u03_dt(2);
 
   cov = gPrime * cov * gPrime.T() + Q();
+	state = newState;
 }
 
 void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
@@ -169,12 +173,12 @@ matrix::SquareMatrix<float, QuadEstimatorEKF::QUAD_EKF_NUM_STATES> QuadEstimator
   // TODO
   matrix::SquareMatrix<float, QuadEstimatorEKF::QUAD_EKF_NUM_STATES> ret;
   ret.setIdentity();
-  ret(0, 0) = .001f;
-  ret(1, 1) = .001f;
-  ret(2, 2) = .001f;
-  ret(3, 3) = .001f;
-  ret(4, 4) = .001f;
-  ret(5, 5) = .001f;
+  ret(0, 0) = .1f;
+  ret(1, 1) = .1f;
+  ret(2, 2) = .1f;
+  ret(3, 3) = .1f;
+  ret(4, 4) = .1f;
+  ret(5, 5) = .1f;
   ret(6, 6) = .001f;
   return ret;
 }
@@ -211,7 +215,10 @@ bool QuadEstimatorEKF::GetData(const string& name, float& ret) const
     // diagnostic variables
     GETTER_HELPER("Est.D.AccelPitch", accelPitch);
     GETTER_HELPER("Est.D.AccelRoll", accelRoll);
-    //todo
+
+		GETTER_HELPER("Est.D.ax_g", accelG[0]);
+		GETTER_HELPER("Est.D.ay_g", accelG[1]);
+		GETTER_HELPER("Est.D.az_g", accelG[2]);
 #undef GETTER_HELPER
   }
   return false;
@@ -229,6 +236,7 @@ vector<string> QuadEstimatorEKF::GetFields() const
   ret.push_back(_name + ".Est.vx");
   ret.push_back(_name + ".Est.vy");
   ret.push_back(_name + ".Est.vz");
+	ret.push_back(_name + ".Est.yaw");
 
   ret.push_back(_name + ".Est.S.x");
   ret.push_back(_name + ".Est.S.y");
@@ -241,5 +249,8 @@ vector<string> QuadEstimatorEKF::GetFields() const
   // diagnostic variables
   ret.push_back(_name + ".Est.D.AccelPitch");
   ret.push_back(_name + ".Est.D.AccelRoll");
+	ret.push_back(_name + ".Est.D.ax_g");
+	ret.push_back(_name + ".Est.D.ay_g");
+	ret.push_back(_name + ".Est.D.az_g");
   return ret;
 };

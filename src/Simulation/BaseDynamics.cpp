@@ -83,6 +83,9 @@ bool BaseDynamics::GetData(const string& name, float& ret) const
     GETTER_HELPER("OMEGA.X", omega.x);
     GETTER_HELPER("OMEGA.Y", omega.y);
     GETTER_HELPER("OMEGA.Z", omega.z);
+		GETTER_HELPER("ACC.X", acc.x);
+		GETTER_HELPER("ACC.Y", acc.y);
+		GETTER_HELPER("ACC.Z", acc.z);
 #undef GETTER_HELPER
   }
   return false;
@@ -103,5 +106,8 @@ vector<string> BaseDynamics::GetFields() const
   ret.push_back(_name + ".Omega.X");
   ret.push_back(_name + ".Omega.Y");
   ret.push_back(_name + ".Omega.Z");
+	ret.push_back(_name + ".Acc.X");
+	ret.push_back(_name + ".Acc.Y");
+	ret.push_back(_name + ".Acc.Z");
   return ret;
 }

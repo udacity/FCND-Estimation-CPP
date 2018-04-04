@@ -43,8 +43,10 @@ public:
 
     if (estimator)
     {
+			// TODO: update happens before prediction because predict uses the attitude and update
+			// updates the attitude...
+			estimator->UpdateFromIMU(_accelMeas, _gyroMeas);
       estimator->Predict(dt, _accelMeas, _gyroMeas);
-      estimator->UpdateFromIMU(_accelMeas, _gyroMeas);
     }
   };
 
