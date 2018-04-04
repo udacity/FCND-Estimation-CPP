@@ -3,6 +3,9 @@
 #include "BaseQuadEstimator.h"
 #include "matrix/math.hpp"
 
+using matrix::Vector;
+using matrix::Matrix;
+using matrix::SquareMatrix;
 
 class QuadEstimatorEKF : public BaseQuadEstimator
 {
@@ -20,7 +23,10 @@ public:
   static const int QUAD_EKF_NUM_STATES = 7;
 
   // process covariance
-  matrix::SquareMatrix<float, QUAD_EKF_NUM_STATES> Q(); 
+  SquareMatrix<float, QUAD_EKF_NUM_STATES> Q; 
+
+	// GPS covariance
+	Matrix<float, 6, 6> R_GPS;
 
   // attitude filter state
   float pitchEst, rollEst;

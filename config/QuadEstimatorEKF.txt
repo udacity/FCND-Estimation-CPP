@@ -1,12 +1,19 @@
 [QuadEstimatorEKF]
 InitState = 0, 0, 0, 0, 0, 0, 0
-InitStdDevs = 10, 10, 10, 1, 1, 1, 1
+InitStdDevs = 1, 1, 1, 1, 1, 1, 1
 
-QPosXY = .1
-QPosZ = .1
-QVelXY = .1
-QVelZ = .1
-QYaw = .05
+# Process noise model
+QPosXYStd = .01
+QPosZStd = .01
+QVelXYStd = .01
+QVelZStd = .01
+QYawStd = .001
+
+# GPS measurement std deviations
+GPSPosXYStd = 1
+GPSPosZStd = 3
+GPSVelXYStd = .1
+GPSVelZStd = .3
 
 dtIMU = 0.002
 attitudeTau = 3

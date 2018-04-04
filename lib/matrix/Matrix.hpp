@@ -298,8 +298,8 @@ public:
 
     void print() const
     {
-        char buf[200];
-        write_string(buf, 200);
+        char buf[1000];
+        write_string(buf, 1000);
         printf("%s\n", buf);
     }
 

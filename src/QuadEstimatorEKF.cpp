@@ -34,6 +34,19 @@ void QuadEstimatorEKF::Init()
   pitchEst = 0;
   rollEst = 0;
 
+	R_GPS.setZero();
+	R_GPS(0, 0) = R_GPS(1, 1) = powf(paramSys->Get(_config + ".GPSPosXYStd", 0), 2);
+	R_GPS(2, 2) = powf(paramSys->Get(_config + ".GPSPosZStd", 0), 2);
+	R_GPS(3, 3) = R_GPS(4, 4) = powf(paramSys->Get(_config + ".GPSVelXYStd", 0), 2);
+	R_GPS(5, 5) = powf(paramSys->Get(_config + ".GPSVelZStd", 0), 2);
+
+	Q.setZero();
+	Q(0, 0) = Q(1, 1) = powf(paramSys->Get(_config + ".QPosXYStd", 0), 2);
+	Q(2, 2) = powf(paramSys->Get(_config + ".QPosZStd", 0), 2);
+	Q(3, 3) = Q(4, 4) = powf(paramSys->Get(_config + ".QVelXYStd", 0), 2);
+	Q(5, 5) = powf(paramSys->Get(_config + ".QVelZStd", 0), 2);
+	Q(6, 6) = powf(paramSys->Get(_config + ".QYawStd", 0), 2);
+
   // TODO: load measurement cov
 }
 
@@ -92,16 +105,26 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   // first, figure out the Rbg_prime
   // TODO: CHECK!
   matrix::Matrix<float, 3, 3> Rbg_prime;
-  float sinPhi = sin(rollEst), cosPhi = cos(rollEst);
-  float sinTheta = sin(pitchEst), cosTheta = cos(pitchEst);
-  float sinPsi=sin(state(6)), cosPsi = cos(state(6)); // yaw
+  float sinPhi =		sin(rollEst),		cosPhi = cos(rollEst);
+  float sinTheta =	sin(pitchEst),	cosTheta = cos(pitchEst);
+  float sinPsi=			sin(state(6)),	cosPsi = cos(state(6)); // yaw
   Rbg_prime.setZero();
-  Rbg_prime(0, 0) = -cosPhi*sinPsi - sinPhi*cosTheta*cosPsi;
+	// Diebel eq 53 (Euler 3,1,3 -- I think we're 1,2,3!)
+  /*Rbg_prime(0, 0) = -cosPhi*sinPsi - sinPhi*cosTheta*cosPsi;
   Rbg_prime(0, 1) = cosPhi*cosPsi - sinPhi*cosTheta*sinPsi;
   Rbg_prime(1, 0) = sinPhi*sinPsi - cosPhi*cosTheta*cosPsi;
   Rbg_prime(1, 1) = -sinPhi*cosPsi - cosPhi*cosTheta*sinPsi;
   Rbg_prime(2, 0) = sinTheta*cosPsi;
-  Rbg_prime(2, 1) = sinTheta*sinPsi;
+  Rbg_prime(2, 1) = sinTheta*sinPsi;*/
+	
+	// Diebel eq 71
+	Rbg_prime(0, 0) = -cosTheta * sinPsi;
+	Rbg_prime(0, 1) = cosTheta * cosPsi;
+	Rbg_prime(1, 0) = -sinPhi * sinTheta*sinPsi - cosPhi * cosPsi;
+	Rbg_prime(1, 1) = sinPhi * sinTheta*cosPsi - cosPhi * sinPsi;
+	Rbg_prime(2, 0) = -cosPhi * sinTheta*sinPsi + sinPhi * cosPsi;
+	Rbg_prime(2, 1) = cosPhi * sinTheta*cosPsi + sinPhi * sinPsi;
+	Rbg_prime = Rbg_prime.T();
 
   matrix::Vector<float, 3> u03dt;
   u03dt(0) = accel[0] * dt;
@@ -119,7 +142,7 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   gPrime(4, 6) = Rbg_prime_times_u03_dt(1);
   gPrime(5, 6) = Rbg_prime_times_u03_dt(2);
 
-  cov = gPrime * cov * gPrime.T() + Q();
+  cov = gPrime * cov * gPrime.T() + Q;
 	state = newState;
 }
 
@@ -133,54 +156,37 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
   z(4) = vel.y;
   z(5) = vel.z;
 
-  matrix::Matrix<float, 6, 6> R;
-  // TODO: param!
-  R.setIdentity();
-  R(0, 0) = R(1, 1) = 1;
-  R(2, 2) = 3;
-  R(3, 3) = R(4, 4) = .1f;
-  R(5, 5) = .3f;
-
   for (int i = 0; i < 6; i++)
   {
     hOfU(i) = state(i);
   }
 
   matrix::Matrix<float, 6, 7> hPrime;
-  hPrime.setIdentity();
+	hPrime.setZero();
+	for (int i = 0; i < 6; i++)
+	{
+		hPrime(i,i) = 1;
+	}
 
-  Update(z, hPrime, R, hOfU);
+  Update(z, hPrime, R_GPS, hOfU);
 }
 
 template<size_t numZ>
-void QuadEstimatorEKF::Update(matrix::Vector<float, numZ>& z,
-  matrix::Matrix<float, numZ, QUAD_EKF_NUM_STATES>& H,
-  matrix::Matrix<float, numZ, numZ>& R,
-  matrix::Vector<float, numZ>& hOfU)
+void QuadEstimatorEKF::Update(Vector<float, numZ>& z,
+  Matrix<float, numZ, QUAD_EKF_NUM_STATES>& H,
+  Matrix<float, numZ, numZ>& R,
+  Vector<float, numZ>& hOfU)
 {
-  matrix::SquareMatrix<float, numZ> toInvert;
+  SquareMatrix<float, numZ> toInvert;
   toInvert = H*cov*H.T() + R;
-  matrix::Matrix<float, QUAD_EKF_NUM_STATES,numZ> K = cov * H.T() * inv(toInvert);
+  Matrix<float, QUAD_EKF_NUM_STATES,numZ> K = cov * H.T() * inv(toInvert);
+
   state = state + K*(z - hOfU);
 
-  matrix::SquareMatrix<float, QUAD_EKF_NUM_STATES> eye;
+  SquareMatrix<float, QUAD_EKF_NUM_STATES> eye;
   eye.setIdentity();
-  cov = (eye - K*H)*cov;
-}
 
-matrix::SquareMatrix<float, QuadEstimatorEKF::QUAD_EKF_NUM_STATES> QuadEstimatorEKF::Q()
-{
-  // TODO
-  matrix::SquareMatrix<float, QuadEstimatorEKF::QUAD_EKF_NUM_STATES> ret;
-  ret.setIdentity();
-  ret(0, 0) = .1f;
-  ret(1, 1) = .1f;
-  ret(2, 2) = .1f;
-  ret(3, 3) = .1f;
-  ret(4, 4) = .1f;
-  ret(5, 5) = .1f;
-  ret(6, 6) = .001f;
-  return ret;
+  cov = (eye - K*H)*cov;
 }
 
 // Access functions for graphing variables

@@ -144,6 +144,27 @@ TrajectoryPoint Trajectory::NextTrajectoryPoint(float time)
     if(traj.at(i).time < time)
     {
       _curTrajPoint = i;
+			// interpolation
+			if (i == traj.n_meas() - 1)
+			{
+				// we're at the end of the trajectory
+				return traj.at(i);
+			}
+			else 
+			{
+				float dt = traj.at(i + 1).time - traj.at(i).time;
+				float alpha = (time - traj.at(i).time) / dt;
+				float beta = 1.f - alpha;
+				TrajectoryPoint ret;
+				ret.position = traj.at(i).position*beta + traj.at(i + 1).position*alpha;
+				ret.velocity = traj.at(i).velocity*beta + traj.at(i + 1).velocity*alpha;
+				ret.accel = traj.at(i).accel*beta + traj.at(i + 1).accel*alpha;
+				ret.omega = traj.at(i).omega*beta + traj.at(i + 1).omega*alpha;
+				ret.attitude = traj.at(i).attitude.Interpolate_SLERP(traj.at(i + 1).attitude, alpha);
+				return ret;
+			}
+
+			// no interpolation
       return traj.at(i);
     }
   }

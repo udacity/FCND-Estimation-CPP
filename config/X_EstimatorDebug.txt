@@ -4,7 +4,7 @@ INCLUDE QuadPhysicalParams.txt
 
 # simulation setup
 Sim.RunMode = Repeat
-Sim.EndTime = 10
+Sim.EndTime = 30
 Sim.Vehicle1 = Quad1
 
 # Controller selection
@@ -12,12 +12,15 @@ Quad.ControlType = QuadControl
 Quad.ControlConfig = QuadControlParams
 
 # reference trajectory
-QuadControlParams.Trajectory=traj/FigureEightFF.txt
+QuadControlParams.Trajectory=traj/Quad.txt
 
 # graphing commands
-Commands += AddGraph1.Quad1.Est.D.ax_g
-Commands += AddGraph1.Quad1.IMU.AX
-Commands += AddGraph1.Quad1.Acc.X
+#Commands += AddGraph1.Quad1.Est.D.ax_g
+#Commands += AddGraph1.Quad1.IMU.AX
+#Commands += AddGraph1.Quad1.Acc.X
+Commands += AddGraph1.Quad1.Pos.Y
+Commands += AddGraph1.Quad1.Vel.y
+Commands += AddGraph2.Quad1.Est.S.Yaw
 Commands += AddGraph2.Quad1.Est.Yaw
 Commands += AddGraph2.Quad1.Yaw
 
@@ -36,4 +39,4 @@ kpPosXY = .5
 
 # Vehicle-specific config
 [Quad1:Quad]
-InitialPos=0,0,-1
+InitialPos=0,3,-1
