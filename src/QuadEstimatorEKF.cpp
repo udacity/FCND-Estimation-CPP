@@ -19,7 +19,7 @@ void QuadEstimatorEKF::Init()
 
   paramSys->GetFloatVector(_config + ".InitState", state);
   
-  matrix::Vector<float, QUAD_EKF_NUM_STATES> initStdDevs;
+  Vector<float, QUAD_EKF_NUM_STATES> initStdDevs;
   paramSys->GetFloatVector(_config + ".InitStdDevs", initStdDevs);
   cov.setIdentity();
   for (int i = 0; i < QUAD_EKF_NUM_STATES; i++)
@@ -39,6 +39,9 @@ void QuadEstimatorEKF::Init()
 	R_GPS(2, 2) = powf(paramSys->Get(_config + ".GPSPosZStd", 0), 2);
 	R_GPS(3, 3) = R_GPS(4, 4) = powf(paramSys->Get(_config + ".GPSVelXYStd", 0), 2);
 	R_GPS(5, 5) = powf(paramSys->Get(_config + ".GPSVelZStd", 0), 2);
+
+	R_Yaw.setZero();
+	R_Yaw(0,0) = powf(paramSys->Get(_config + ".MagYawStd", 0), 2);
 
 	Q.setZero();
 	Q(0, 0) = Q(1, 1) = powf(paramSys->Get(_config + ".QPosXYStd", 0), 2);
@@ -81,7 +84,7 @@ void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
 
 void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
 {
-  matrix::Vector<float, QUAD_EKF_NUM_STATES> newState = state;
+  Vector<float, QUAD_EKF_NUM_STATES> newState = state;
 
   // note attitude pitch/roll is already done in "UpdateFromIMU"
 
@@ -91,7 +94,7 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   newState(2) += state(5)*dt;
 
   // integrate velocity
-  Quaternion<float> att = SLR::Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, state(6));
+  Quaternion<float> att = Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, state(6));
   accelG = att.Rotate_BtoI(accel) - V3F(0, 0, 9.81f);
   newState(3) += accelG[0] * dt;
   newState(4) += accelG[1] * dt;
@@ -104,7 +107,7 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
 
   // first, figure out the Rbg_prime
   // TODO: CHECK!
-  matrix::Matrix<float, 3, 3> Rbg_prime;
+  Matrix<float, 3, 3> Rbg_prime;
   float sinPhi =		sin(rollEst),		cosPhi = cos(rollEst);
   float sinTheta =	sin(pitchEst),	cosTheta = cos(pitchEst);
   float sinPsi=			sin(state(6)),	cosPsi = cos(state(6)); // yaw
@@ -126,14 +129,14 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
 	Rbg_prime(2, 1) = cosPhi * sinTheta*cosPsi + sinPhi * sinPsi;
 	Rbg_prime = Rbg_prime.T();
 
-  matrix::Vector<float, 3> u03dt;
+  Vector<float, 3> u03dt;
   u03dt(0) = accel[0] * dt;
   u03dt(1) = accel[1] * dt;
   u03dt(2) = accel[2] * dt;
 
-  matrix::Vector<float, 3> Rbg_prime_times_u03_dt = Rbg_prime*u03dt;
+  Vector<float, 3> Rbg_prime_times_u03_dt = Rbg_prime*u03dt;
   
-  matrix::SquareMatrix<float, QUAD_EKF_NUM_STATES> gPrime;
+  SquareMatrix<float, QUAD_EKF_NUM_STATES> gPrime;
   gPrime.setIdentity();
   gPrime(0, 3) = dt;
   gPrime(1, 4) = dt;
@@ -148,7 +151,7 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
 
 void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
 {
-  matrix::Vector<float, 6> z, hOfU;
+  Vector<float, 6> z, hOfU;
   z(0) = pos.x;
   z(1) = pos.y;
   z(2) = pos.z;
@@ -161,7 +164,7 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
     hOfU(i) = state(i);
   }
 
-  matrix::Matrix<float, 6, 7> hPrime;
+  Matrix<float, 6, 7> hPrime;
 	hPrime.setZero();
 	for (int i = 0; i < 6; i++)
 	{
@@ -169,6 +172,20 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
 	}
 
   Update(z, hPrime, R_GPS, hOfU);
+}
+
+void QuadEstimatorEKF::UpdateFromMag(float magYaw)
+{
+	Vector<float, 1> z, hOfU;
+	z(0) = magYaw;
+
+	hOfU(0) = state(6);
+
+	Matrix<float, 1, 7> hPrime;
+	hPrime.setZero();
+	hPrime(0, 6) = 1;
+
+	Update(z, hPrime, R_Yaw, hOfU);
 }
 
 template<size_t numZ>

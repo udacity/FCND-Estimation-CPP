@@ -10,6 +10,7 @@
 #include "QuadEstimatorEKF.h"
 #include "SimulatedGPS.h"
 #include "SimulatedIMU.h"
+#include "SimulatedMag.h"
 
 #ifdef _MSC_VER //  visual studio
 #pragma warning(disable: 4267 4244 4996)
@@ -138,6 +139,9 @@ int QuadDynamics::Initialize()
 
   shared_ptr<SimulatedIMU> simIMU(new SimulatedIMU(config->Get(_name + ".SimIMUConfig", "SimIMU"), _name));
   sensors.push_back(simIMU);
+
+	shared_ptr<SimulatedMag> simMag(new SimulatedMag(config->Get(_name + ".SimIMUConfig", "SimMag"), _name));
+	sensors.push_back(simMag);
 
   return 1;
 }

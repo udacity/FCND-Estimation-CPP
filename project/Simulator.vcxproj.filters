@@ -254,6 +254,9 @@
     <ClInclude Include="..\lib\matrix\filter.hpp">
       <Filter>matrix</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Simulation\SimulatedMag.h">
+      <Filter>Simulation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\lib\matrix\LICENSE">

@@ -18,7 +18,7 @@ public:
   virtual void UpdateFromIMU(V3F accel, V3F gyro);
   virtual void UpdateFromGPS(V3F pos, V3F vel);
   virtual void UpdateFromBaro(float z) {};
-  virtual void UpdateFromMag(V3F mag) {};
+	virtual void UpdateFromMag(float magYaw);
 
   static const int QUAD_EKF_NUM_STATES = 7;
 
@@ -27,6 +27,9 @@ public:
 
 	// GPS covariance
 	Matrix<float, 6, 6> R_GPS;
+
+	// Magnetometer covariance
+	Matrix<float, 1, 1> R_Yaw;
 
   // attitude filter state
   float pitchEst, rollEst;

@@ -10,7 +10,7 @@ Std = .1
 dt = .01
 
 [SimMag]
-Std = .01, .01, .01
+Std = .05
 dt = .01
 
 [SimGPS]

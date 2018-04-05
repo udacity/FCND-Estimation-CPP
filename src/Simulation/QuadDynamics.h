@@ -12,7 +12,6 @@ using namespace fastdelegate;
 class QuadDynamics;
 typedef shared_ptr<QuadDynamics> QuadcopterHandle;
 
-class SimulatedGPS;
 class BaseQuadEstimator;
 class SimulatedQuadSensor;
 
