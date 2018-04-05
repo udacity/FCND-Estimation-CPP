@@ -80,7 +80,10 @@ void Trajectory::ParseLine(const string& filename, const string& s)
   TrajectoryPoint traj_pt;
 
   V3F ypr; // Helper variable to read in yaw, pitch and roll
-  sscanf(s.c_str(), "%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f", &traj_pt.time, &traj_pt.position.x, &traj_pt.position.y, &traj_pt.position.z, &traj_pt.velocity.x, &traj_pt.velocity.y, &traj_pt.velocity.z, &ypr[0], &ypr[1], &ypr[2], &traj_pt.omega.x, &traj_pt.omega.y, &traj_pt.omega.z);
+  sscanf(s.c_str(), "%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f", &traj_pt.time, 
+		&traj_pt.position.x, &traj_pt.position.y, &traj_pt.position.z, 
+		&traj_pt.velocity.x, &traj_pt.velocity.y, &traj_pt.velocity.z, 
+		&ypr[0], &ypr[1], &ypr[2], &traj_pt.omega.x, &traj_pt.omega.y, &traj_pt.omega.z);
 
   // Convert yaw, pitch, and roll to an attitude quaternion
   traj_pt.attitude = Quaternion<float>::FromEulerYPR(ypr[0], ypr[1], ypr[2]);
@@ -161,6 +164,7 @@ TrajectoryPoint Trajectory::NextTrajectoryPoint(float time)
 				ret.accel = traj.at(i).accel*beta + traj.at(i + 1).accel*alpha;
 				ret.omega = traj.at(i).omega*beta + traj.at(i + 1).omega*alpha;
 				ret.attitude = traj.at(i).attitude.Interpolate_SLERP(traj.at(i + 1).attitude, alpha);
+				ret.time = time;
 				return ret;
 			}
 
@@ -169,9 +173,9 @@ TrajectoryPoint Trajectory::NextTrajectoryPoint(float time)
     }
   }
 
-  _curTrajPoint = traj.n_meas() - 1;
-  // I should not get here
-  return traj.newest();
+	// if requested 0 or negative time
+  _curTrajPoint = 0;
+  return traj.oldest();
 }
 
 void Trajectory::WriteTrajectoryPointToFile(FILE* f, TrajectoryPoint traj_pt)
@@ -183,7 +187,11 @@ void Trajectory::WriteTrajectoryPointToFile(FILE* f, TrajectoryPoint traj_pt)
 
   // Write the trajectory point to file
   V3D ypr = traj_pt.attitude.ToEulerYPR();
-  fprintf (f, "%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n", (double)traj_pt.time, (double)traj_pt.position.x, (double)traj_pt.position.y, (double)traj_pt.position.z, (double)traj_pt.velocity.x, (double)traj_pt.velocity.y, (double)traj_pt.velocity.z, ypr[0], ypr[1], ypr[2], (double)traj_pt.omega.x, (double)traj_pt.omega.y, (double)traj_pt.omega.z);
+  fprintf (f, "%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f,%.3f\n", (double)traj_pt.time, \
+		(double)traj_pt.position.x, (double)traj_pt.position.y, (double)traj_pt.position.z, 
+		(double)traj_pt.velocity.x, (double)traj_pt.velocity.y, (double)traj_pt.velocity.z,
+		ypr[0], ypr[1], ypr[2], (double)traj_pt.omega.x, 
+		(double)traj_pt.omega.y, (double)traj_pt.omega.z);
 
   // Flush to file
   fflush(f);

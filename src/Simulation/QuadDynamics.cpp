@@ -96,7 +96,7 @@ int QuadDynamics::Initialize()
   float trajTimeOffset = config->Get(_name + ".TrajectoryTimeOffset", 0);
 
   string controlConfig = config->Get(_name + ".ControlConfig", "ControlParams");
-  controller = CreateController(config->Get(_name + ".ControlType", "QuadControl") , controlConfig);
+  controller = CreateController(_name,config->Get(_name + ".ControlType", "QuadControl") , controlConfig);
   if (controller)
   {
     controller->SetTrajTimeOffset(trajTimeOffset);
@@ -415,11 +415,6 @@ bool QuadDynamics::GetData(const string& name, float& ret) const
     return BaseDynamics::GetData(name, ret);
   }
 
-  if (controller)
-  {
-    return controller->GetData(name, ret);
-  }
-
   return false;  
 }
 
@@ -431,11 +426,5 @@ vector<string> QuadDynamics::GetFields() const
   ret.push_back(_name + ".Thrust.C");
   ret.push_back(_name + ".Thrust.D");
   ret.push_back(_name + ".PosFollowErr");
-  
-  if (controller)
-  {
-    vector<string> controllerFields = controller->GetFields();
-    ret.insert(ret.end(), controllerFields.begin(), controllerFields.end());
-  }
   return ret;
 }

@@ -12,7 +12,7 @@ Quad.ControlType = QuadControl
 Quad.ControlConfig = QuadControlParams
 
 # reference trajectory
-QuadControlParams.Trajectory=traj/Quad.txt
+QuadControlParams.Trajectory=traj/Square.txt
 
 # graphing commands
 #Commands += AddGraph1.Quad1.Est.D.ax_g
@@ -20,9 +20,12 @@ QuadControlParams.Trajectory=traj/Quad.txt
 #Commands += AddGraph1.Quad1.Acc.X
 Commands += AddGraph1.Quad1.Pos.Y
 Commands += AddGraph1.Quad1.Vel.y
+Commands += AddGraph1.Quad1.Est.Y
+Commands += AddGraph1.Quad1.Est.VY
 Commands += AddGraph2.Quad1.Est.S.Yaw
 Commands += AddGraph2.Quad1.Est.Yaw
 Commands += AddGraph2.Quad1.Yaw
+Commands += AddGraph2.Quad1.Ref.Yaw
 
 INCLUDE QuadControlParams.txt
 INCLUDE Simulation.txt

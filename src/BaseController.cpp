@@ -6,8 +6,9 @@
 #include "Utility/StringUtils.h"
 using namespace SLR;
 
-BaseController::BaseController(string config)
+BaseController::BaseController(string name, string config)
 {
+	_name = name;
   _config = config;
   Init();
 }
@@ -85,13 +86,17 @@ bool BaseController::GetData(const string& name, float& ret) const
   string leftPart = LeftOf(name, '.');
   string rightPart = RightOf(name, '.');
 
-  if (ToUpper(leftPart) == ToUpper(_config))
+  if (ToUpper(leftPart) == ToUpper(_name))
   {
 #define GETTER_HELPER(A,B) if (SLR::ToUpper(rightPart) == SLR::ToUpper(A)){ ret=(B); return true; }
     // UDACITY CONVENTION
     GETTER_HELPER("Ref.X", curTrajPoint.position.x);
     GETTER_HELPER("Ref.Y", curTrajPoint.position.y);
     GETTER_HELPER("Ref.Z", curTrajPoint.position.z);
+		GETTER_HELPER("Ref.VX", curTrajPoint.velocity.x);
+		GETTER_HELPER("Ref.VY", curTrajPoint.velocity.y);
+		GETTER_HELPER("Ref.VZ", curTrajPoint.velocity.z);
+		GETTER_HELPER("Ref.Yaw", curTrajPoint.attitude.Yaw());
 #undef GETTER_HELPER
   }
   return false;
@@ -100,8 +105,12 @@ bool BaseController::GetData(const string& name, float& ret) const
 vector<string> BaseController::GetFields() const
 {
   vector<string> ret;
-  ret.push_back(_config + ".Ref.X");
-  ret.push_back(_config + ".Ref.Y");
-  ret.push_back(_config + ".Ref.Z");
+  ret.push_back(_name + ".Ref.X");
+  ret.push_back(_name + ".Ref.Y");
+  ret.push_back(_name + ".Ref.Z");
+	ret.push_back(_name + ".Ref.VX");
+	ret.push_back(_name + ".Ref.VY");
+	ret.push_back(_name + ".Ref.VZ");
+	ret.push_back(_name + ".Ref.Yaw");
   return ret;
 }

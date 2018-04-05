@@ -447,49 +447,54 @@ public:
 	}
 
 
+	// interpolate between two quaternions using "simple" linear interpolation
+	// q0 (self) and q1 should be unit quaternions.
+	// t should be between 0 and 1 (it's constrained internally)
+	// t = 0 returns q0; t=1 returns q1; something inbetween returns something inbetween
+	Quaternion Interpolate_LERP(const Quaternion& q1, double t)
+	{
+		V4D b0(_q);
+		V4D b1(q1.AlignSigns(*this)._q);
+
+		t = CONSTRAIN(t, 0, 1);
+		V4D res = b0 * (1.0 - t) + b1*t;
+		return Quaternion((float)res[0], (float)res[1], (float)res[2], (float)res[3]).Normalise();
+	}
+
+	// Spherical linear interpolation
   // interpolate between two quaternions along the torque-minimal path between q0 and q1
-  // see http://number-none.com/product/Understanding%20Slerp,%20Then%20Not%20Using%20It/
   // this is probably not the most efficient way to implement it
   // q0 (self) and q1 should be unit quaternions.
   // t should be between 0 and 1 (it's constrained internally)
   // t = 0 returns q0; t=1 returns q1; something inbetween returns something inbetween
-  Quaternion Interpolate_SLERP(const Quaternion& q1, double t)
+  Quaternion Interpolate_SLERP(const Quaternion& q1, float t)
   {
+		t = CONSTRAIN(t, 0, 1);
+		V4D b0(_q);
+		V4D b1(q1.AlignSigns(*this)._q);
+
     // Compute the cosine of the angle between the two vectors.
-    Quaternion q0 = *this;
-    V4D b0(_q);
-    V4D b1(q1[0], q1[1], q1[2], q1[3]);
-
-    double dot = _q[0]*q1[0] + _q[1]*q1[1] + _q[2]*q1[2] + _q[3]*q1[3];
-
-    t = CONSTRAIN(t, 0, 1);
+    float dot = _q[0]*q1[0] + _q[1]*q1[1] + _q[2]*q1[2] + _q[3]*q1[3];
+		dot = CONSTRAIN(dot, -1, 1);	// Robustness: Stay within domain of acos()
 
     const double DOT_THRESHOLD = 0.9995;
     if (dot > DOT_THRESHOLD) {
-      // If the inputs are too close for comfort, linearly interpolate
-      // and normalize the result.
-      
+      // If the inputs are close use linear interpolation
       V4D res = b0 + (b1 - b0)*t;
       res = res / norm_2(res);
       return Quaternion((float)res[0], (float)res[1], (float)res[2], (float)res[3]);
-
-      //Quaternion result = q0 + (q1 + -q0)*t;
-      //result /= norm_2(result);
-      //return result;
     }
 
-    dot = CONSTRAIN(dot, -1, 1);	// Robustness: Stay within domain of acos()
-    double theta_0 = acos(dot);  // theta_0 = angle between input vectors
-    double theta = theta_0*t;    // theta = angle between v0 and result 
+    
+    float theta = acos(dot);  // theta_0 = angle between input vectors
+		float sTheta = sinf(theta);
 
-    //Quaternion q2 = q1 + -q0*dot;
-    //q2 /= norm_2(q2);              // { q0, q2 } is now an orthonormal basis
-    //return q0*cos(theta) + q2*sin(theta);
+		float w1 = sinf((1.0f - t)*theta) / sTheta;
+		float w2 = sinf(t*theta) / sTheta;
 
-    V4D b2 = b1 - b1*dot;
-    b2 = b2 / norm_2(b2);
-    V4D res = b0*cos(theta) + b2 * sin(theta);
-    return Quaternion((float)res[0], (float)res[1], (float)res[2], (float)res[3]);
+		V4D res = b0*w1 + b1*w2;
+
+		return Quaternion((float)res[0], (float)res[1], (float)res[2], (float)res[3]).Normalise();    
   }
 
 #ifdef _WIN32

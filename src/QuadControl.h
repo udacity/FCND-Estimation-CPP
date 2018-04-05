@@ -8,7 +8,7 @@
 class QuadControl : public BaseController
 {
 public:
-  QuadControl(string config) : BaseController(config) { Init(); };
+  QuadControl(string name, string config) : BaseController(name,config) { Init(); };
 
   virtual void Init();
 

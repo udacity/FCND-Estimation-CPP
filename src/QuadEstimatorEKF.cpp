@@ -179,6 +179,11 @@ void QuadEstimatorEKF::UpdateFromMag(float magYaw)
 	Vector<float, 1> z, hOfU;
 	z(0) = magYaw;
 
+	// bring measurement closer to current state to avoid loop-around strangeness
+	float diff = z(0) - state(6);
+	if (diff < -F_PI) z(0) += 2.f*F_PI;
+	if (diff > F_PI) z(0) -= 2.f*F_PI;
+
 	hOfU(0) = state(6);
 
 	Matrix<float, 1, 7> hPrime;

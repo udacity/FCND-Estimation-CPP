@@ -15,7 +15,7 @@ typedef shared_ptr<BaseController> ControllerHandle;
 class BaseController : public DataSource
 {
 public:
-  BaseController(string config);
+  BaseController(string name, string config);
   virtual ~BaseController() {};
 
   virtual void RunEstimation() {};
@@ -67,6 +67,7 @@ public:
   Trajectory trajectory;
   TrajectoryPoint curTrajPoint;
   string _config;
+	string _name;
 
   V3F _trajectoryOffset;
   float _trajectoryTimeOffset;
