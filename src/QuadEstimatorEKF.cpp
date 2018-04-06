@@ -34,7 +34,7 @@ void QuadEstimatorEKF::Init()
 
   // complementary filter params
   attitudeTau = paramSys->Get(_config + ".AttitudeTau", .1f);
-  dtIMU = paramSys->Get(_config + ".dtIMU", .001f);
+  dtIMU = paramSys->Get(_config + ".dtIMU", .002f);
 
   pitchEst = 0;
   rollEst = 0;
@@ -55,8 +55,6 @@ void QuadEstimatorEKF::Init()
 	Q(5, 5) = powf(paramSys->Get(_config + ".QVelZStd", 0), 2);
 	Q(6, 6) = powf(paramSys->Get(_config + ".QYawStd", 0), 2);
 	Q *= dtIMU;
-
-  // TODO: load measurement cov
 }
 
 void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
