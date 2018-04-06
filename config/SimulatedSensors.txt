@@ -1,8 +1,8 @@
 # note that sensors can not be faster than the controller rate (0.002)
 
 [SimIMU]
-AccelStd = 1, 1, 3
-GyroStd = 1, 1, 1
+#AccelStd = 1, 1, 3
+#GyroStd = .5, .5, .5
 dt = .002
 
 [SimBaro]
@@ -15,6 +15,6 @@ dt = .01
 
 [SimGPS]
 PosStd = 1, 1, 3
-PosRandomWalkStd = 0, 0, 0
+PosRandomWalkStd = .1, .1, .1
 VelStd = .1, .1, .3
 dt = .1

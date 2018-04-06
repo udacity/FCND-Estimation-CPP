@@ -18,28 +18,27 @@ QuadControlParams.Trajectory=traj/Square.txt
 #Commands += AddGraph1.Quad1.Est.D.ax_g
 #Commands += AddGraph1.Quad1.IMU.AX
 #Commands += AddGraph1.Quad1.Acc.X
+Commands += Toggle.ActualTrajectory
+
 Commands += AddGraph1.Quad1.Pos.Y
 Commands += AddGraph1.Quad1.Vel.y
 Commands += AddGraph1.Quad1.Est.Y
 Commands += AddGraph1.Quad1.Est.VY
-Commands += AddGraph2.Quad1.Est.S.Yaw
-Commands += AddGraph2.Quad1.Est.Yaw
-Commands += AddGraph2.Quad1.Yaw
-Commands += AddGraph2.Quad1.Ref.Yaw
 
-INCLUDE QuadControlParams.txt
+Commands += AddGraph2.Quad1.Pos.Z
+Commands += AddGraph2.Quad1.Vel.Z
+Commands += AddGraph2.Quad1.Est.Z
+Commands += AddGraph2.Quad1.Est.VZ
+
+INCLUDE QuadControlParams_Estimator.txt
 INCLUDE Simulation.txt
 
 # USE ACTUAL ESTIMATOR!
 INCLUDE SimulatedSensors.txt
 [QuadControlParams] 
-UseIdealEstimator=1
+UseIdealEstimator=0
 INCLUDE QuadEstimatorEKF.txt
-
-# relax control so we can move around the vehicle
-[QuadControlParams] 
-kpPosXY = .5
 
 # Vehicle-specific config
 [Quad1:Quad]
-InitialPos=0,3,-1
+InitialPos=0,0,-1

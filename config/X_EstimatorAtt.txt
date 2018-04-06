@@ -2,7 +2,7 @@ INCLUDE QuadPhysicalParams.txt
 
 # simulation setup
 Sim.RunMode = Repeat
-Sim.EndTime = 10
+Sim.EndTime = 5
 Sim.Vehicle1 = Quad
 
 # Controller selection
@@ -15,15 +15,23 @@ INCLUDE SimulatedSensors.txt
 
 # Initial state & reference trajectory
 Quad.InitialPos=0,0,-1
-QuadControlParams.Trajectory=traj/CircleNoFF.txt
+QuadControlParams.Trajectory=traj/AttDebug.txt
 
 # graphing commands
-Commands += AddGraph1.Quad.Est.D.AccelRoll
-Commands += AddGraph1.Quad.Roll
-Commands += AddGraph1.Quad.Est.Roll
-Commands += AddGraph2.Quad.Est.D.AccelPitch
+
+Commands += AddGraph1.Quad.Est.S.Yaw
+Commands += AddGraph1.Quad.Est.E.Yaw
+Commands += AddGraph1.Quad.Est.E.Roll
+Commands += AddGraph1.Quad.Est.E.Pitch
+
+#Commands += AddGraph2.Quad.Est.D.AccelRoll
+Commands += AddGraph2.Quad.Roll
+Commands += AddGraph2.Quad.Est.Roll
+#Commands += AddGraph2.Quad.Est.D.AccelPitch
 Commands += AddGraph2.Quad.Pitch
 Commands += AddGraph2.Quad.Est.Pitch
+Commands += AddGraph2.Quad.Yaw
+Commands += AddGraph2.Quad.Est.Yaw
 
 INCLUDE QuadControlParams.txt
 INCLUDE Simulation.txt
@@ -33,4 +41,4 @@ INCLUDE QuadEstimatorEKF.txt
 
 []
 # to use estimator to fly the vehicle (not the actual state), uncomment next line
-#QuadControlParams.UseIdealEstimator = 0
+QuadControlParams.UseIdealEstimator = 1
