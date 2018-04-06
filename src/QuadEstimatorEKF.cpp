@@ -4,6 +4,11 @@
 #include "Utility/StringUtils.h"
 #include "Math/Quaternion.h"
 
+#include "Eigen/Dense"
+#include "Eigen/SVD"
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
+
 using namespace SLR;
 
 QuadEstimatorEKF::QuadEstimatorEKF(string config, string name) 
@@ -19,7 +24,7 @@ void QuadEstimatorEKF::Init()
 
   paramSys->GetFloatVector(_config + ".InitState", state);
   
-  Vector<float, QUAD_EKF_NUM_STATES> initStdDevs;
+	VectorXf initStdDevs(QUAD_EKF_NUM_STATES);
   paramSys->GetFloatVector(_config + ".InitStdDevs", initStdDevs);
   cov.setIdentity();
   for (int i = 0; i < QUAD_EKF_NUM_STATES; i++)
@@ -49,6 +54,7 @@ void QuadEstimatorEKF::Init()
 	Q(3, 3) = Q(4, 4) = powf(paramSys->Get(_config + ".QVelXYStd", 0), 2);
 	Q(5, 5) = powf(paramSys->Get(_config + ".QVelZStd", 0), 2);
 	Q(6, 6) = powf(paramSys->Get(_config + ".QYawStd", 0), 2);
+	Q *= dtIMU;
 
   // TODO: load measurement cov
 }
@@ -233,6 +239,23 @@ void QuadEstimatorEKF::Update(Vector<float, numZ>& z,
   cov = (eye - K*H)*cov;
 }
 
+float QuadEstimatorEKF::CovConditionNumber() const
+{
+	MatrixXf m(7, 7);
+	for (int i = 0; i < 7; i++)
+	{
+		for (int j = 0; j < 7; j++)
+		{
+			m(i, j) = cov(i, j);
+		}
+	}
+
+	Eigen::JacobiSVD<MatrixXf> svd(m);
+	float cond = svd.singularValues()(0)
+		/ svd.singularValues()(svd.singularValues().size() - 1);
+	return cond;
+}
+
 // Access functions for graphing variables
 bool QuadEstimatorEKF::GetData(const string& name, float& ret) const
 {
@@ -279,6 +302,8 @@ bool QuadEstimatorEKF::GetData(const string& name, float& ret) const
 		GETTER_HELPER("Est.E.yaw", trueError(6));
 		GETTER_HELPER("Est.E.pitch", pitchErr);
 		GETTER_HELPER("Est.E.roll", rollErr);
+
+		GETTER_HELPER("Est.D.cov_cond", CovConditionNumber());
 #undef GETTER_HELPER
   }
   return false;
@@ -309,12 +334,14 @@ vector<string> QuadEstimatorEKF::GetFields() const
 	ret.push_back(_name + ".Est.E.x");
 	ret.push_back(_name + ".Est.E.y");
 	ret.push_back(_name + ".Est.E.z");
-	ret.push_back(_name + ".Est.e.vx");
+	ret.push_back(_name + ".Est.E.vx");
 	ret.push_back(_name + ".Est.E.vy");
-	ret.push_back(_name + ".Est.e.vz");
+	ret.push_back(_name + ".Est.E.vz");
 	ret.push_back(_name + ".Est.E.yaw");
 	ret.push_back(_name + ".Est.E.pitch");
 	ret.push_back(_name + ".Est.E.roll");
+
+	ret.push_back(_name + ".Est.D.cov_cond");
 
   // diagnostic variables
   ret.push_back(_name + ".Est.D.AccelPitch");

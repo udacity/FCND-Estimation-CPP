@@ -82,4 +82,6 @@ public:
 	{
 		return lastGyro;
 	}
+
+	float CovConditionNumber() const;
 };

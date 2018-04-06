@@ -7,6 +7,7 @@ dt = .002
 
 [SimBaro]
 Std = .1
+#dt = .01
 dt = .01
 
 [SimMag]
@@ -15,6 +16,6 @@ dt = .01
 
 [SimGPS]
 PosStd = 1, 1, 3
-PosRandomWalkStd = .1, .1, .1
+#PosRandomWalkStd = .1, .1, .1
 VelStd = .1, .1, .3
 dt = .1

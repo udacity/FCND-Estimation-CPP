@@ -474,7 +474,7 @@ public:
 		V4D b1(q1.AlignSigns(*this)._q);
 
     // Compute the cosine of the angle between the two vectors.
-		float dot = b0.dot(b1);
+		float dot = (float)b0.dot(b1);
 		dot = CONSTRAIN(dot, -1, 1);	// Robustness: Stay within domain of acos()
 
     const double DOT_THRESHOLD = 0.9995;

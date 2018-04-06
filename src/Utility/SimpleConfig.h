@@ -6,6 +6,11 @@
 using std::vector;
 using std::map;
 
+#include "Eigen/Dense"
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
+
+
 namespace SLR{
 
 class SimpleConfig;
@@ -39,6 +44,18 @@ public:
     }
     return true;
   }
+
+	inline bool GetFloatVector(const string& param, VectorXf& ret)
+	{
+		vector<float> tmp;
+		if (!GetFloatVector(param, tmp)) return false;
+		ret.resize(tmp.size());
+		for (size_t i = 0; i < tmp.size(); i++)
+		{
+			ret(i) = tmp[i];
+		}
+		return true;
+	}
 
   // convenience always-returning functions, with defaults
   float Get(const string& param, float defaultRet);
