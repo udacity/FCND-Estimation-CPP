@@ -14,9 +14,9 @@ public:
   {
     SimulatedQuadSensor::Init();
     ParamsHandle paramSys = SimpleConfig::GetInstance();
-    _posStd = paramSys->Get(_config + ".PosStd", V3F(1, 1, 3));
-    _posRandomWalkStd = paramSys->Get(_config + ".PosRandomWalkStd", V3F(0, 0, 0));
-    _velStd = paramSys->Get(_config + ".VelStd", V3F(.1f, .1f, .3f));
+    _posStd = paramSys->Get(_config + ".PosStd", V3F());
+    _posRandomWalkStd = paramSys->Get(_config + ".PosRandomWalkStd", V3F());
+    _velStd = paramSys->Get(_config + ".VelStd", V3F());
     _gpsDT = paramSys->Get(_config + ".dt", .1f);
     
     _posRandomWalk = V3F();

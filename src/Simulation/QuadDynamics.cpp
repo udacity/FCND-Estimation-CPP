@@ -101,10 +101,8 @@ int QuadDynamics::Initialize()
   {
     controller->SetTrajTimeOffset(trajTimeOffset);
     controller->SetTrajectoryOffset(trajOffset);
-    if (config->Get(controlConfig + ".UseIdealEstimator", 0) == 1)
-    {
-      updateIdealStateCallback = MakeDelegate(controller.get(), &BaseController::OverrideEstimates);
-    }
+
+		_useIdealEstimator = config->Get(controlConfig + ".UseIdealEstimator", 1);
   }
   else
   {
@@ -168,13 +166,23 @@ void QuadDynamics::Run(float dt, float simulationTime, int &idum, V3F externalFo
       {
         (*i)->Update(*this, estimator, controllerUpdateInterval, idum);
       }
+			if (estimator)
+			{
+				estimator->UpdateTrueError(Position(), Velocity(), quat);
+			}
+
 
 			// This is the update of the onboard controller -- runs timeout logic, sensor filtering, estimation, 
 			// controller, and produces a new set of motor commands
-			if (updateIdealStateCallback) 
+			if (controller && _useIdealEstimator)
 			{
-				updateIdealStateCallback(Position(), Velocity(), quat, Omega());
+				controller->UpdateEstimates(Position(), Velocity(), quat, Omega());
 			}
+			else if(controller && estimator)
+			{
+				controller->UpdateEstimates(estimator->EstimatedPosition(), estimator->EstimatedVelocity(), estimator->EstimatedAttitude(), estimator->EstimatedOmega());
+			}
+
 			if (controller)
 			{
         curCmd = controller->RunControl(controllerUpdateInterval, simulationTime);

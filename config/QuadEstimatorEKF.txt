@@ -5,8 +5,8 @@ InitStdDevs = .1, .1, .3, .1, .1, .3, .05
 # Process noise model
 QPosXYStd = .003
 QPosZStd = .003
-QVelXYStd = .003
-QVelZStd = .009
+QVelXYStd = .001
+QVelZStd = .003
 QYawStd = .001
 
 # GPS measurement std deviations

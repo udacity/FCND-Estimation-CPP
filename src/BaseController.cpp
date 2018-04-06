@@ -63,8 +63,7 @@ void BaseController::OnSensor_Range(float z)
   range = z;
 }
 
-// Allows the simulator to provide perfect state data to the controller
-void BaseController::OverrideEstimates(V3F pos, V3F vel, Quaternion<float> attitude, V3F omega)
+void BaseController::UpdateEstimates(V3F pos, V3F vel, Quaternion<float> attitude, V3F omega)
 {
   estAtt = attitude;
   estOmega = omega;

@@ -80,7 +80,29 @@ void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
 
 	// YAW -- TODO - weird that it's here..
 	state(6) = quat.Yaw();
+
+	lastGyro = gyro;
 }
+
+void QuadEstimatorEKF::UpdateTrueError(V3F truePos, V3F trueVel, Quaternion<float> trueAtt)
+{
+	Vector<float, 7> trueState;
+	trueState(0) = truePos.x;
+	trueState(1) = truePos.y;
+	trueState(2) = truePos.z;
+	trueState(3) = trueVel.x;
+	trueState(4) = trueVel.y;
+	trueState(5) = trueVel.z;
+	trueState(6) = trueAtt.Yaw();
+
+	trueError = state - trueState;
+	if (trueError(6) > F_PI) trueError(6) -= 2.f*F_PI;
+	if (trueError(6) < -F_PI) trueError(6) += 2.f*F_PI;
+
+	pitchErr = pitchEst - trueAtt.Pitch();
+	rollErr = rollEst - trueAtt.Roll();
+}
+
 
 void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
 {
@@ -247,6 +269,16 @@ bool QuadEstimatorEKF::GetData(const string& name, float& ret) const
 		GETTER_HELPER("Est.D.ax_g", accelG[0]);
 		GETTER_HELPER("Est.D.ay_g", accelG[1]);
 		GETTER_HELPER("Est.D.az_g", accelG[2]);
+
+		GETTER_HELPER("Est.E.x", trueError(0));
+		GETTER_HELPER("Est.E.y", trueError(1));
+		GETTER_HELPER("Est.E.z", trueError(2));
+		GETTER_HELPER("Est.E.vx", trueError(3));
+		GETTER_HELPER("Est.E.vy", trueError(4));
+		GETTER_HELPER("Est.E.vz", trueError(5));
+		GETTER_HELPER("Est.E.yaw", trueError(6));
+		GETTER_HELPER("Est.E.pitch", pitchErr);
+		GETTER_HELPER("Est.E.roll", rollErr);
 #undef GETTER_HELPER
   }
   return false;
@@ -273,6 +305,16 @@ vector<string> QuadEstimatorEKF::GetFields() const
   ret.push_back(_name + ".Est.S.vy");
   ret.push_back(_name + ".Est.S.vz");
   ret.push_back(_name + ".Est.S.yaw");
+
+	ret.push_back(_name + ".Est.E.x");
+	ret.push_back(_name + ".Est.E.y");
+	ret.push_back(_name + ".Est.E.z");
+	ret.push_back(_name + ".Est.e.vx");
+	ret.push_back(_name + ".Est.E.vy");
+	ret.push_back(_name + ".Est.e.vz");
+	ret.push_back(_name + ".Est.E.yaw");
+	ret.push_back(_name + ".Est.E.pitch");
+	ret.push_back(_name + ".Est.E.roll");
 
   // diagnostic variables
   ret.push_back(_name + ".Est.D.AccelPitch");

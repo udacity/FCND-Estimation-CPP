@@ -18,7 +18,6 @@ public:
   BaseController(string name, string config);
   virtual ~BaseController() {};
 
-  virtual void RunEstimation() {};
   virtual VehicleCommand RunControl(float dt, float sim_time) { return VehicleCommand(); };
 
   virtual void Init();
@@ -32,8 +31,8 @@ public:
 
   TrajectoryPoint GetNextTrajectoryPoint(float mission_time);
 
-  // Allows the simulator to provide perfect state data to the controller
-  void OverrideEstimates(V3F pos, V3F vel, Quaternion<float> attitude, V3F omega);
+  // update the vehicle state estimates the controller will use to do control
+  virtual void UpdateEstimates(V3F pos, V3F vel, Quaternion<float> attitude, V3F omega);
 
   // Access functions for graphing variables
   virtual bool GetData(const string& name, float& ret) const;

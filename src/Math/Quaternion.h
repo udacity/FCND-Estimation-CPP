@@ -474,7 +474,7 @@ public:
 		V4D b1(q1.AlignSigns(*this)._q);
 
     // Compute the cosine of the angle between the two vectors.
-    float dot = _q[0]*q1[0] + _q[1]*q1[1] + _q[2]*q1[2] + _q[3]*q1[3];
+		float dot = b0.dot(b1);
 		dot = CONSTRAIN(dot, -1, 1);	// Robustness: Stay within domain of acos()
 
     const double DOT_THRESHOLD = 0.9995;
@@ -486,7 +486,7 @@ public:
     }
 
     
-    float theta = acos(dot);  // theta_0 = angle between input vectors
+    float theta = acos(dot);  // theta = angle between input vectors
 		float sTheta = sinf(theta);
 
 		float w1 = sinf((1.0f - t)*theta) / sTheta;

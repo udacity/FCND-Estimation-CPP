@@ -1,8 +1,8 @@
 # note that sensors can not be faster than the controller rate (0.002)
 
 [SimIMU]
-#AccelStd = 1, 1, 3
-#GyroStd = .5, .5, .5
+AccelStd = 1, 1, 3
+GyroStd = .5, .5, .5
 dt = .002
 
 [SimBaro]

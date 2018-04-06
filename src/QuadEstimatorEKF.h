@@ -2,6 +2,7 @@
 
 #include "BaseQuadEstimator.h"
 #include "matrix/math.hpp"
+#include "Math/Quaternion.h"
 
 using matrix::Vector;
 using matrix::Matrix;
@@ -35,6 +36,7 @@ public:
   float pitchEst, rollEst;
   float accelPitch, accelRoll; // raw pitch/roll angles as calculated from last accelerometer.. purely for graphing.
 	V3F accelG;
+	V3F lastGyro;
 
   // generic update
   template<size_t numZ> 
@@ -56,4 +58,28 @@ public:
   virtual vector<string> GetFields() const;
   string _name;
 
+	// error vs ground truth (trueError = estimated-actual)
+	virtual void UpdateTrueError(V3F truePos, V3F trueVel, SLR::Quaternion<float> trueAtt);
+	Vector<float, 7> trueError;
+	float pitchErr, rollErr;
+
+	virtual V3F EstimatedPosition() 
+	{
+		return V3F(state(0), state(1), state(2));
+	}
+
+	virtual V3F EstimatedVelocity()
+	{
+		return V3F(state(3), state(4), state(5));
+	}
+
+	virtual Quaternion<float> EstimatedAttitude()
+	{
+		return Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, state(6));
+	}
+
+	virtual V3F EstimatedOmega()
+	{
+		return lastGyro;
+	}
 };

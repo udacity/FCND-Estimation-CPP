@@ -60,9 +60,6 @@ public:
   
 	VehicleCommand curCmd;
 
-	FastDelegate4<V3F, V3F, Quaternion<float>, V3F> updateIdealStateCallback;
-
-
   FastDelegate1<TrajectoryPoint> followedTrajectoryCallback;
 
 	float GetArmLength() const { return L; }
@@ -105,7 +102,6 @@ protected:
 
   V3F color;  
   string _flightMode;
-
-  
+	bool _useIdealEstimator; 
   
 };

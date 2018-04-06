@@ -60,6 +60,11 @@ struct V4D
     return V4D(v[0] - d[0], v[1] - d[1], v[2] - d[2], v[3] - d[3]);
   }
 
+	double dot(const V4D& b) const
+	{
+		return (v[0] * b.v[0] + v[1] * b.v[1] + v[2] * b.v[2] + v[3] * b.v[3]);
+	}
+
   double operator[](int i) const { return v[i]; }
   double operator()(int i) const { return v[i]; }
   double & operator[](int i) { return v[i]; }
