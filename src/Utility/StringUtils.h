@@ -93,4 +93,16 @@ inline std::vector<std::string> Split(std::string s, char c = ' ')
   return Split(s.c_str(), c);
 }
 
+inline bool HasLetters(std::string s)
+{
+	for(std::size_t i = 0; i < s.size(); i++)
+	{
+		if ((s[i] >= 'a' && s[i] <= 'z') || (s[i] >= 'A' && s[i] <= 'Z'))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 } // namespace SLR

@@ -257,6 +257,12 @@
     <ClInclude Include="..\src\Simulation\SimulatedMag.h">
       <Filter>Simulation</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Drawing\SigmaThreshold.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Drawing\WindowThreshold.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\lib\matrix\LICENSE">

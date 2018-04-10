@@ -7,10 +7,9 @@
 #include "ColorUtils.h"
 #include "Drawing/AbsThreshold.h"
 #include "Drawing/WindowThreshold.h"
+#include "Drawing/SigmaThreshold.h"
 
 using namespace SLR;
-
-#define MAX_POINTS 10000
 
 Graph::Graph(const char* name)
 {
@@ -35,6 +34,10 @@ void Graph::AddItem(string path)
   {
     AddWindowThreshold(path.substr(15));
   }
+	else if (path.find("SigmaThreshold(") != string::npos)
+	{
+		AddSigmaThreshold(path.substr(14));
+	}
   else
   {
     AddSeries(path);
@@ -83,6 +86,33 @@ void Graph::AddWindowThreshold(string path)
 
   shared_ptr<WindowThreshold> thr(new WindowThreshold(args[0], (float)atof(args[1].c_str()), (float)atof(args[2].c_str())));
   _analyzers.push_back(thr);
+}
+
+
+void Graph::AddSigmaThreshold(string path)
+{
+	path = SLR::Trim(path);
+	if (path.length() < 4 || path[0] != '(' || path[path.length() - 1] != ')')
+	{
+		SLR_WARNING1("Malformed SigmaThreshold command (%s)", path.c_str());
+		return;
+	}
+	path = path.substr(1, path.length() - 2);
+
+	vector<string> args = SLR::Split(path, ',');
+
+	if (args.size() != 6|| args[0] == "" || args[1] == "" || args[2] == "")
+	{
+		SLR_WARNING1("Malformed SigmaThreshold command (%s)", path.c_str());
+		return;
+	}
+
+	shared_ptr<SigmaThreshold> thr(new SigmaThreshold(args[0], args[1],args[2],
+		(float)atof(args[3].c_str()),
+		(float)atof(args[4].c_str()), 
+		(float)atof(args[5].c_str())
+	));
+	_analyzers.push_back(thr);
 }
 
 void Graph::AddSeries(string path, bool autoColor, V3F color)

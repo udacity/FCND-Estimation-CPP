@@ -15,9 +15,8 @@ Quad.ControlConfig = QuadControlParams
 QuadControlParams.Trajectory=traj/FigureEight.txt
 
 # graphing commands
-Commands.1=AddGraph1.Quad1.PosFollowErr
-Commands.2=Toggle.RefTrajectory
-Commands.3=Toggle.ActualTrajectory
+Commands += AddGraph1.Quad1.GPS.X
+Commands += AddGraph1.SigmaThreshold(Quad1.GPS.X,Quad1.Pos.X,1,66,70,2)
 
 INCLUDE QuadControlParams.txt
 INCLUDE Simulation.txt

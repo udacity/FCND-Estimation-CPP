@@ -68,7 +68,9 @@
     <ClInclude Include="..\src\Drawing\GLUTMenu.h" />
     <ClInclude Include="..\src\Drawing\Graph.h" />
     <ClInclude Include="..\src\Drawing\GraphManager.h" />
+    <ClInclude Include="..\src\Drawing\SigmaThreshold.h" />
     <ClInclude Include="..\src\Drawing\Visualizer_GLUT.h" />
+    <ClInclude Include="..\src\Drawing\WindowThreshold.h" />
     <ClInclude Include="..\src\Math\Angles.h" />
     <ClInclude Include="..\src\Math\Geometry.h" />
     <ClInclude Include="..\src\Math\Mat3x3F.h" />

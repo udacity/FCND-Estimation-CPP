@@ -9,6 +9,8 @@ class QuadDynamics;
 class DataSource;
 class BaseAnalyzer;
 
+#define MAX_POINTS 10000
+
 class Graph
 {
 public:
@@ -22,6 +24,7 @@ public:
   void AddSeries(string path, bool autoColor = true, V3F color = V3F());
   void AddAbsThreshold(string path);
   void AddWindowThreshold(string path);
+	void AddSigmaThreshold(string path);
   bool IsSeriesPlotted(string path);
   void RemoveAllElements();
 
