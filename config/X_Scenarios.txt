@@ -1,6 +1,5 @@
 X_EstimatorDebug
 X_DebugAttitudeInterp
-X_EstimatorAtt
 X_TestMavlink
 X_TestManyQuads
 X_EstimatorGPS

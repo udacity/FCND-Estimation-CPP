@@ -1,6 +1,11 @@
-1_Intro
-2_AttitudeControl
-3_PositionControl
-4_Nonidealities
-5_TrajectoryFollow
-6_SensorNoise
+01_Intro
+02_AttitudeControl
+03_PositionControl
+04_Nonidealities
+05_TrajectoryFollow
+06_SensorNoise
+07_AttitudeEstimation
+08_Prediction
+09_MagUpdate
+10_GPSUpdate
+11_ClosedLoop

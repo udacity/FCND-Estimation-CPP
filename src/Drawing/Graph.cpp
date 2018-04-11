@@ -14,8 +14,8 @@ using namespace SLR;
 Graph::Graph(const char* name)
 {
   _name = name;
+	_logFile = NULL;
   Reset();
-
 }
 
 Graph::Series::Series()
@@ -37,6 +37,10 @@ void Graph::AddItem(string path)
 	else if (path.find("SigmaThreshold(") != string::npos)
 	{
 		AddSigmaThreshold(path.substr(14));
+	}
+	else if (ToUpper(path) == "LOGTOFILE")
+	{
+		BeginLogToFile();
 	}
   else
   {
@@ -87,7 +91,6 @@ void Graph::AddWindowThreshold(string path)
   shared_ptr<WindowThreshold> thr(new WindowThreshold(args[0], (float)atof(args[1].c_str()), (float)atof(args[2].c_str())));
   _analyzers.push_back(thr);
 }
-
 
 void Graph::AddSigmaThreshold(string path)
 {
@@ -211,23 +214,75 @@ void Graph::Clear()
   {
     _series[i].Clear();
   }
+
+	// if we were logging, stop logging, and reopen the file
+	if (_logFile)
+	{
+		fclose(_logFile);
+		_logFile = NULL;
+		BeginLogToFile();
+	}
+}
+
+void Graph::BeginLogToFile()
+{
+	if (_logFile != NULL) return;
+
+	string path = "../config/log/" + _name + ".txt";
+	_logFile = fopen(path.c_str(), "w");
+	
+	if (_logFile)
+	{
+		fprintf(_logFile, "time");
+		for (unsigned int i = 0; i < _series.size(); i++)
+		{
+			fprintf(_logFile, ", ");
+			fprintf(_logFile, "%s", _series[i]._yName.c_str());
+		}
+		fprintf(_logFile, "\n");
+		fflush(_logFile);
+	}
 }
 
 void Graph::Update(double time, std::vector<shared_ptr<DataSource> >& sources)
 {
+	std::vector<bool> newData(_series.size());
+	bool anyNewData = false;
+
   for (unsigned int i = 0; i < _series.size(); i++)
   {
+		newData[i] = false;
     for (unsigned int j = 0; j < sources.size(); j++)
     {
       float tmp;
-      if (sources[j]->GetData(_series[i]._yName, tmp))
-      {
-        _series[i].x.push((float)time);
-        _series[i].y.push(tmp);
+			if (sources[j]->GetData(_series[i]._yName, tmp))
+			{
+				newData[i] = true;
+				anyNewData = true;
+				_series[i].x.push((float)time);
+				_series[i].y.push(tmp);
         break;
       }
     } 
   }
+
+	if (_logFile != NULL && anyNewData)
+	{
+		fprintf(_logFile, "%f", time);
+		for (unsigned int i = 0; i < _series.size(); i++)
+		{
+			if (newData[i])
+			{
+				fprintf(_logFile, ",%f", _series[i].y.newest());
+			}
+			else
+			{
+				fprintf(_logFile, ",%f", numeric_limits<float>::quiet_NaN());
+			}
+		}
+		fprintf(_logFile, "\n");
+		fflush(_logFile);
+	}
 
   for (unsigned i = 0; i < _analyzers.size(); i++)
   {
@@ -388,15 +443,14 @@ void Graph::Draw()
 
   glEnd(); // GL_LINES
 
+	for (unsigned int i = 0; i < _series.size(); i++)
+	{
+		DrawSeries(_series[i]);
+	}
 
   for (unsigned i = 0; i < _analyzers.size(); i++)
   {
     _analyzers[i]->Draw(lowX, highX, lowY, highY);
-  }
-
-  for (unsigned int i = 0; i < _series.size(); i++)
-  {
-    DrawSeries(_series[i]);
   }
 
   // tick labels

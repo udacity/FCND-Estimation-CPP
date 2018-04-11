@@ -61,7 +61,7 @@ public:
 	// error vs ground truth (trueError = estimated-actual)
 	virtual void UpdateTrueError(V3F truePos, V3F trueVel, SLR::Quaternion<float> trueAtt);
 	Vector<float, 7> trueError;
-	float pitchErr, rollErr;
+	float pitchErr, rollErr, maxEuler;
 
 	virtual V3F EstimatedPosition() 
 	{

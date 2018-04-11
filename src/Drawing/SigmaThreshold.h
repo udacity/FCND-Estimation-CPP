@@ -6,7 +6,9 @@
 #include "BaseAnalyzer.h"
 #include "Utility/StringUtils.h"
 #include "Utility/FixedQueue.h"
+#include "Utility/SimpleConfig.h"
 
+using namespace SLR;
 using std::string;
 
 class SigmaThreshold : public BaseAnalyzer
@@ -18,9 +20,11 @@ public:
     _var = var;
 		_ref = _sigma = "";
 
+		_constRef = _constSigma = numeric_limits<float>::infinity();
+
 		if (SLR::HasLetters(ref))
 		{
-			_ref = ref;
+			_ref = SLR::Trim(ref);
 		}
 		else
 		{
@@ -29,7 +33,7 @@ public:
 
 		if (SLR::HasLetters(sigma))
 		{
-			_ref = _ref;
+			_sigma = SLR::Trim(sigma);
 		}
 		else
 		{
@@ -44,21 +48,39 @@ public:
     Reset();
   }
 
+	string MakeStringFromParamOrConst(string param, float c)
+	{
+		string ret = param;
+		if (param== "")
+		{
+			char buf[100];
+			sprintf_s(buf, 100, "%lf", c);
+			ret = buf;
+		}
+		return ret;
+	}
+
 	void Reset()
 	{
 		if (_lastTime != 0)
 		{
-			/*if (_active)
-			{
-				printf("PASS: ABS(%s) was less than %lf for at least %lf seconds\n", _var.c_str(), _thresh, _minWindow);
+			string refS = MakeStringFromParamOrConst(_ref, _constRef);
+			string sigmaS = MakeStringFromParamOrConst(_sigma, _constSigma);
+			float per = (float)in / (float)(in + out)*100.f;
+			if ((_lastTime - _lastViolationTime) >= _minTimeWindow)
+			{				
+				printf("PASS: ABS(%s-%s) was less than %s for %.0lf%% of the time\n", _var.c_str(), refS.c_str(), sigmaS.c_str(), per);
 			}
 			else
 			{
-				printf("FAIL: ABS(%s) was less than %lf for %lf seconds, which was less than %lf seconds\n", _var.c_str(), _thresh, _lastTime- _lastTimeAboveThresh, _minWindow);
-			}*/ // TODO
+				printf("FAIL: ABS(%s-%s) was less than %s for %.0lf%% of the time\n", _var.c_str(), refS.c_str(), sigmaS.c_str(), per);
+			}
 		}
+
+		ParamsHandle paramSys = SimpleConfig::GetInstance();
+
 		_lastViolationTime = numeric_limits<float>::infinity();
-		if (_ref == "")
+		if (_ref == "" || paramSys->GetFloat(_ref,_constRef))
 		{
 			_lastRefVal = _constRef;
 		}
@@ -67,7 +89,7 @@ public:
 			_lastRefVal = numeric_limits<float>::infinity();
 		}
 
-		if (_sigma == "")
+		if (_sigma == "" || paramSys->GetFloat(_sigma, _constSigma))
 		{
 			_lastSigmaVal = _constSigma;
 		}
@@ -97,7 +119,6 @@ public:
 		return false;
 	}
 
-
   void Update(double time, std::vector<shared_ptr<DataSource> >& sources)
   {
 		float tmp = 0;
@@ -105,8 +126,8 @@ public:
 		{
 			return;
 		}
-		// only run the full thing if we have a new measurement
 
+		// we only run the full thing if we have a new measurement
 		_lastTime = (float)time;
 
 		if (_lastViolationTime == numeric_limits<float>::infinity())
@@ -114,12 +135,11 @@ public:
 			_lastViolationTime = (float)time;
 		}
 
-
-		if (_ref != "")
+		if (_constRef == numeric_limits<float>::infinity())
 		{
 			TryUpdate(sources, _ref, _lastRefVal);
 		}
-		if (_sigma != "")
+		if (_constSigma == numeric_limits<float>::infinity())
 		{
 			TryUpdate(sources, _sigma, _lastSigmaVal);
 		}
@@ -137,28 +157,13 @@ public:
 			out++;
 		}
 
-  }
+		float per = (float)in / (float)(in + out)*100.f;
+		if(per <= _threshMin || per >=_threshMax)
+		{
+			_lastViolationTime = (float)time;
+		}
+		
 
-  void OnNewData(float time, float meas)
-  {
-    if (_active)
-    {
-      return;
-    }
-
-
-
-
-    /*if (fabs(meas) > _thresh)
-    {
-			_lastViolationTime = time;
-    }
-
-    if ((time - _lastTimeAboveThresh) > _minWindow)
-    {
-      _active = true;
-    }*/ // TODO
-		// form a +/- series?
   }
 
   // Draws horizontal threshold bands
@@ -169,8 +174,16 @@ public:
 
 		if (x.n_meas() < 2) return;
 
-
-		glColor3f(.8f, .8f, .8f);
+		float g = 0.8f;
+		if ((_lastTime- _lastViolationTime) >= _minTimeWindow)
+		{
+			g = 1.f;
+			glColor3f(.2f, g, .2f);
+		}
+		else
+		{
+			glColor3f(.7f, .7f, .7f);
+		}
 
 		glEnable(GL_LINE_STIPPLE);
 		glLineStipple(5, 0xAAAA);
@@ -192,10 +205,23 @@ public:
 
 		float per = (float)in / (float)(in + out)*100.f;
 
-		glColor3f(.8f, .8f, .8f);
+		const float dx = maxX - minX;
+		const float dy = maxY - minY;
+		const float left = minX + dx*.07f;
+		const float bot = minY + dy / 2.f;
+
+		glColor4f(.8f, g, .8f, .8f);
+		glBegin(GL_QUADS);
+		glVertex2f(left -dx*.02f, bot-dy*.02f);
+		glVertex2f(left +dx*.07f, bot - dy * .02f);
+		glVertex2f(left +dx*.07f, bot+dy*.1f);
+		glVertex2f(left - dx * .02f, bot+dy*.1f);
+		glEnd();
+
+		glColor3f(.1f, .1f, .1f);
 		char buf[100];
-		sprintf_s(buf, 100, "%.0lf", per);
-		DrawStrokeText(buf, _lastTime - (maxX - minX)*.05f, minY + (maxY - minY) / 2.f, 0, 1.2f, (maxX - minX) / 2.f, (maxY - minY) / 2.f *2.f);
+		sprintf_s(buf, 100, "%.0lf%%", per);
+		DrawStrokeText(buf, left, bot, 0, 1.2f, (maxX - minX) / 2.5f, (maxY - minY) / 2.5f *2.f);
   }
 
   bool _active;
@@ -207,6 +233,8 @@ public:
 	float _lastViolationTime;
 
 	string _var, _ref, _sigma;
+
+	// for each of these, if the value is inifinity, then it's a dynamic value that should be read from the datasource system
 	float _constSigma;
 	float _constRef;
 

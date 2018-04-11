@@ -132,14 +132,27 @@ int QuadDynamics::Initialize()
   // SENSORS
   sensors.clear();
 
-  shared_ptr<SimulatedGPS> simGPS(new SimulatedGPS(config->Get(_name + ".SimGPSConfig", "SimGPS"),_name));
-  sensors.push_back(simGPS);
-
-  shared_ptr<SimulatedIMU> simIMU(new SimulatedIMU(config->Get(_name + ".SimIMUConfig", "SimIMU"), _name));
-  sensors.push_back(simIMU);
-
-	shared_ptr<SimulatedMag> simMag(new SimulatedMag(config->Get(_name + ".SimIMUConfig", "SimMag"), _name));
-	sensors.push_back(simMag);
+	string sensorString = config->Get(_name + ".Sensors", "");
+	vector<string> sensorList = SLR::Split(sensorString, ',');
+	for (unsigned int i = 0; i < sensorList.size(); i++)
+	{
+		string s = SLR::ToUpper(SLR::Trim(sensorList[i]));
+		if (s == "SIMGPS")
+		{
+			shared_ptr<SimulatedGPS> simGPS(new SimulatedGPS(config->Get(_name + ".SimGPSConfig", "SimGPS"), _name));
+			sensors.push_back(simGPS);
+		}
+		else if (s == "SIMIMU")
+		{
+			shared_ptr<SimulatedIMU> simIMU(new SimulatedIMU(config->Get(_name + ".SimIMUConfig", "SimIMU"), _name));
+			sensors.push_back(simIMU);
+		}
+		else if (s == "SIMMAG")
+		{
+			shared_ptr<SimulatedMag> simMag(new SimulatedMag(config->Get(_name + ".SimIMUConfig", "SimMag"), _name));
+			sensors.push_back(simMag);
+		}
+	}
 
   return 1;
 }

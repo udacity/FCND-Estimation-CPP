@@ -47,7 +47,7 @@ GraphManager::GraphManager(bool own_window)
   }
 
   graph1.reset(new Graph("Graph1"));
-  graph2.reset(new Graph("Graph1"));
+  graph2.reset(new Graph("Graph2"));
 }
 
 GraphManager::~GraphManager()
@@ -184,7 +184,7 @@ vector<string> GraphManager::GetGraphableStrings()
     vector<string> s = (*i)->GetFields();
     for (auto j = s.begin(); j != s.end(); j++)
     {
-      ret.push_back("AddGraph1."+*j);
+      ret.push_back("AddGraph1." + *j);
       ret.push_back("AddGraph2." + *j);
     }
   }

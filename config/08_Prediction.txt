@@ -1,0 +1,42 @@
+# BASIC
+INCLUDE Simulation.txt
+INCLUDE QuadPhysicalParams.txt
+Sim.RunMode = Repeat
+Sim.EndTime = 40
+Sim.Vehicle1 = Quad
+Quad.InitialPos=0,0,-1
+
+# REFERENCE
+QuadControlParams.Trajectory=traj/Square.txt
+
+# CONTROLLER
+Quad.ControlType = QuadControl
+Quad.ControlConfig = QuadControlParams
+INCLUDE QuadControlParams_Estimator.txt
+
+# SENSORS
+INCLUDE SimulatedSensors.txt
+Quad.Sensors = SimIMU
+SimIMU.AccelStd = 0,0,0
+SimIMU.GyroStd = 0,0,0
+
+# ESTIMATION
+INCLUDE QuadEstimatorEKF.txt
+QuadEstimatorEKF.attitudeTau = 100
+
+# GRAPHING
+Commands += Toggle.ActualTrajectory
+
+Commands += AddGraph1.Quad.Pos.Y
+Commands += AddGraph1.Quad.Vel.y
+Commands += AddGraph1.Quad.Est.Y
+Commands += AddGraph1.Quad.Est.VY
+
+Commands += AddGraph2.Quad.Pos.Z
+Commands += AddGraph2.Quad.Vel.Z
+Commands += AddGraph2.Quad.Est.Z
+Commands += AddGraph2.Quad.Est.VZ
+
+
+
+

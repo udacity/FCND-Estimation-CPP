@@ -28,6 +28,8 @@ public:
   bool IsSeriesPlotted(string path);
   void RemoveAllElements();
 
+	void BeginLogToFile();
+
 
   struct Series
   {
@@ -50,4 +52,6 @@ public:
   
   vector<Series> _series;
   string _name;
+
+	FILE* _logFile;
 };

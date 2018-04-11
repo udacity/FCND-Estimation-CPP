@@ -57,24 +57,45 @@ void QuadEstimatorEKF::Init()
 	Q(5, 5) = powf(paramSys->Get(_config + ".QVelZStd", 0), 2);
 	Q(6, 6) = powf(paramSys->Get(_config + ".QYawStd", 0), 2);
 	Q *= dtIMU;
+
+	rollErr = pitchErr = maxEuler = 0;
 }
 
 void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
 {
-	// FUTURE NOTE TO STUDENT:
-	// You can try using a small-angle approximation (treat pitch and roll as completely separate) but 
-	// for any interesting "dynamic" trajectories this can break down quickly. Try doing a more proper
-	// gyro integration based on the rotation matrix instead
+	// Improve a complementary filter-type attitude filter
+	// 
+	// Currently a small-angle approximation integration method is implemented
+	// The integrated (predicted) value is then updated in a complementary filter style with attitude information from accelerometers
+	// 
+	// Implement a better integration method that uses the current attitude estimate (rollEst, pitchEst and state(6))
+	// to integrate the body rates into new Euler angles.
 
+	////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 	// SMALL ANGLE GYRO INTEGRATION:
-	//float predictedPitch = pitchEst + dtIMU * gyro.y;
-	//float predictedRoll = rollEst + dtIMU * gyro.x;
+	// (replace the code below)
+	// make sure you comment it out when you add your own code -- otherwise e.g. you might integrate yaw twice
+	
+	/*float predictedPitch = pitchEst + dtIMU * gyro.y;
+	float predictedRoll = rollEst + dtIMU * gyro.x;
+	state(6) = state(6) + dtIMU * gyro.z;	// yaw
 
-	// BETTER INTEGRATION:
+	// normalize yaw to -pi .. pi
+	if (state(6) > F_PI) state(6) -= 2.f*F_PI;
+	if (state(6) < -F_PI) state(6) += 2.f*F_PI; */
+	
+	/////////////////////////////// END STUDENT CODE ////////////////////////////
+
+	/////////////////////////////// BEGIN SOLUTION //////////////////////////////
+
 	Quaternion<float> quat = Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, state(6));
 	quat.IntegrateBodyRate(gyro, dtIMU);
+
 	float predictedPitch = quat.Pitch();
 	float predictedRoll = quat.Roll();
+	state(6) = quat.Yaw();
+
+	//////////////////////////////// END SOLUTION ///////////////////////////////
 
 	// CALCULATE UPDATE
 	accelRoll = atan2f(accel.y, accel.z);
@@ -83,9 +104,6 @@ void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
 	// FUSE INTEGRATION AND UPDATE
 	rollEst = attitudeTau / (attitudeTau + dtIMU) * (predictedRoll) + dtIMU / (attitudeTau + dtIMU) * accelRoll;
   pitchEst = attitudeTau / (attitudeTau + dtIMU) * (predictedPitch) + dtIMU / (attitudeTau + dtIMU) * accelPitch;
-
-	// YAW -- TODO - weird that it's here..
-	state(6) = quat.Yaw();
 
 	lastGyro = gyro;
 }
@@ -107,6 +125,7 @@ void QuadEstimatorEKF::UpdateTrueError(V3F truePos, V3F trueVel, Quaternion<floa
 
 	pitchErr = pitchEst - trueAtt.Pitch();
 	rollErr = rollEst - trueAtt.Roll();
+	maxEuler = MAX(fabs(pitchErr), MAX(fabs(rollErr), fabs(trueError(6))));
 }
 
 
@@ -116,6 +135,12 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
 
   // note attitude pitch/roll is already done in "UpdateFromIMU"
 
+	////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+	
+
+	/////////////////////////////// END STUDENT CODE ////////////////////////////
+
+	/////////////////////////////// BEGIN SOLUTION //////////////////////////////
   // integrate positions
   newState(0) += state(3)*dt;
   newState(1) += state(4)*dt;
@@ -128,13 +153,9 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   newState(4) += accelG[1] * dt;
   newState(5) += accelG[2] * dt;
 
-  // yaw - done in UpdateFromIMU
-  //newState(6) += att.Rotate_BtoI(gyro).z * dt;
-
   // TRANSITION MATRIX JACOBIAN
 
   // first, figure out the Rbg_prime
-  // TODO: CHECK!
   Matrix<float, 3, 3> Rbg_prime;
   float sinPhi =		sin(rollEst),		cosPhi = cos(rollEst);
   float sinTheta =	sin(pitchEst),	cosTheta = cos(pitchEst);
@@ -174,11 +195,14 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   gPrime(5, 6) = Rbg_prime_times_u03_dt(2);
 
   cov = gPrime * cov * gPrime.T() + Q;
+	//////////////////////////////// END SOLUTION ///////////////////////////////
+
 	state = newState;
 }
 
 void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
 {
+	return;
   Vector<float, 6> z, hOfU;
   z(0) = pos.x;
   z(1) = pos.y;
@@ -204,6 +228,8 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
 
 void QuadEstimatorEKF::UpdateFromMag(float magYaw)
 {
+	return;
+
 	Vector<float, 1> z, hOfU;
 	z(0) = magYaw;
 
@@ -302,6 +328,7 @@ bool QuadEstimatorEKF::GetData(const string& name, float& ret) const
 		GETTER_HELPER("Est.E.yaw", trueError(6));
 		GETTER_HELPER("Est.E.pitch", pitchErr);
 		GETTER_HELPER("Est.E.roll", rollErr);
+		GETTER_HELPER("Est.E.MaxEuler", maxEuler);
 
 		GETTER_HELPER("Est.D.cov_cond", CovConditionNumber());
 #undef GETTER_HELPER
@@ -340,6 +367,8 @@ vector<string> QuadEstimatorEKF::GetFields() const
 	ret.push_back(_name + ".Est.E.yaw");
 	ret.push_back(_name + ".Est.E.pitch");
 	ret.push_back(_name + ".Est.E.roll");
+
+	ret.push_back(_name + ".Est.E.MaxEuler");
 
 	ret.push_back(_name + ".Est.D.cov_cond");
 

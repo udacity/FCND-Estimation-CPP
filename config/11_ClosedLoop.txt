@@ -1,0 +1,44 @@
+# Hover at the initial point using full 3D control
+
+INCLUDE QuadPhysicalParams.txt
+
+# simulation setup
+Sim.RunMode = Repeat
+Sim.EndTime = 30
+Sim.Vehicle1 = Quad1
+
+# Controller selection
+Quad.ControlType = QuadControl
+Quad.ControlConfig = QuadControlParams
+
+# reference trajectory
+QuadControlParams.Trajectory=traj/Square.txt
+
+# graphing commands
+#Commands += AddGraph1.Quad1.Est.D.ax_g
+#Commands += AddGraph1.Quad1.IMU.AX
+#Commands += AddGraph1.Quad1.Acc.X
+Commands += Toggle.ActualTrajectory
+
+Commands += AddGraph1.Quad1.Pos.Y
+Commands += AddGraph1.Quad1.Vel.y
+Commands += AddGraph1.Quad1.Est.Y
+Commands += AddGraph1.Quad1.Est.VY
+
+Commands += AddGraph2.Quad1.Pos.Z
+Commands += AddGraph2.Quad1.Vel.Z
+Commands += AddGraph2.Quad1.Est.Z
+Commands += AddGraph2.Quad1.Est.VZ
+
+INCLUDE QuadControlParams_Estimator.txt
+INCLUDE Simulation.txt
+
+# USE ACTUAL ESTIMATOR!
+INCLUDE SimulatedSensors.txt
+[QuadControlParams] 
+UseIdealEstimator=0
+INCLUDE QuadEstimatorEKF.txt
+
+# Vehicle-specific config
+[Quad1:Quad]
+InitialPos=0,0,-1

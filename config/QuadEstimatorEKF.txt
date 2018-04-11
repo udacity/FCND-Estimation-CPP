@@ -21,5 +21,5 @@ GPSVelZStd = .3
 MagYawStd = .1
 
 dtIMU = 0.002
-attitudeTau = 5
+attitudeTau = 100
 
