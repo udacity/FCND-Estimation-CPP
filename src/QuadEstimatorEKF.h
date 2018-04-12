@@ -8,6 +8,11 @@ using matrix::Vector;
 using matrix::Matrix;
 using matrix::SquareMatrix;
 
+#include "Eigen/Dense"
+#include "Eigen/SVD"
+using Eigen::MatrixXf;
+using Eigen::VectorXf;
+
 class QuadEstimatorEKF : public BaseQuadEstimator
 {
 public:
@@ -24,13 +29,13 @@ public:
   static const int QUAD_EKF_NUM_STATES = 7;
 
   // process covariance
-  SquareMatrix<float, QUAD_EKF_NUM_STATES> Q; 
+	MatrixXf Q;
 
-	// GPS covariance
-	Matrix<float, 6, 6> R_GPS;
+	// GPS measurement covariance
+	MatrixXf R_GPS;
 
-	// Magnetometer covariance
-	Matrix<float, 1, 1> R_Yaw;
+	// Magnetometer measurement covariance
+	MatrixXf R_Yaw;
 
   // attitude filter state
   float pitchEst, rollEst;
@@ -39,15 +44,11 @@ public:
 	V3F lastGyro;
 
   // generic update
-  template<size_t numZ> 
-  void Update(matrix::Vector<float, numZ>& z,
-    matrix::Matrix<float, numZ, QUAD_EKF_NUM_STATES>& H,
-    matrix::Matrix<float, numZ, numZ>& R,
-    matrix::Vector<float, numZ>& hOfU);
+  void Update(VectorXf& z, MatrixXf& H, MatrixXf& R, VectorXf& hOfU);
 
   // EKF state  
-  matrix::Vector<float, QUAD_EKF_NUM_STATES> state;
-  matrix::SquareMatrix<float, QUAD_EKF_NUM_STATES> cov;
+	VectorXf state;
+	MatrixXf cov;
 
   // params
   float attitudeTau;
@@ -60,7 +61,7 @@ public:
 
 	// error vs ground truth (trueError = estimated-actual)
 	virtual void UpdateTrueError(V3F truePos, V3F trueVel, SLR::Quaternion<float> trueAtt);
-	Vector<float, 7> trueError;
+	VectorXf trueError;
 	float pitchErr, rollErr, maxEuler;
 
 	virtual V3F EstimatedPosition() 

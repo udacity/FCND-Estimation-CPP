@@ -1,44 +1,38 @@
-# Hover at the initial point using full 3D control
-
+# BASIC
+INCLUDE Simulation.txt
 INCLUDE QuadPhysicalParams.txt
-
-# simulation setup
 Sim.RunMode = Repeat
-Sim.EndTime = 30
-Sim.Vehicle1 = Quad1
+Sim.EndTime = 20
+Sim.Vehicle1 = Quad
+Quad.InitialPos=0,0,-1
 
-# Controller selection
-Quad.ControlType = QuadControl
-Quad.ControlConfig = QuadControlParams
-
-# reference trajectory
+# REFERENCE
 QuadControlParams.Trajectory=traj/Square.txt
 
-# graphing commands
-#Commands += AddGraph1.Quad1.Est.D.ax_g
-#Commands += AddGraph1.Quad1.IMU.AX
-#Commands += AddGraph1.Quad1.Acc.X
+# CONTROLLER
+Quad.ControlType = QuadControl
+Quad.ControlConfig = QuadControlParams
+INCLUDE QuadControlParams_Estimator.txt
+
+# SENSORS
+INCLUDE SimulatedSensors.txt
+Quad.Sensors = SimIMU
+
+# ESTIMATION
+INCLUDE QuadEstimatorEKF.txt
+QuadEstimatorEKF.attitudeTau = 100
+
+# GRAPHING
 Commands += Toggle.ActualTrajectory
 
-Commands += AddGraph1.Quad1.Pos.Y
-Commands += AddGraph1.Quad1.Vel.y
-Commands += AddGraph1.Quad1.Est.Y
-Commands += AddGraph1.Quad1.Est.VY
+Commands += AddGraph1.Quad.MagYaw
+Commands += AddGraph1.Quad.Est.Yaw
+Commands += AddGraph1.Quad.Yaw
 
-Commands += AddGraph2.Quad1.Pos.Z
-Commands += AddGraph2.Quad1.Vel.Z
-Commands += AddGraph2.Quad1.Est.Z
-Commands += AddGraph2.Quad1.Est.VZ
+Commands += AddGraph2.Quad.Est.E.Yaw
+Commands += AddGraph2.SigmaThreshold(Quad.Est.E.Yaw, 0, Quad.Est.S.Yaw,55,85,2)
+Commands += AddGraph2.WindowThreshold(Quad.Est.E.Yaw, .1 ,2)
 
-INCLUDE QuadControlParams_Estimator.txt
-INCLUDE Simulation.txt
 
-# USE ACTUAL ESTIMATOR!
-INCLUDE SimulatedSensors.txt
-[QuadControlParams] 
-UseIdealEstimator=0
-INCLUDE QuadEstimatorEKF.txt
 
-# Vehicle-specific config
-[Quad1:Quad]
-InitialPos=0,0,-1
+

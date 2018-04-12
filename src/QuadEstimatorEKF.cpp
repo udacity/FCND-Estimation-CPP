@@ -4,17 +4,19 @@
 #include "Utility/StringUtils.h"
 #include "Math/Quaternion.h"
 
-#include "Eigen/Dense"
-#include "Eigen/SVD"
-using Eigen::MatrixXf;
-using Eigen::VectorXf;
-
 using namespace SLR;
 
 const int QuadEstimatorEKF::QUAD_EKF_NUM_STATES;
 
 QuadEstimatorEKF::QuadEstimatorEKF(string config, string name) 
-  : BaseQuadEstimator(config) 
+  : BaseQuadEstimator(config) ,
+	  state(QUAD_EKF_NUM_STATES),
+	  cov(QUAD_EKF_NUM_STATES, QUAD_EKF_NUM_STATES),
+		Q(QUAD_EKF_NUM_STATES, QUAD_EKF_NUM_STATES),
+		R_GPS(6,6),
+		R_Yaw(1,1),
+		trueError(QUAD_EKF_NUM_STATES)
+
 {
   _name = name;
   Init();
@@ -110,7 +112,7 @@ void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
 
 void QuadEstimatorEKF::UpdateTrueError(V3F truePos, V3F trueVel, Quaternion<float> trueAtt)
 {
-	Vector<float, 7> trueState;
+	VectorXf trueState(QUAD_EKF_NUM_STATES);
 	trueState(0) = truePos.x;
 	trueState(1) = truePos.y;
 	trueState(2) = truePos.z;
@@ -131,10 +133,13 @@ void QuadEstimatorEKF::UpdateTrueError(V3F truePos, V3F trueVel, Quaternion<floa
 
 void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
 {
-  Vector<float, QUAD_EKF_NUM_STATES> newState = state;
+	VectorXf newState = state;
 
   // note attitude pitch/roll is already done in "UpdateFromIMU"
 
+	// HINTS
+	// if you want to transpose a matrix in-place, use cov.transposeInPlace(), not A = A.transpose()
+	// 
 	////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 	
 
@@ -156,36 +161,29 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   // TRANSITION MATRIX JACOBIAN
 
   // first, figure out the Rbg_prime
-  Matrix<float, 3, 3> Rbg_prime;
-  float sinPhi =		sin(rollEst),		cosPhi = cos(rollEst);
-  float sinTheta =	sin(pitchEst),	cosTheta = cos(pitchEst);
-  float sinPsi=			sin(state(6)),	cosPsi = cos(state(6)); // yaw
+	MatrixXf Rbg_prime(3,3);
+  float sinPhi =		sin(rollEst),		cosPhi = cos(rollEst);		// roll
+  float sinTheta =	sin(pitchEst),	cosTheta = cos(pitchEst);	// pitch
+  float sinPsi=			sin(state(6)),	cosPsi = cos(state(6));		// yaw
   Rbg_prime.setZero();
-	// Diebel eq 53 (Euler 3,1,3 -- I think we're 1,2,3!)
-  /*Rbg_prime(0, 0) = -cosPhi*sinPsi - sinPhi*cosTheta*cosPsi;
-  Rbg_prime(0, 1) = cosPhi*cosPsi - sinPhi*cosTheta*sinPsi;
-  Rbg_prime(1, 0) = sinPhi*sinPsi - cosPhi*cosTheta*cosPsi;
-  Rbg_prime(1, 1) = -sinPhi*cosPsi - cosPhi*cosTheta*sinPsi;
-  Rbg_prime(2, 0) = sinTheta*cosPsi;
-  Rbg_prime(2, 1) = sinTheta*sinPsi;*/
 	
-	// Diebel eq 71
+	// Diebel eq 71.. transposed
 	Rbg_prime(0, 0) = -cosTheta * sinPsi;
 	Rbg_prime(0, 1) = cosTheta * cosPsi;
 	Rbg_prime(1, 0) = -sinPhi * sinTheta*sinPsi - cosPhi * cosPsi;
 	Rbg_prime(1, 1) = sinPhi * sinTheta*cosPsi - cosPhi * sinPsi;
 	Rbg_prime(2, 0) = -cosPhi * sinTheta*sinPsi + sinPhi * cosPsi;
 	Rbg_prime(2, 1) = cosPhi * sinTheta*cosPsi + sinPhi * sinPsi;
-	Rbg_prime = Rbg_prime.T();
+	Rbg_prime.transposeInPlace();
 
-  Vector<float, 3> u03dt;
+	VectorXf u03dt(3);
   u03dt(0) = accel[0] * dt;
   u03dt(1) = accel[1] * dt;
   u03dt(2) = accel[2] * dt;
 
-  Vector<float, 3> Rbg_prime_times_u03_dt = Rbg_prime*u03dt;
+	VectorXf Rbg_prime_times_u03_dt = Rbg_prime*u03dt;
   
-  SquareMatrix<float, QUAD_EKF_NUM_STATES> gPrime;
+	MatrixXf gPrime(QUAD_EKF_NUM_STATES, QUAD_EKF_NUM_STATES);
   gPrime.setIdentity();
   gPrime(0, 3) = dt;
   gPrime(1, 4) = dt;
@@ -194,7 +192,7 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   gPrime(4, 6) = Rbg_prime_times_u03_dt(1);
   gPrime(5, 6) = Rbg_prime_times_u03_dt(2);
 
-  cov = gPrime * cov * gPrime.T() + Q;
+  cov = gPrime * cov * gPrime.transpose() + Q;
 	//////////////////////////////// END SOLUTION ///////////////////////////////
 
 	state = newState;
@@ -202,8 +200,7 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
 
 void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
 {
-	return;
-  Vector<float, 6> z, hOfU;
+  VectorXf z(6), hOfU(6);
   z(0) = pos.x;
   z(1) = pos.y;
   z(2) = pos.z;
@@ -216,7 +213,7 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
     hOfU(i) = state(i);
   }
 
-  Matrix<float, 6, 7> hPrime;
+  MatrixXf hPrime(6, QUAD_EKF_NUM_STATES);
 	hPrime.setZero();
 	for (int i = 0; i < 6; i++)
 	{
@@ -228,9 +225,7 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
 
 void QuadEstimatorEKF::UpdateFromMag(float magYaw)
 {
-	return;
-
-	Vector<float, 1> z, hOfU;
+	VectorXf z(1), hOfU(1);
 	z(0) = magYaw;
 
 	// bring measurement closer to current state to avoid loop-around strangeness
@@ -240,26 +235,35 @@ void QuadEstimatorEKF::UpdateFromMag(float magYaw)
 
 	hOfU(0) = state(6);
 
-	Matrix<float, 1, 7> hPrime;
+	MatrixXf hPrime(1, QUAD_EKF_NUM_STATES);
 	hPrime.setZero();
 	hPrime(0, 6) = 1;
 
 	Update(z, hPrime, R_Yaw, hOfU);
 }
 
-template<size_t numZ>
+void QuadEstimatorEKF::Update(VectorXf& z, MatrixXf& H, MatrixXf& R, VectorXf& hOfU)
+{
+	assert(z.size() == H.rows());
+	assert(QUAD_EKF_NUM_STATES == H.cols());
+	assert(z.size() == R.rows());
+	assert(z.size() == R.cols());
+	assert(z.size() == hOfU.size());
+
+
+/*template<size_t numZ>
 void QuadEstimatorEKF::Update(Vector<float, numZ>& z,
   Matrix<float, numZ, QUAD_EKF_NUM_STATES>& H,
   Matrix<float, numZ, numZ>& R,
   Vector<float, numZ>& hOfU)
-{
-  SquareMatrix<float, numZ> toInvert;
-  toInvert = H*cov*H.T() + R;
-  Matrix<float, QUAD_EKF_NUM_STATES,numZ> K = cov * H.T() * inv(toInvert);
+{*/
+  MatrixXf toInvert(z.size(),z.size());
+  toInvert = H*cov*H.transpose() + R;
+  MatrixXf K = cov * H.transpose() * toInvert.inverse();
 
   state = state + K*(z - hOfU);
 
-  SquareMatrix<float, QUAD_EKF_NUM_STATES> eye;
+	MatrixXf eye(QUAD_EKF_NUM_STATES, QUAD_EKF_NUM_STATES);
   eye.setIdentity();
 
   cov = (eye - K*H)*cov;

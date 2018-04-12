@@ -185,23 +185,18 @@ public:
 			glColor3f(.7f, .7f, .7f);
 		}
 
-		glEnable(GL_LINE_STIPPLE);
-		glLineStipple(5, 0xAAAA);
-
 		glBegin(GL_LINE_STRIP);
 		for (unsigned int i = 0; i < x.n_meas(); i++)
 		{
-			glVertex2f(x[i], low[i]);
+			glVertex2f(x[i], CONSTRAIN(low[i],minY,maxY));
 		}
 		glEnd();
 		glBegin(GL_LINE_STRIP);
 		for (unsigned int i = 0; i < x.n_meas(); i++)
 		{
-			glVertex2f(x[i], high[i]);
+			glVertex2f(x[i], CONSTRAIN(high[i],minY,maxY));
 		}
 		glEnd();
-
-		glDisable(GL_LINE_STIPPLE);
 
 		float per = (float)in / (float)(in + out)*100.f;
 

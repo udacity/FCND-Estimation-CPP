@@ -3,6 +3,7 @@
 [SimIMU]
 AccelStd = 1, 1, 3
 GyroStd = .5, .5, .5
+GyroRandomWalkStd = .01, .01, .01
 dt = .002
 
 [SimBaro]

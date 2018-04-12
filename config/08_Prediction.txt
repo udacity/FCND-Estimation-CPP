@@ -17,6 +17,7 @@ INCLUDE QuadControlParams_Estimator.txt
 # SENSORS
 INCLUDE SimulatedSensors.txt
 Quad.Sensors = SimIMU
+# use ideal sensors
 SimIMU.AccelStd = 0,0,0
 SimIMU.GyroStd = 0,0,0
 
