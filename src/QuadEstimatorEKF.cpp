@@ -138,8 +138,16 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   // note attitude pitch/roll is already done in "UpdateFromIMU"
 
 	// HINTS
-	// if you want to transpose a matrix in-place, use cov.transposeInPlace(), not A = A.transpose()
-	// 
+	// - you code should run the math to create the vector newState from the current state (variable "state")
+	//   and the current accelerations and rate gyro measurements
+	// - dt is the time duration for which you should predict. It will be very short (on the order of 1ms)
+	//   so simplistic integration methods are fine here
+	// - you may find the current estimated attitude in variables rollEst, pitchEst, state(6).
+	// - use the class MatrixXf for matrices. To create a 3x5 matrix A, use MatrixXf A(3,5).
+	// - It's highly recommended to calculate matrices Rbg_prime gPrime first, then do the high-level math
+	// - This step is unfortunately messy. Try to split up the calculations to make everything clear for yourself
+	// - if you want to transpose a matrix in-place, use cov.transposeInPlace(), not A = A.transpose()
+
 	////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 	
 
