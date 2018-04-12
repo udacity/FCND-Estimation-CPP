@@ -51,14 +51,11 @@ public:
   void OnNewData(float time, float meas)
   {
     _lastTime = time;
-    if (_active)
-    {
-      return;
-    }
 
     if (_lastTimeAboveThresh == numeric_limits<float>::infinity())
     {
       _lastTimeAboveThresh = time;
+			_active = false;
     }
 
     if (fabs(meas) > _thresh)

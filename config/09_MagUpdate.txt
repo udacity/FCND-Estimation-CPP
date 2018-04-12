@@ -31,7 +31,7 @@ Commands += AddGraph1.Quad.Yaw
 
 Commands += AddGraph2.Quad.Est.E.Yaw
 Commands += AddGraph2.SigmaThreshold(Quad.Est.E.Yaw, 0, Quad.Est.S.Yaw,55,85,2)
-Commands += AddGraph2.WindowThreshold(Quad.Est.E.Yaw, .1 ,2)
+Commands += AddGraph2.WindowThreshold(Quad.Est.E.Yaw, .08 ,10)
 
 
 

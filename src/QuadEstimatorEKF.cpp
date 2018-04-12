@@ -227,6 +227,21 @@ void QuadEstimatorEKF::UpdateFromMag(float magYaw)
 {
 	VectorXf z(1), hOfU(1);
 	z(0) = magYaw;
+	
+	MatrixXf hPrime(1, QUAD_EKF_NUM_STATES);
+	hPrime.setZero();
+
+	// MAGNETOMETER UPDATE
+	// Hints: 
+	//  - Your current estimated yaw can be found in the state vector: state(6)
+	//  - Make sure to normalize the difference between your measured and estimated yaw
+	//    (you don't want to update your yaw the long way around the circle)
+	////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+
+
+	/////////////////////////////// END STUDENT CODE ////////////////////////////
+
+	/////////////////////////////// BEGIN SOLUTION //////////////////////////////
 
 	// bring measurement closer to current state to avoid loop-around strangeness
 	float diff = z(0) - state(6);
@@ -235,11 +250,11 @@ void QuadEstimatorEKF::UpdateFromMag(float magYaw)
 
 	hOfU(0) = state(6);
 
-	MatrixXf hPrime(1, QUAD_EKF_NUM_STATES);
-	hPrime.setZero();
 	hPrime(0, 6) = 1;
 
 	Update(z, hPrime, R_Yaw, hOfU);
+
+	//////////////////////////////// END SOLUTION ///////////////////////////////
 }
 
 void QuadEstimatorEKF::Update(VectorXf& z, MatrixXf& H, MatrixXf& R, VectorXf& hOfU)
@@ -250,13 +265,6 @@ void QuadEstimatorEKF::Update(VectorXf& z, MatrixXf& H, MatrixXf& R, VectorXf& h
 	assert(z.size() == R.cols());
 	assert(z.size() == hOfU.size());
 
-
-/*template<size_t numZ>
-void QuadEstimatorEKF::Update(Vector<float, numZ>& z,
-  Matrix<float, numZ, QUAD_EKF_NUM_STATES>& H,
-  Matrix<float, numZ, numZ>& R,
-  Vector<float, numZ>& hOfU)
-{*/
   MatrixXf toInvert(z.size(),z.size());
   toInvert = H*cov*H.transpose() + R;
   MatrixXf K = cov * H.transpose() * toInvert.inverse();
