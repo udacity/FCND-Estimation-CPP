@@ -12,15 +12,14 @@ QuadControlParams.Trajectory=traj/Square.txt
 # CONTROLLER
 Quad.ControlType = QuadControl
 Quad.ControlConfig = QuadControlParams
-INCLUDE QuadControlParams_Estimator.txt
+INCLUDE QuadControlParams.txt
 
 # SENSORS
 INCLUDE SimulatedSensors.txt
-Quad.Sensors = SimIMU
+Quad.Sensors = SimIMU, SimMag
 
 # ESTIMATION
 INCLUDE QuadEstimatorEKF.txt
-QuadEstimatorEKF.attitudeTau = 100
 
 # GRAPHING
 Commands += Toggle.ActualTrajectory
@@ -30,9 +29,5 @@ Commands += AddGraph1.Quad.Est.Yaw
 Commands += AddGraph1.Quad.Yaw
 
 Commands += AddGraph2.Quad.Est.E.Yaw
-Commands += AddGraph2.SigmaThreshold(Quad.Est.E.Yaw, 0, Quad.Est.S.Yaw,55,85,2)
 Commands += AddGraph2.WindowThreshold(Quad.Est.E.Yaw, .08 ,10)
-
-
-
-
+Commands += AddGraph2.SigmaThreshold(Quad.Est.E.Yaw, 0, Quad.Est.S.Yaw,55,85,2)

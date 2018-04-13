@@ -12,7 +12,7 @@ QuadControlParams.Trajectory=traj/Square.txt
 # CONTROLLER
 Quad.ControlType = QuadControl
 Quad.ControlConfig = QuadControlParams
-INCLUDE QuadControlParams_Estimator.txt
+INCLUDE QuadControlParams.txt
 
 # SENSORS
 INCLUDE SimulatedSensors.txt
@@ -23,6 +23,8 @@ SimIMU.GyroStd = 0,0,0
 
 # ESTIMATION
 INCLUDE QuadEstimatorEKF.txt
+# We set the attitude time constant very high to effectively disable attitude updates from accelerometers
+# with perfect rate gyros, the accel attitude updates only introduce additional errors
 QuadEstimatorEKF.attitudeTau = 100
 
 # GRAPHING
@@ -37,7 +39,3 @@ Commands += AddGraph2.Quad.Pos.Z
 Commands += AddGraph2.Quad.Vel.Z
 Commands += AddGraph2.Quad.Est.Z
 Commands += AddGraph2.Quad.Est.VZ
-
-
-
-

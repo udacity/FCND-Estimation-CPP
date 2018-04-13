@@ -64,6 +64,8 @@ public:
 	VectorXf trueError;
 	float pitchErr, rollErr, maxEuler;
 
+	float posErrorMag, velErrorMag;
+
 	virtual V3F EstimatedPosition() 
 	{
 		return V3F(state(0), state(1), state(2));

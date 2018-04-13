@@ -89,20 +89,17 @@ int QuadDynamics::Initialize()
   _trajLogStepTime = config->Get(_name + ".trajectoryLogStepTime", 0.f);
 
   _flightMode = config->Get(_name+".SimMode", "Full3D");
+	_useIdealEstimator = config->Get(_name + ".UseIdealEstimator", 1);
 
   ResetState(V3F());
 
-  V3F trajOffset = config->Get(_name + ".TrajectoryOffset", V3F());
-  float trajTimeOffset = config->Get(_name + ".TrajectoryTimeOffset", 0);
-
-  string controlConfig = config->Get(_name + ".ControlConfig", "ControlParams");
-  controller = CreateController(_name,config->Get(_name + ".ControlType", "QuadControl") , controlConfig);
+  controller = CreateController(_name,
+		config->Get(_name + ".ControlType", "QuadControl") , 
+		config->Get(_name + ".ControlConfig", "QuadControlParams"));
   if (controller)
   {
-    controller->SetTrajTimeOffset(trajTimeOffset);
-    controller->SetTrajectoryOffset(trajOffset);
-
-		_useIdealEstimator = config->Get(controlConfig + ".UseIdealEstimator", 1);
+    controller->SetTrajTimeOffset(config->Get(_name + ".TrajectoryTimeOffset", 0));
+    controller->SetTrajectoryOffset(config->Get(_name + ".TrajectoryOffset", V3F()));
   }
   else
   {
@@ -356,8 +353,6 @@ void QuadDynamics::Dynamics(float dt, float simTime, V3F external_force, V3F ext
 
       followedTrajectoryCallback(traj_pt);
     }
-
-    
   }
 }
 
@@ -368,10 +363,10 @@ void QuadDynamics::RunRoomConstraints(const V3F& oldPos)
   // "(run up and down) the walls" instead of fly through them
 
   // "sticky floor" - if we're sitting on the floor, we shouldn't be drifting.
-  if(pos[2]>=bottom)
+  if(pos[2]>=zMax)
   {
     pos = oldPos;
-    pos[2] = bottom;
+    pos[2] = zMax;
     vel[0] = vel[1] = 0;
     vel[2] = MIN(0,vel[2]);
     omega = V3F();
@@ -387,7 +382,7 @@ void QuadDynamics::RunRoomConstraints(const V3F& oldPos)
     pos[1] = oldPos[1];
     vel[1] = 0.0;
   }
-  if((pos[2] > bottom) || (pos[2] < -top))
+  if((pos[2] > zMax) || (pos[2] < zMin))
   {
     pos[2] = oldPos[2];
     vel[2] = 0.0;
@@ -398,7 +393,6 @@ void QuadDynamics::SetCommands(const VehicleCommand& cmd)
 {
 	curCmd = cmd;
 }
-
 
 void QuadDynamics::TurnOffNonidealities()
 {
@@ -414,8 +408,8 @@ void QuadDynamics::TurnOffNonidealities()
 	//Meters error in CMToSpine
 	//Reload cx and cy because there has been added an error to them,
 	//see initialized in QuadDynamics::Initialize
-    cx = 0;
-    cy = 0;
+  cx = 0;
+  cy = 0;
 }
 
 bool QuadDynamics::GetData(const string& name, float& ret) const

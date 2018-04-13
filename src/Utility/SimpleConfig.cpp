@@ -170,11 +170,15 @@ void SimpleConfig::CopyNamespaceParams(const string& fromNamespace, const string
   map<string, string> pCopy = _params;
   for (map<string,string>::iterator i = pCopy.begin(); i != pCopy.end(); i++)
   {
-    if (i->first.compare(0, searchString.length(), searchString) == 0)
-    {
-      string tmp = i->first.substr(searchString.size());
-      tmp = toNamespace + "." + tmp;
-      _params[tmp] = i->second;
+		if (i->first.compare(0, searchString.length(), searchString) == 0)
+		{
+			string tmp = i->first.substr(searchString.size());
+			tmp = toNamespace + "." + tmp;
+			// only copy over parameters that don't already exist
+			if (_params.find(tmp) == _params.end())
+			{
+				_params[tmp] = i->second;
+			}
     }
 
   }

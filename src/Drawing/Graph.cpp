@@ -166,35 +166,9 @@ void Graph::RemoveAllElements()
 
 void Graph::Reset()
 {
-  if (_series.empty())
+  for (unsigned int i = 0; i < _series.size(); i++)
   {
-    //TODO: temporary while we figure out if graphs should always reload from files, 
-    // or if selected graphs should be re-added each time, etc etc..
-		ParamsHandle config = SimpleConfig::GetInstance();
-
-    _series.clear();
-    while (1)
-    {
-      char tmp[100];
-      sprintf_s(tmp, 100, "%s.Y%d", _name.c_str(), (int)_series.size() + 1);
-
-      string path;
-      if (!config->GetString(string(tmp) + ".field", path))
-      {
-        break;
-      }
-
-      V3F color;
-      bool specifiedColor = config->GetV3F(string(tmp) + ".color", color);
-      AddSeries(path, !specifiedColor, color);
-    }
-  }
-  else
-  {
-    for (unsigned int i = 0; i < _series.size(); i++)
-    {
-      _series[i].Clear();
-    }
+    _series[i].Clear();
   }
 }
 
@@ -405,7 +379,7 @@ void Graph::Draw()
   lowY -= rangeY * 0.05f;
   highY += rangeY * 0.05f;
 
-  lowX -= (highX - lowX) * .05f;
+  lowX -= (highX - lowX) * .1f;
 
   glPushMatrix();
 

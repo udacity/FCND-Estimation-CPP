@@ -26,12 +26,39 @@ int BaseDynamics::Initialize()
   _vehicleType = -1; // see BaseDynamics.h for list of numbers
 
   // load in BaseDynamics-specific double-valued settings from the config in your inheritor
-  xMin = config->Get("Sim.xMin", -10.f);
-  yMin = config->Get("Sim.yMin", -10.f);;
-  xMax = config->Get("Sim.xMax", 10.f);
-  yMax = config->Get("Sim.yMax", 10.f);
-  bottom = config->Get("Sim.bottom", 0.f);
-  top = config->Get("Sim.top", 10.f);
+	vector<float> tmp;
+	if (config->GetFloatVector("Sim.xBounds",tmp))
+	{
+		xMin = tmp[0];
+		xMax = tmp[1];
+	}
+	else
+	{
+		xMin = -10;
+		xMax = 10;
+	}
+
+	if (config->GetFloatVector("Sim.yBounds", tmp))
+	{
+		yMin = tmp[0];
+		yMax = tmp[1];
+	}
+	else
+	{
+		yMin = -10;
+		yMax = 10;
+	}
+
+	if (config->GetFloatVector("Sim.zBounds", tmp))
+	{
+		zMin = tmp[0];
+		zMax = tmp[1];
+	}
+	else
+	{
+		zMin = -20;
+		zMax = 0;
+	}
 
   return 1;
 }

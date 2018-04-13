@@ -1,31 +1,34 @@
 INCLUDE QuadPhysicalParams.txt
+INCLUDE SimulatedSensors.txt
+INCLUDE QuadControlParams.txt
+INCLUDE Simulation.txt
+INCLUDE QuadEstimatorEKF.txt
 
-# simulation setup
+# Basic Simulation Setup
 Sim.RunMode = Repeat
-Sim.EndTime = 6
+Sim.EndTime = 4
 Sim.Vehicle1 = Quad
 
 # Controller selection
 Quad.ControlType = QuadControl
 Quad.ControlConfig = QuadControlParams
 
-# sensors
-INCLUDE SimulatedSensors.txt
-# comment out the following lines for a perfect IMU
+# Sensors
 Quad.Sensors = SimIMU
+# use a perfect IMU
 SimIMU.AccelStd = 0,0,0
 SimIMU.GyroStd = 0,0,0
 
 # Initial state & reference trajectory
 Quad.InitialPos=0,0,-1
-QuadControlParams.Trajectory=traj/AttDebug.txt
+QuadControlParams.Trajectory=traj/AttitudeTest.txt
 
-# graphing commands
+# Graphing commands
 
 Commands += AddGraph1.Quad.Est.E.Yaw
 Commands += AddGraph1.Quad.Est.E.Roll
 Commands += AddGraph1.Quad.Est.E.Pitch
-Commands += AddGraph1.WindowThreshold(Quad.Est.E.MaxEuler, .1r, 3)
+Commands += AddGraph1.WindowThreshold(Quad.Est.E.MaxEuler, .1, 3)
 
 Commands += AddGraph2.Quad.Roll
 Commands += AddGraph2.Quad.Est.Roll
@@ -33,9 +36,3 @@ Commands += AddGraph2.Quad.Pitch
 Commands += AddGraph2.Quad.Est.Pitch
 Commands += AddGraph2.Quad.Yaw
 Commands += AddGraph2.Quad.Est.Yaw
-
-INCLUDE QuadControlParams.txt
-INCLUDE Simulation.txt
-
-# Sensors & Estimator
-INCLUDE QuadEstimatorEKF.txt

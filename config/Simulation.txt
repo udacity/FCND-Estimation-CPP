@@ -16,12 +16,9 @@ Timestep = 0.001
 LoggedStateFile = log/LoggedState.txt
 
 # Space constraints
-xMin = -5
-yMin = -5
-xMax = 5
-yMax = 5
-bottom = 0
-top = 10
+xBounds = -20, 20
+yBounds = -20, 20
+zBounds = -30, 0
 
 # Simulated noise
 gyroNoiseInt = 0.00001

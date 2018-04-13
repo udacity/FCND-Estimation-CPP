@@ -61,6 +61,7 @@ void QuadEstimatorEKF::Init()
 	Q *= dtIMU;
 
 	rollErr = pitchErr = maxEuler = 0;
+	posErrorMag = velErrorMag = 0;
 }
 
 void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
@@ -128,6 +129,9 @@ void QuadEstimatorEKF::UpdateTrueError(V3F truePos, V3F trueVel, Quaternion<floa
 	pitchErr = pitchEst - trueAtt.Pitch();
 	rollErr = rollEst - trueAtt.Roll();
 	maxEuler = MAX(fabs(pitchErr), MAX(fabs(rollErr), fabs(trueError(6))));
+
+	posErrorMag = truePos.dist(V3F(state(0), state(1), state(2)));
+	velErrorMag = trueVel.dist(V3F(state(3), state(4), state(5)));
 }
 
 
@@ -215,20 +219,30 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
   z(3) = vel.x;
   z(4) = vel.y;
   z(5) = vel.z;
+	
+	MatrixXf hPrime(6, QUAD_EKF_NUM_STATES);
+	hPrime.setZero();
 
+	// GPS UPDATE
+	// Hints: 
+	//  - this is a very simple update
+	////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+
+	/////////////////////////////// END STUDENT CODE ////////////////////////////
+
+	/////////////////////////////// BEGIN SOLUTION //////////////////////////////
   for (int i = 0; i < 6; i++)
   {
     hOfU(i) = state(i);
   }
-
-  MatrixXf hPrime(6, QUAD_EKF_NUM_STATES);
-	hPrime.setZero();
+  
 	for (int i = 0; i < 6; i++)
 	{
 		hPrime(i,i) = 1;
 	}
 
   Update(z, hPrime, R_GPS, hOfU);
+	//////////////////////////////// END SOLUTION ///////////////////////////////
 }
 
 void QuadEstimatorEKF::UpdateFromMag(float magYaw)
@@ -350,7 +364,10 @@ bool QuadEstimatorEKF::GetData(const string& name, float& ret) const
 		GETTER_HELPER("Est.E.roll", rollErr);
 		GETTER_HELPER("Est.E.MaxEuler", maxEuler);
 
-		GETTER_HELPER("Est.D.cov_cond", CovConditionNumber());
+		GETTER_HELPER("Est.E.pos", posErrorMag);
+		GETTER_HELPER("Est.E.vel", velErrorMag);
+
+		GETTER_HELPER("Est.D.covCond", CovConditionNumber());
 #undef GETTER_HELPER
   }
   return false;
@@ -388,9 +405,12 @@ vector<string> QuadEstimatorEKF::GetFields() const
 	ret.push_back(_name + ".Est.E.pitch");
 	ret.push_back(_name + ".Est.E.roll");
 
-	ret.push_back(_name + ".Est.E.MaxEuler");
+	ret.push_back(_name + ".Est.E.pos");
+	ret.push_back(_name + ".Est.E.vel");
 
-	ret.push_back(_name + ".Est.D.cov_cond");
+	ret.push_back(_name + ".Est.E.maxEuler");
+
+	ret.push_back(_name + ".Est.D.covCond");
 
   // diagnostic variables
   ret.push_back(_name + ".Est.D.AccelPitch");

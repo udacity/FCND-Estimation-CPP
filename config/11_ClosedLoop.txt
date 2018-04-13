@@ -14,6 +14,8 @@ Quad.ControlConfig = QuadControlParams
 # reference trajectory
 QuadControlParams.Trajectory=traj/Square.txt
 
+Quad1.Sensors = SimIMU, SimMag, SimGPS
+
 # graphing commands
 #Commands += AddGraph1.Quad1.Est.D.ax_g
 #Commands += AddGraph1.Quad1.IMU.AX
@@ -33,12 +35,10 @@ Commands += AddGraph2.Quad1.Est.VZ
 INCLUDE QuadControlParams_Estimator.txt
 INCLUDE Simulation.txt
 
-# USE ACTUAL ESTIMATOR!
 INCLUDE SimulatedSensors.txt
-[QuadControlParams] 
-UseIdealEstimator=0
 INCLUDE QuadEstimatorEKF.txt
 
 # Vehicle-specific config
 [Quad1:Quad]
+UseIdealEstimator=0
 InitialPos=0,0,-1

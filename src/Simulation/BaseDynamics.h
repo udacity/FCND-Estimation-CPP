@@ -74,7 +74,7 @@ protected:
   // vehicle geometry and mass properties
   float M; // veh mass, kg
   float Ixx,Iyy,Izz;
-  float xMin,yMin,bottom,xMax,yMax,top;
+  float xMin,yMin,zMin,xMax,yMax,zMax;
   bool _initialized;
 
   float _lastTrajPointTime;
