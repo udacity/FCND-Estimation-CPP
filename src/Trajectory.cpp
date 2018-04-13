@@ -142,7 +142,7 @@ TrajectoryPoint Trajectory::NextTrajectoryPoint(float time)
   if (traj.empty()) return TrajectoryPoint();
 
   // Loop through the trajectory vector and get the next trajectory point
-  for (int i = traj.size()-1; i >= 0; i--)
+  for (int i = (int)traj.size()-1; i >= 0; i--)
   {
     if(traj.at(i).time < time)
     {
