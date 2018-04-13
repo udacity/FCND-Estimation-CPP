@@ -1,0 +1,78 @@
+INCLUDE Simulation.txt
+INCLUDE QuadPhysicalParams.txt
+INCLUDE SimulatedSensors.txt
+INCLUDE QuadEstimatorEKF.txt
+INCLUDE QuadControlParams_Estimator.txt
+
+# BASIC
+Sim.RunMode = Repeat
+Sim.EndTime = 25
+Sim.Vehicle1 = Quad1
+Sim.Vehicle2 = Quad2
+Sim.Vehicle3 = Quad3
+Sim.Vehicle4 = Quad4
+Sim.Vehicle5 = Quad5
+Sim.Vehicle6 = Quad6
+Sim.Vehicle7 = Quad7
+Sim.Vehicle8 = Quad8
+Sim.Vehicle9 = Quad9
+Sim.Vehicle10 = Quad10
+Sim.Vehicle11 = Quad11
+Sim.Vehicle12 = Quad12
+Sim.Vehicle13 = Quad13
+#Sim.Vehicle14 = Quad14
+#Sim.Vehicle15 = Quad15
+Sim.Vehicle16 = Quad16
+Sim.Vehicle17 = Quad17
+Sim.Vehicle18 = Quad18
+Sim.Vehicle19 = Quad19
+Sim.Vehicle20 = Quad20
+
+# QUAD SETUP
+Quad.InitialPos=0,0,-1
+Quad.Sensors = SimIMU, SimMag, SimGPS
+Quad.ControlType = QuadControl
+Quad.ControlConfig = QuadControlParams
+QuadControlParams.Trajectory=traj/Square.txt
+
+######################################
+#                                    #
+# IDEAL SENSORS? IDEAL ESTIMATOR?    #
+#                                    #
+######################################
+
+Quad.UseIdealEstimator = 0
+#SimIMU.AccelStd = 0,0,0
+#SimIMU.GyroStd = 0,0,0
+
+######################################
+
+[Quad1 : Quad]
+[Quad2 : Quad]
+[Quad3 : Quad]
+[Quad4 : Quad]
+[Quad5 : Quad]
+[Quad6 : Quad]
+[Quad7 : Quad]
+[Quad8 : Quad]
+[Quad9 : Quad]
+[Quad10 : Quad]
+[Quad11 : Quad]
+[Quad12 : Quad]
+[Quad13 : Quad]
+[Quad14 : Quad]
+[Quad15 : Quad]
+[Quad16 : Quad]
+[Quad17 : Quad]
+[Quad18 : Quad]
+[Quad19 : Quad]
+[Quad20 : Quad]
+
+[]
+
+# GRAPHING
+Commands += Toggle.ActualTrajectory
+
+
+Commands += AddGraph2.WindowThreshold(Quad.Est.E.Pos,1,20)
+

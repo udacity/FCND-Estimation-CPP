@@ -2,3 +2,4 @@ X_DebugAttitudeInterp
 X_TestMavlink
 X_TestManyQuads
 X_EstimatorGPS
+X_MonteCarloTest
