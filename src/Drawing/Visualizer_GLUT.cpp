@@ -11,6 +11,7 @@
 #include "Simulation/QuadDynamics.h"
 #include "Drawing/ColorUtils.h"
 #include "GraphManager.h"
+#include "Utility/SimpleConfig.h"
 
 #ifndef __APPLE__
 #include <GL/gl.h>
@@ -332,9 +333,52 @@ void Visualizer_GLUT::DrawTrajectories(shared_ptr<QuadDynamics> quad)
     }
   }
 
-  if (quad && quad->_followed_traj  && showActualTrajectory)
+  if (quad && showActualTrajectory)
   {
-    VisualizeTrajectory(*(quad->_followed_traj).get(), false, quad->color, 1.f, V3F(), V3F(), V3F(), 1);
+		V3F offset = V3F();
+
+		//VisualizeTrajectory(*(quad->_followed_traj).get(), false, quad->color, 1.f, V3F(), V3F(), V3F(), 1);
+
+		_glDraw->SetLighting(false);
+		glEnable(GL_LINE_SMOOTH);
+		glLineWidth(1);
+		glColor4d(quad->color[0], quad->color[1], quad->color[2], 1);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDisable(GL_CULL_FACE);
+		glBegin(GL_QUADS);
+		for (unsigned int i = 1; i < quad->_followedPos.n_meas(); i++)
+		{
+			V3F p = (quad->_followedPos[i] + offset);
+			V3F l = quad->_followedAtt[i].Rotate_BtoI(V3F(0, 1, 0)) * 0.1f;
+			glVertex3fv((p + l).getArray());
+			glVertex3fv((p - l).getArray());
+
+			p = (quad->_followedPos[i-1] + offset);
+			l = quad->_followedAtt[i-1].Rotate_BtoI(V3F(0, 1, 0)) * 0.1f;
+			glVertex3fv((p - l).getArray());
+			glVertex3fv((p + l).getArray());
+		}
+		glEnd();
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+		glColor4d(quad->color[0], quad->color[1], quad->color[2], .1);
+		glBegin(GL_QUADS);
+		for (unsigned int i = 1; i < quad->_followedPos.n_meas(); i++)
+		{
+			V3F p = (quad->_followedPos[i] + offset);
+			V3F l = quad->_followedAtt[i-1].Rotate_BtoI(V3F(0, 1, 0)) * 0.1f;
+			glVertex3fv((p + l).getArray());
+			glVertex3fv((p - l).getArray());
+
+			p = (quad->_followedPos[i-1] + offset);
+			l = quad->_followedAtt[i - 1].Rotate_BtoI(V3F(0, 1, 0)) * 0.1f;
+			glVertex3fv((p - l).getArray());
+			glVertex3fv((p + l).getArray());
+		}
+		glEnd();
+		
+    
   }
 }
 
@@ -509,7 +553,7 @@ void Visualizer_GLUT::VisualizeTrajectory(const Trajectory& traj, bool drawPoint
     glLineWidth(1.5);
     glColor4d(color[0], color[1], color[2], alpha);
     glBegin(GL_LINE_STRIP);
-    for (unsigned int i = 0; i < traj.traj.n_meas(); i++)
+    for (unsigned int i = 0; i < traj.traj.size(); i++)
     {
       glVertex3fv((traj.traj[i].position + offset).getArray());
     }
@@ -524,7 +568,7 @@ void Visualizer_GLUT::VisualizeTrajectory(const Trajectory& traj, bool drawPoint
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glDisable(GL_CULL_FACE);
     glBegin(GL_QUADS);
-    for (unsigned int i = 1; i < traj.traj.n_meas(); i++)
+    for (unsigned int i = 1; i < traj.traj.size(); i++)
     {
       V3F p = (traj.traj[i].position + offset);
       V3F l = traj.traj[i].attitude.Rotate_BtoI(V3F(0, 1, 0)) * 0.1f;
@@ -542,7 +586,7 @@ void Visualizer_GLUT::VisualizeTrajectory(const Trajectory& traj, bool drawPoint
 
     glColor4d(color[0], color[1], color[2], .1f);
     glBegin(GL_QUADS);
-    for (unsigned int i = 1; i < traj.traj.n_meas(); i++)
+    for (unsigned int i = 1; i < traj.traj.size(); i++)
     {
       V3F p = (traj.traj[i].position + offset);
       V3F l = traj.traj[i].attitude.Rotate_BtoI(V3F(0, 1, 0)) * 0.1f;
@@ -560,7 +604,7 @@ void Visualizer_GLUT::VisualizeTrajectory(const Trajectory& traj, bool drawPoint
   if (drawPoints)
   {
     // Draw the desired trajectory points as spheres
-    for (unsigned int i = 0; i < traj.traj.n_meas(); i++)
+    for (unsigned int i = 0; i < traj.traj.size(); i++)
     {
       V3F pos = traj.traj[i].position + offset;
       float r = 0.01f;
@@ -736,7 +780,14 @@ GLuint Visualizer_GLUT::MakeVolumeCallList()
 
 void Visualizer_GLUT::InitializeMenu(const vector<string>& strings)
 {
-  vector<string> tmp = strings;
+	ParamsHandle paramSys = SimpleConfig::GetInstance();
+
+	vector<string> tmp;
+	
+	if (!paramSys->Exists("_DEBUG.NO_QUAD_GRAPHS"))
+	{
+		tmp = strings;
+	}
   tmp.push_back("Toggle.RefTrajectory");
   tmp.push_back("Toggle.ActualTrajectory");
   tmp.push_back("Toggle.Thrusts");

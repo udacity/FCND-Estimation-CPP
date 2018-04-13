@@ -120,12 +120,6 @@ int QuadDynamics::Initialize()
 
   _initialized = true;
 
-  // Initialise the trajectory log
-  //string followedTrajFile = string("../config/") + config->Get("Sim.LoggedStateFile", "");
-  _followed_traj.reset(new Trajectory());
-  //followed_traj->SetLogFile(followedTrajFile);
-  followedTrajectoryCallback = MakeDelegate(_followed_traj.get(), &Trajectory::AddTrajectoryPoint);
-
   // SENSORS
   sensors.clear();
 
@@ -338,21 +332,12 @@ void QuadDynamics::Dynamics(float dt, float simTime, V3F external_force, V3F ext
 
   motorCmdsOld = motorCmdsN;
 
-  if (followedTrajectoryCallback)
+  if ((simTime - _lastTrajPointTime) > _trajLogStepTime)
   {
-    if ((simTime - _lastTrajPointTime) > _trajLogStepTime)
-    {
-      _lastTrajPointTime = simTime;
+    _lastTrajPointTime = simTime;
 
-      TrajectoryPoint traj_pt;
-      traj_pt.time = _lastTrajPointTime;
-      traj_pt.position = pos;
-      traj_pt.velocity = vel;
-      traj_pt.omega = omega;
-      traj_pt.attitude = quat;
-
-      followedTrajectoryCallback(traj_pt);
-    }
+		_followedPos.push(pos);
+		_followedAtt.push(quat);
   }
 }
 

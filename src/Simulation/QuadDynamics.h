@@ -60,8 +60,6 @@ public:
   
 	VehicleCommand curCmd;
 
-  FastDelegate1<TrajectoryPoint> followedTrajectoryCallback;
-
 	float GetArmLength() const { return L; }
 
   ControllerHandle controller;

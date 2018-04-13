@@ -5,12 +5,12 @@
 
 using namespace SLR;
 
-Trajectory::Trajectory() : traj(MAX_TRAJECTORY_POINTS) 
+Trajectory::Trajectory() 
 {
   _log_file = NULL;
 }
 
-Trajectory::Trajectory(const string& filename) : traj(MAX_TRAJECTORY_POINTS)
+Trajectory::Trajectory(const string& filename) 
 {
   ReadFile(filename);
 }
@@ -26,7 +26,7 @@ Trajectory::~Trajectory()
 
 bool Trajectory::ReadFile(const string& filename)
 {
-  traj.reset();
+  traj.clear();
 
   FILE* f = fopen(filename.c_str(), "r");
   if (!f)
@@ -50,7 +50,7 @@ bool Trajectory::ReadFile(const string& filename)
   // Handle empty trajectory files
   // check the length of the trajectory vector
   // if there are no points in the trajectory file, then use the initial position as the only trajectory point
-  if (traj.n_meas() == 0)
+  if (traj.size() == 0)
   {
     ParamsHandle config = SimpleConfig::GetInstance();
     TrajectoryPoint traj_pt;
@@ -61,7 +61,7 @@ bool Trajectory::ReadFile(const string& filename)
     V3F ypr = config->Get("Quad.InitialYPR", V3F());
     traj_pt.attitude = Quaternion<float>::FromEulerYPR(ypr[0], ypr[1], ypr[2]);
 
-    traj.push(traj_pt);
+    traj.push_back(traj_pt);
   }
 
   return true;
@@ -89,13 +89,13 @@ void Trajectory::ParseLine(const string& filename, const string& s)
   traj_pt.attitude = Quaternion<float>::FromEulerYPR(ypr[0], ypr[1], ypr[2]);
 
   // Add the trajectory point to the vector of all trajectory points
-  traj.push(traj_pt);
+  traj.push_back(traj_pt);
 }
 
 void Trajectory::Clear()
 {
   _curTrajPoint = 0;
-  traj.reset();
+  traj.clear();
 
   // close and reopen the log file
   if (_log_file)
@@ -128,7 +128,7 @@ void Trajectory::SetLogFile(const string& filename)
 
 void Trajectory::AddTrajectoryPoint(TrajectoryPoint traj_pt)
 {
-  traj.push(traj_pt);
+  traj.push_back(traj_pt);
 
   // If there is a log file, write the point to file
   if (_log_file)
@@ -142,13 +142,13 @@ TrajectoryPoint Trajectory::NextTrajectoryPoint(float time)
   if (traj.empty()) return TrajectoryPoint();
 
   // Loop through the trajectory vector and get the next trajectory point
-  for (int i = traj.n_meas()-1; i >= 0; i--)
+  for (int i = traj.size()-1; i >= 0; i--)
   {
     if(traj.at(i).time < time)
     {
       _curTrajPoint = i;
 			// interpolation
-			if (i == traj.n_meas() - 1)
+			if (i == traj.size() - 1)
 			{
 				// we're at the end of the trajectory
 				return traj.at(i);
@@ -175,7 +175,7 @@ TrajectoryPoint Trajectory::NextTrajectoryPoint(float time)
 
 	// if requested 0 or negative time
   _curTrajPoint = 0;
-  return traj.oldest();
+  return traj[0];
 }
 
 void Trajectory::WriteTrajectoryPointToFile(FILE* f, TrajectoryPoint traj_pt)

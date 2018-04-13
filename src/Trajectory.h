@@ -7,7 +7,7 @@
 
 using namespace SLR;
 
-#define MAX_TRAJECTORY_POINTS 10000
+#define MAX_TRAJECTORY_POINTS 1000
 
 class Trajectory {
 public:
@@ -22,7 +22,7 @@ public:
   TrajectoryPoint NextTrajectoryPoint(float time);
   void WriteTrajectoryPointToFile(FILE* f, TrajectoryPoint traj_pt);
 
-  FixedQueue<TrajectoryPoint> traj; // vector containing the trajectory points
+  vector<TrajectoryPoint> traj; // vector containing the trajectory points
 
   int GetCurTrajectoryPoint() const { return _curTrajPoint; }
 private:

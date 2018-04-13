@@ -4,6 +4,7 @@
 #include "Math/Quaternion.h"
 #include "VehicleDatatypes.h"
 #include "DataSource.h"
+#include "Utility/FixedQueue.h"
 
 #define VEHICLE_TYPE_QUAD              0
 
@@ -32,7 +33,6 @@ public:
 
 	// inheritors have no reason to alter the following functions and therefore no sense demanding that they do
 	GlobalPose     GenerateGP () ; // returns the current simulation state in Vicon format - const?
-  void SyncToVicon(GlobalPose gp); // sets simulation to zero velocities and vicon-based poses.
 
   V3F Position() const { return pos; };
   V3F Velocity() const { return vel; };
@@ -60,7 +60,8 @@ public:
 
   void ResetState(V3F pos=V3F(), V3F vel=V3F(), Quaternion<float> att=Quaternion<float>(), V3F omega=V3F());
 
-  shared_ptr<Trajectory> _followed_traj;
+	FixedQueue<V3F> _followedPos;
+	FixedQueue<Quaternion<float>> _followedAtt;
 
 protected:
   string _name;

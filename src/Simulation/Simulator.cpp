@@ -21,7 +21,6 @@ void Simulator::Reset()
 	}
 }
 
-
 void Simulator::Run(float dt)
 {
 	// todo: step in maximally acceptable time steps

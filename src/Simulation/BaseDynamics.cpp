@@ -3,6 +3,7 @@
 #include "Math/Random.h"
 #include "Utility/SimpleConfig.h"
 #include "Utility/StringUtils.h"
+#include "Trajectory.h"
 
 #ifdef _MSC_VER //  visual studio
 #pragma warning(disable: 4267 4244 4996)
@@ -11,6 +12,8 @@
 using namespace SLR;
 
 BaseDynamics::BaseDynamics(string name)
+	:_followedPos(MAX_TRAJECTORY_POINTS),
+	 _followedAtt(MAX_TRAJECTORY_POINTS)
 {
   _name = name;
   _initialized = false;
@@ -60,6 +63,9 @@ int BaseDynamics::Initialize()
 		zMax = 0;
 	}
 
+	_followedPos.reset();
+	_followedAtt.reset();
+
   return 1;
 }
 
@@ -69,18 +75,7 @@ void BaseDynamics::ResetState(V3F newPos, V3F newVel, Quaternion<float> newAtt, 
   pos = newPos;
   vel = newVel;
   quat = newAtt;
-
 }
-
-void BaseDynamics::SyncToVicon(GlobalPose gp)
-{
-  vel = V3F();
-  omega = V3F();
-  pos = gp.pos;
-  quat = gp.q;
-
-  printf("\nSIMULATOR_RESET ncommand received;  set sim pose = vicon, and sim vel = 0.\n");
- }
 
 GlobalPose BaseDynamics::GenerateGP(void)
 {

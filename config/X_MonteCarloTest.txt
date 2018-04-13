@@ -20,8 +20,8 @@ Sim.Vehicle10 = Quad10
 Sim.Vehicle11 = Quad11
 Sim.Vehicle12 = Quad12
 Sim.Vehicle13 = Quad13
-#Sim.Vehicle14 = Quad14
-#Sim.Vehicle15 = Quad15
+Sim.Vehicle14 = Quad14
+Sim.Vehicle15 = Quad15
 Sim.Vehicle16 = Quad16
 Sim.Vehicle17 = Quad17
 Sim.Vehicle18 = Quad18
@@ -72,7 +72,6 @@ Quad.UseIdealEstimator = 0
 
 # GRAPHING
 Commands += Toggle.ActualTrajectory
-
-
 Commands += AddGraph2.WindowThreshold(Quad.Est.E.Pos,1,20)
+_DEBUG.NO_QUAD_GRAPHS=1
 
