@@ -361,7 +361,7 @@ void Visualizer_GLUT::DrawTrajectories(shared_ptr<QuadDynamics> quad)
 		glEnd();
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+		
 		glColor4d(quad->color[0], quad->color[1], quad->color[2], .1);
 		glBegin(GL_QUADS);
 		for (unsigned int i = 1; i < quad->_followedPos.n_meas(); i++)
@@ -377,8 +377,6 @@ void Visualizer_GLUT::DrawTrajectories(shared_ptr<QuadDynamics> quad)
 			glVertex3fv((p + l).getArray());
 		}
 		glEnd();
-		
-    
   }
 }
 
