@@ -337,8 +337,6 @@ void Visualizer_GLUT::DrawTrajectories(shared_ptr<QuadDynamics> quad)
   {
 		V3F offset = V3F();
 
-		//VisualizeTrajectory(*(quad->_followed_traj).get(), false, quad->color, 1.f, V3F(), V3F(), V3F(), 1);
-
 		_glDraw->SetLighting(false);
 		glEnable(GL_LINE_SMOOTH);
 		glLineWidth(1);

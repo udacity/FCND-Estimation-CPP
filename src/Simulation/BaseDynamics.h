@@ -6,8 +6,6 @@
 #include "DataSource.h"
 #include "Utility/FixedQueue.h"
 
-#define VEHICLE_TYPE_QUAD              0
-
 #ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning(disable: 4100) // unreferenced formal parameter
@@ -48,15 +46,11 @@ public:
   virtual bool GetData(const string& name, float& ret) const;
   virtual vector<string> GetFields() const;  
 
-  int GetVehicleType(void) {return _vehicleType;};
-
 	virtual double GetRotDistInt() { return 0;};
 	virtual double GetXyzDistInt() {return 0;};
 	virtual double GetRotDistBW() {return 0;};
 	virtual double GetXyzDistBW() {return 0;};
 	virtual double GetGyroNoiseInt() {return 0;};
-
-  bool Initialized() const {return _initialized;}
 
   void ResetState(V3F pos=V3F(), V3F vel=V3F(), Quaternion<float> att=Quaternion<float>(), V3F omega=V3F());
 
@@ -70,13 +64,10 @@ protected:
 	V3F  pos, vel, acc, omega, old_omega; 
   Quaternion<float>  quat;
 
-  int _vehicleType;
-
   // vehicle geometry and mass properties
   float M; // veh mass, kg
   float Ixx,Iyy,Izz;
   float xMin,yMin,zMin,xMax,yMax,zMax;
-  bool _initialized;
 
   float _lastTrajPointTime;
   float _trajLogStepTime;

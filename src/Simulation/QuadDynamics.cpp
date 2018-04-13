@@ -49,10 +49,6 @@ int QuadDynamics::Initialize()
 {
   if(!BaseDynamics::Initialize()) return 0;
 
-  _initialized = false;
-	
-  _vehicleType = VEHICLE_TYPE_QUAD;
-
   _lastTrajPointTime = 0;
   _trajLogStepTime = 0;
 
@@ -93,6 +89,7 @@ int QuadDynamics::Initialize()
 
   ResetState(V3F());
 
+	// CREATE CONTROLLER
   controller = CreateController(_name,
 		config->Get(_name + ".ControlType", "QuadControl") , 
 		config->Get(_name + ".ControlConfig", "QuadControlParams"));
@@ -106,8 +103,8 @@ int QuadDynamics::Initialize()
     SLR_WARNING1("Failed to create controller for %s", _name.c_str());
   }
 
+	// CREATE ESTIMATOR
   string estConfig = config->Get(_name + ".Estimator", "QuadEstimatorEKF");
-  // TODO: only EKF supported for now
   estimator.reset(new QuadEstimatorEKF(estConfig, _name));
 
   _lastPosFollowErr = 0;
@@ -118,9 +115,7 @@ int QuadDynamics::Initialize()
     Quaternion<float>::FromEulerYPR(ypr.x, ypr.y, ypr.z),
     config->Get(_name + ".InitialOmega", V3F()));
 
-  _initialized = true;
-
-  // SENSORS
+  // CREATE SENSORS
   sensors.clear();
 
 	string sensorString = config->Get(_name + ".Sensors", "");

@@ -16,17 +16,12 @@ BaseDynamics::BaseDynamics(string name)
 	 _followedAtt(MAX_TRAJECTORY_POINTS)
 {
   _name = name;
-  _initialized = false;
   Initialize();
 }
 
 int BaseDynamics::Initialize()
 {
   ParamsHandle config = SimpleConfig::GetInstance();
-
-  _initialized = false;
-
-  _vehicleType = -1; // see BaseDynamics.h for list of numbers
 
   // load in BaseDynamics-specific double-valued settings from the config in your inheritor
 	vector<float> tmp;
