@@ -6,7 +6,7 @@ INCLUDE QuadControlParams_Estimator.txt
 
 # BASIC
 Sim.RunMode = Repeat
-Sim.EndTime = 20
+Sim.EndTime = 25
 Sim.Vehicle1 = Quad
 
 # QUAD SETUP
@@ -40,4 +40,6 @@ Commands += AddGraph2.Quad.Est.E.Pos
 Commands += AddGraph2.Quad.Est.E.Vel
 Commands += AddGraph2.Quad.Est.S.Z
 Commands += AddGraph2.Quad.Est.S.VZ
+
+Commands += AddGraph2.WindowThreshold(Quad.Est.E.Pos,1,20)
 

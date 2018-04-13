@@ -1,4 +1,3 @@
-X_EstimatorDebug
 X_DebugAttitudeInterp
 X_TestMavlink
 X_TestManyQuads
