@@ -8,8 +8,8 @@ InitStdDevs = .1, .1, .3, .1, .1, .3, .05
 QPosXYStd = .05
 QPosZStd = .15
 QVelXYStd = .1
-QVelZStd = .2
-QYawStd = .05
+QVelZStd = .3
+QYawStd = .1
 
 # GPS measurement std deviations
 GPSPosXYStd = 1

@@ -5,6 +5,7 @@
 05_TrajectoryFollow
 06_SensorNoise
 07_AttitudeEstimation
-08_Prediction
-09_MagUpdate
-10_GPSUpdate
+08_PredictState
+09_PredictCovariance
+10_MagUpdate
+11_GPSUpdate

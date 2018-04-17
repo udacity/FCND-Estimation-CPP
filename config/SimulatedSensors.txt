@@ -1,14 +1,12 @@
 # note that sensors can not be faster than the controller rate (0.002)
 
 [SimIMU]
-AccelStd = 1, 1, 3
+AccelStd = .5, .5, 1.5
 GyroStd = .5, .5, .5
-GyroRandomWalkStd = .01, .01, .01
 dt = .002
 
 [SimBaro]
 Std = .1
-#dt = .01
 dt = .01
 
 [SimMag]

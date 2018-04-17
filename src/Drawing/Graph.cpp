@@ -21,7 +21,9 @@ Graph::Graph(const char* name)
 Graph::Series::Series()
   : x(MAX_POINTS, 0), y(MAX_POINTS, 0)
 {
-
+  noLegend = false;
+  bold = false;
+  negate = false;
 }
 
 void Graph::AddItem(string path)
@@ -121,15 +123,54 @@ void Graph::AddSigmaThreshold(string path)
 void Graph::AddSeries(string path, bool autoColor, V3F color)
 {
 	ParamsHandle config = SimpleConfig::GetInstance();
-	
-	Series newSeries;
+
+  Series newSeries;
+  bool force = false;
+
+  if (path.find(',') != string::npos)
+  {
+    vector<string> options = SLR::Split(path, ',');
+    path = options[0];
+    int colorNum = 0;
+    
+    for (size_t i = 1; i < options.size(); i++)
+    {
+      options[i] = Trim(options[i]);
+      if (ToUpper(options[i]) == "NOLEGEND")
+      {
+        newSeries.noLegend = true;
+      }
+      else if (ToUpper(options[i]) == "BOLD")
+      {
+        newSeries.bold = true;
+      }
+      else if (ToUpper(options[i]) == "NEGATE")
+      {
+        newSeries.negate = true;
+      }
+      else if (ToUpper(options[i]) == "FORCE")
+      {
+        force = true;
+      }
+      else if (!HasLetters(options[i]))
+      {
+        if (colorNum < 3)
+        {
+          color[colorNum] = (float)atof(options[i].c_str());
+          autoColor = false;
+          colorNum++;
+        }
+      }
+    }
+  }
+  
   newSeries._yName = path;
   
   newSeries._objName = SLR::LeftOf(newSeries._yName, '.');
   newSeries._fieldName = newSeries._yName.substr(newSeries._objName.size() + 1);
 
   // If the series is already plotted, then don't add the series again => return
-  if (IsSeriesPlotted(path))
+  if (!force && IsSeriesPlotted(path))
   {
     return;
   }
@@ -234,7 +275,14 @@ void Graph::Update(double time, std::vector<shared_ptr<DataSource> >& sources)
 				newData[i] = true;
 				anyNewData = true;
 				_series[i].x.push((float)time);
-				_series[i].y.push(tmp);
+        if (_series[i].negate)
+        {
+          _series[i].y.push(-tmp);
+        }
+        else
+        {
+          _series[i].y.push(tmp);
+        }
         break;
       }
     } 
@@ -283,12 +331,22 @@ void Graph::DrawSeries(Series& s)
 
   glColor3f(s._color[0], s._color[1], s._color[2]);
 
+  float tmp = 0;
+  glGetFloatv(GL_LINE_WIDTH, &tmp);
+
+  if (s.bold)
+  {
+    glLineWidth(2);    
+  }
+
   glBegin(GL_LINE_STRIP);
   for (unsigned int i = 0; i < s.x.n_meas(); i++)
   {
-    glVertex2f(s.x[i], s.y[i]);
+    glVertex2f(s.x[i], s.y[i]); 
   }
   glEnd();
+
+  glLineWidth(tmp);
 
 }
 
@@ -439,9 +497,13 @@ void Graph::Draw()
   
   glPopMatrix();
   
+  // series names
+  int j = 0;
   for (unsigned int i = 0; i < _series.size(); i++)
   {
+    if (_series[i].noLegend) continue;
     glColor3f(_series[i]._color[0], _series[i]._color[1], _series[i]._color[2]);
-    DrawStrokeText(ToLower(_series[i]._yName).c_str(), .3f, .8f - i * .205f, 0, 1.5f, 1.f, 2.f);
+    DrawStrokeText(ToLower(_series[i]._yName).c_str(), .3f, .8f - j * .205f, 0, 1.5f, 1.f, 2.f);
+    j++;
   }
 }

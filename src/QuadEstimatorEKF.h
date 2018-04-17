@@ -21,6 +21,11 @@ public:
   virtual void Init();
 
   virtual void Predict(float dt, V3F accel, V3F gyro);
+
+  // helper functions for Predict
+  VectorXf PredictState(VectorXf curState, float dt, V3F accel, V3F gyro);
+  MatrixXf GetRbgPrime(float roll, float pitch, float yaw);
+
   virtual void UpdateFromIMU(V3F accel, V3F gyro);
   virtual void UpdateFromGPS(V3F pos, V3F vel);
   virtual void UpdateFromBaro(float z) {};

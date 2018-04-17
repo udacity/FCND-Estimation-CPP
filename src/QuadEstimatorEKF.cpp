@@ -134,40 +134,28 @@ void QuadEstimatorEKF::UpdateTrueError(V3F truePos, V3F trueVel, Quaternion<floa
   velErrorMag = trueVel.dist(V3F(state(3), state(4), state(5)));
 }
 
-
-void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
+VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, V3F gyro)
 {
-  // Predict the current state and covariance forward by dt using the current accelerations and body rates as input.
+  assert(curState.size() == QUAD_EKF_NUM_STATES);
+  VectorXf predictedState = curState;
+  // Predict the current state forward by time dt using current accelerations and body rates as input
   // INPUTS: 
+  //   curState: starting state
   //   dt: time step to predict forward by [s]
   //   accel: acceleration of the vehicle, in body frame, *not including gravity* [m/s2]
   //   gyro: body rates of the vehicle, in body frame [rad/s]
   //   
   // OUTPUT:
-  //   update the member variables <state> and <cov> to the predicted state and covariance
+  //   return the predicted state as a vector
 
-  // HINTS
-  // - you code should run the math to create the vector newState from the current state (variable "state")
-  //   and the current accelerations and rate gyro measurements. You should also update the covariance
-  //   matrix cov according to the EKF equation.
-  // - attitude (pitch/roll/yaw) is already predicted in "UpdateFromIMU" 
-  // 
+  // HINTS 
   // - dt is the time duration for which you should predict. It will be very short (on the order of 1ms)
   //   so simplistic integration methods are fine here
-  // 
-  // - you may find the current estimated attitude in variables rollEst, pitchEst, state(6).
-  //
-  // - use the class MatrixXf for matrices. To create a 3x5 matrix A, use MatrixXf A(3,5).
-  // 
-  // - This is unfortunately a messy step. Try to split this up into clear, manageable steps:
-  //   1) Predict the state (note yaw is already predicted elsewhere as noted before)
-  //   2) Calculate the necessary helper matrices, building up the transition jacobian
-  //   3) Once all the matrices are there, write the equation to update cov.
-  //
-  // - if you want to transpose a matrix in-place, use cov.transposeInPlace(), not A = A.transpose()
+  // - we've created an Attitude Quaternion for you from the current state. Use 
+  //   attitude.Rotate_BtoI(<V3F>) to rotate a vector from body frame to inertial frame
+  // - the yaw integral is already done in the IMU update. Be sure not to integrate it again here
 
-  // copy the state so we don't get confused about changing what we're integrating while integrating it.
-  VectorXf newState = state;
+  Quaternion<float> attitude = Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, state(6));
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
@@ -176,48 +164,116 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
 
   /////////////////////////////// BEGIN SOLUTION //////////////////////////////
 
-  // STATE INTEGRAL
   // integrate positions
-  newState(0) += state(3)*dt;
-  newState(1) += state(4)*dt;
-  newState(2) += state(5)*dt;
+  predictedState(0) += state(3)*dt;
+  predictedState(1) += state(4)*dt;
+  predictedState(2) += state(5)*dt;
 
   // integrate velocity
-  Quaternion<float> att = Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, state(6));
-  accelG = att.Rotate_BtoI(accel) - V3F(0, 0, 9.81f);
-  newState(3) += accelG[0] * dt;
-  newState(4) += accelG[1] * dt;
-  newState(5) += accelG[2] * dt;
+  accelG = attitude.Rotate_BtoI(accel) - V3F(0, 0, 9.81f);
+  predictedState(3) += accelG[0] * dt;
+  predictedState(4) += accelG[1] * dt;
+  predictedState(5) += accelG[2] * dt;
 
-  // note that yaw integral is already done in the IMU update
+  //////////////////////////////// END SOLUTION ///////////////////////////////
 
-  // TRANSITION MATRIX JACOBIAN
+  return predictedState;
+}
 
+MatrixXf QuadEstimatorEKF::GetRbgPrime(float roll, float pitch, float yaw)
+{
   // first, figure out the Rbg_prime
-  MatrixXf Rbg_prime(3, 3);
+  MatrixXf RbgPrime(3, 3);
+  RbgPrime.setZero();
+
+  // Return the partial derivative of the Rbg rotation matrix with respect to yaw. We call this RbgPrime.
+  // INPUTS: 
+  //   roll, pitch, yaw: Euler angles at which to calculate RbgPrime
+  //   
+  // OUTPUT:
+  //   return the 3x3 matrix representing the partial derivative at the given point
+
+  // HINTS
+  // - this is just a matter of putting the right sin() and cos() functions in the right place.
+  //   make sure you write clear code and triple-check your math
+  // - You can also do some numerical partial derivatives in a unit test scheme to check 
+  //   that your calculations are reasonable
+
+  ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+
+
+  /////////////////////////////// END STUDENT CODE ////////////////////////////
+
+  /////////////////////////////// BEGIN SOLUTION //////////////////////////////
+
   float sinPhi = sin(rollEst), cosPhi = cos(rollEst);		// roll
   float sinTheta = sin(pitchEst), cosTheta = cos(pitchEst);	// pitch
   float sinPsi = sin(state(6)), cosPsi = cos(state(6));		// yaw
-  Rbg_prime.setZero();
-
+  
   // Diebel eq 71.. transposed
-  Rbg_prime(0, 0) = -cosTheta * sinPsi;
-  Rbg_prime(0, 1) = cosTheta * cosPsi;
-  Rbg_prime(1, 0) = -sinPhi * sinTheta*sinPsi - cosPhi * cosPsi;
-  Rbg_prime(1, 1) = sinPhi * sinTheta*cosPsi - cosPhi * sinPsi;
-  Rbg_prime(2, 0) = -cosPhi * sinTheta*sinPsi + sinPhi * cosPsi;
-  Rbg_prime(2, 1) = cosPhi * sinTheta*cosPsi + sinPhi * sinPsi;
-  Rbg_prime.transposeInPlace();
+  RbgPrime(0, 0) = -cosTheta * sinPsi;
+  RbgPrime(0, 1) = cosTheta * cosPsi;
+  RbgPrime(1, 0) = -sinPhi * sinTheta*sinPsi - cosPhi * cosPsi;
+  RbgPrime(1, 1) = sinPhi * sinTheta*cosPsi - cosPhi * sinPsi;
+  RbgPrime(2, 0) = -cosPhi * sinTheta*sinPsi + sinPhi * cosPsi;
+  RbgPrime(2, 1) = cosPhi * sinTheta*cosPsi + sinPhi * sinPsi;
+  RbgPrime.transposeInPlace();
+
+  //////////////////////////////// END SOLUTION ///////////////////////////////
+
+  return RbgPrime;
+}
+
+void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
+{
+  // predict the state forward
+  VectorXf newState = PredictState(state, dt, accel, gyro);
+
+  // Predict the current covariance forward by dt using the current accelerations and body rates as input.
+  // INPUTS: 
+  //   dt: time step to predict forward by [s]
+  //   accel: acceleration of the vehicle, in body frame, *not including gravity* [m/s2]
+  //   gyro: body rates of the vehicle, in body frame [rad/s]
+  //   state (member variable): current state (state at the beginning of this prediction)
+  //   
+  // OUTPUT:
+  //   update the member variable cov to the predicted covariance
+
+  // HINTS
+  // - update the covariance matrix cov according to the EKF equation.
+  // 
+  // - you may find the current estimated attitude in variables rollEst, pitchEst, state(6).
+  //
+  // - use the class MatrixXf for matrices. To create a 3x5 matrix A, use MatrixXf A(3,5).
+  // 
+  // - This is unfortunately a messy step. Try to split this up into clear, manageable steps:
+  //   1) Calculate the necessary helper matrices, building up the transition jacobian
+  //   2) Once all the matrices are there, write the equation to update cov.
+  //
+  // - if you want to transpose a matrix in-place, use A.transposeInPlace(), not A = A.transpose()
+  // 
+
+  // we'll want the partial derivative of the Rbg matrix
+  MatrixXf RbgPrime = GetRbgPrime(rollEst, pitchEst, state(6));
+
+  // we've created an empty Jacobian for you, currently simply set to identity
+  MatrixXf gPrime(QUAD_EKF_NUM_STATES, QUAD_EKF_NUM_STATES);
+  gPrime.setIdentity();
+
+  ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+
+
+  /////////////////////////////// END STUDENT CODE ////////////////////////////
+
+  /////////////////////////////// BEGIN SOLUTION //////////////////////////////
 
   VectorXf u03dt(3);
   u03dt(0) = accel[0] * dt;
   u03dt(1) = accel[1] * dt;
   u03dt(2) = accel[2] * dt;
 
-  VectorXf Rbg_prime_times_u03_dt = Rbg_prime*u03dt;
+  VectorXf Rbg_prime_times_u03_dt = RbgPrime*u03dt;
 
-  MatrixXf gPrime(QUAD_EKF_NUM_STATES, QUAD_EKF_NUM_STATES);
-  gPrime.setIdentity();
   gPrime(0, 3) = dt;
   gPrime(1, 4) = dt;
   gPrime(2, 5) = dt;

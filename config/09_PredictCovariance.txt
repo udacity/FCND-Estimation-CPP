@@ -1,0 +1,76 @@
+# BASIC
+INCLUDE Simulation.txt
+INCLUDE QuadPhysicalParams.txt
+Sim.RunMode = Repeat
+Sim.EndTime = 1
+Sim.Vehicle1 = Quad1
+Sim.Vehicle2 = Quad2
+Sim.Vehicle3 = Quad3
+Sim.Vehicle4 = Quad4
+Sim.Vehicle5 = Quad5
+Sim.Vehicle6 = Quad6
+Sim.Vehicle7 = Quad7
+Sim.Vehicle8 = Quad8
+Sim.Vehicle9 = Quad9
+Sim.Vehicle10 = Quad10
+
+Quad.InitialPos=0,0,-1
+
+# REFERENCE
+QuadControlParams.Trajectory=traj/Square.txt
+
+# CONTROLLER
+Quad.ControlType = QuadControl
+Quad.ControlConfig = QuadControlParams
+INCLUDE QuadControlParams.txt
+
+# SENSORS
+INCLUDE SimulatedSensors.txt
+Quad.Sensors = SimIMU
+
+# ESTIMATION
+INCLUDE QuadEstimatorEKF.txt
+
+# GRAPHING
+Commands += Toggle.ActualTrajectory
+
+Commands += AddGraph1.Quad1.Est.E.X,NoLegend
+Commands += AddGraph1.Quad2.Est.E.X,NoLegend
+Commands += AddGraph1.Quad3.Est.E.X,NoLegend
+Commands += AddGraph1.Quad4.Est.E.X,NoLegend
+Commands += AddGraph1.Quad5.Est.E.X,NoLegend
+Commands += AddGraph1.Quad6.Est.E.X,NoLegend
+Commands += AddGraph1.Quad7.Est.E.X,NoLegend
+Commands += AddGraph1.Quad8.Est.E.X,NoLegend
+Commands += AddGraph1.Quad9.Est.E.X,NoLegend
+Commands += AddGraph1.Quad10.Est.E.X,NoLegend
+Commands += AddGraph1.Quad1.Est.S.X, Bold,1,1,1
+Commands += AddGraph1.Quad1.Est.S.X, Bold,1,1,1,NoLegend,Force,Negate
+
+Commands += AddGraph2.Quad1.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad2.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad3.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad4.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad5.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad6.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad7.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad8.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad9.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad10.Est.E.VX,NoLegend
+Commands += AddGraph2.Quad1.Est.S.VX,Bold,1,1,1
+Commands += AddGraph2.Quad1.Est.S.VX,Bold,1,1,1,NoLegend,Force,Negate
+
+#
+[Quad1 : Quad]
+[Quad2 : Quad]
+[Quad3 : Quad]
+[Quad4 : Quad]
+[Quad5 : Quad]
+[Quad6 : Quad]
+[Quad7 : Quad]
+[Quad8 : Quad]
+[Quad9 : Quad]
+[Quad10 : Quad]
+
+[]
+_DEBUG.NO_QUAD_GRAPHS=1

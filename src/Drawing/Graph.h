@@ -39,6 +39,7 @@ public:
     string _objName, _fieldName;
     FixedQueue<float> x;
     FixedQueue<float> y;
+    bool noLegend, bold, negate;
     void Clear()
     {
       x.reset();
