@@ -24,6 +24,7 @@ public:
   void AddSeries(string path, bool autoColor = true, V3F color = V3F());
   void AddAbsThreshold(string path);
   void AddWindowThreshold(string path);
+  void SetYAxis(string argsString);
 	void AddSigmaThreshold(string path);
   bool IsSeriesPlotted(string path);
   void RemoveAllElements();
@@ -55,4 +56,6 @@ public:
   string _name;
 
 	FILE* _logFile;
+
+  float _graphYLow, _graphYHigh;
 };

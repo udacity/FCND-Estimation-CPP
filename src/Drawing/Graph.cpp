@@ -44,6 +44,10 @@ void Graph::AddItem(string path)
 	{
 		BeginLogToFile();
 	}
+  else if (path.find("SetYAxis(") != string::npos)
+  {
+    SetYAxis(path.substr(9));
+  }
   else
   {
     AddSeries(path);
@@ -70,6 +74,18 @@ void Graph::AddAbsThreshold(string path)
 
   shared_ptr<AbsThreshold> thr(new AbsThreshold(args[0], (float)atof(args[1].c_str()), (float)atof(args[2].c_str())));
   _analyzers.push_back(thr);
+}
+
+void Graph::SetYAxis(string argsString)
+{
+  vector<string> args = SLR::Split(argsString, ',');
+  if (args.size() != 2)
+  {
+    SLR_WARNING1("Malformed SetYAxis command (%s)", argsString.c_str());
+  }
+  
+  _graphYLow = (float)atof(args[0].c_str());
+  _graphYHigh = (float)atof(args[1].c_str());
 }
 
 void Graph::AddWindowThreshold(string path)
@@ -202,7 +218,9 @@ bool Graph::IsSeriesPlotted(string path)
 void Graph::RemoveAllElements()
 {
   _series.clear();
-  _analyzers.clear();
+  _analyzers.clear(); 
+  _graphYLow = -numeric_limits<float>::infinity();
+  _graphYHigh = numeric_limits<float>::infinity();
 }
 
 void Graph::Reset()
@@ -211,6 +229,9 @@ void Graph::Reset()
   {
     _series[i].Clear();
   }
+
+  _graphYLow = -numeric_limits<float>::infinity();
+  _graphYHigh = numeric_limits<float>::infinity();
 }
 
 void Graph::Clear()
@@ -430,6 +451,15 @@ void Graph::Draw()
   if ((highX - lowX) < 1.f)
   {
     highX = lowX + 1.f;
+  }
+
+  if (_graphYLow != -numeric_limits<float>::infinity())
+  {
+    lowY = MIN(_graphYLow,lowY);
+  }
+  if (_graphYHigh != numeric_limits<float>::infinity())
+  {
+    highY = MAX(_graphYHigh,highY);
   }
 
   // expand by 10%

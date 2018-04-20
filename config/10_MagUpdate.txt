@@ -1,6 +1,10 @@
-# BASIC
 INCLUDE Simulation.txt
 INCLUDE QuadPhysicalParams.txt
+INCLUDE SimulatedSensors.txt
+INCLUDE QuadControlParams.txt
+INCLUDE QuadEstimatorEKF.txt
+
+# BASIC
 Sim.RunMode = Repeat
 Sim.EndTime = 20
 Sim.Vehicle1 = Quad
@@ -12,14 +16,9 @@ QuadControlParams.Trajectory=traj/Square.txt
 # CONTROLLER
 Quad.ControlType = QuadControl
 Quad.ControlConfig = QuadControlParams
-INCLUDE QuadControlParams.txt
 
 # SENSORS
-INCLUDE SimulatedSensors.txt
 Quad.Sensors = SimIMU, SimMag
-
-# ESTIMATION
-INCLUDE QuadEstimatorEKF.txt
 
 # GRAPHING
 Commands += Toggle.ActualTrajectory
@@ -29,5 +28,6 @@ Commands += AddGraph1.Quad.Est.Yaw
 Commands += AddGraph1.Quad.Yaw
 
 Commands += AddGraph2.Quad.Est.E.Yaw
-Commands += AddGraph2.WindowThreshold(Quad.Est.E.Yaw, .08 ,10)
+Commands += AddGraph2.WindowThreshold(Quad.Est.E.Yaw, .12 ,10)
 Commands += AddGraph2.SigmaThreshold(Quad.Est.E.Yaw, 0, Quad.Est.S.Yaw,55,85,2)
+Commands += AddGraph2.SetYAxis(-0.15,0.15)

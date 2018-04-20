@@ -1,7 +1,7 @@
+INCLUDE Simulation.txt
 INCLUDE QuadPhysicalParams.txt
 INCLUDE SimulatedSensors.txt
 INCLUDE QuadControlParams.txt
-INCLUDE Simulation.txt
 INCLUDE QuadEstimatorEKF.txt
 
 # Basic Simulation Setup

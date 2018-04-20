@@ -5,7 +5,10 @@ MeasuredStdDev_AccelXY = .1
 
 ### END STUDENT SECTION
 
+INCLUDE Simulation.txt
 INCLUDE QuadPhysicalParams.txt
+INCLUDE SimulatedSensors.txt
+INCLUDE QuadControlParams.txt
 
 # simulation setup
 Sim.RunMode = Repeat
@@ -33,11 +36,7 @@ Commands += AddGraph2.Quad.IMU.AX
 Commands += AddGraph2.SigmaThreshold(Quad.IMU.AX, 0, MeasuredStdDev_AccelXY,64,73,2)
 Commands += AddGraph2.LogToFile
 
-INCLUDE QuadControlParams.txt
-INCLUDE Simulation.txt
-
 Quad.Sensors = SimIMU, SimGPS, SimMag
-INCLUDE SimulatedSensors.txt
 
 # Vehicle-specific config
 [Quad]
