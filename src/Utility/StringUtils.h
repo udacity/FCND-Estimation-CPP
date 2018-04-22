@@ -69,6 +69,13 @@ inline std::string RightOf(const std::string& s, char c)
   return s.substr(i + 1);
 }
 
+inline std::string RightOfLast(const std::string& s, char c)
+{
+  const auto i = s.find_last_of(c);
+  if (i == std::string::npos) return "";
+  return s.substr(i + 1);
+}
+
 inline std::vector<string> Split(const char* str, char c = ' ')
 {
   std::vector<std::string> result;

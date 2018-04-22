@@ -2,7 +2,7 @@ INCLUDE Simulation.txt
 INCLUDE QuadPhysicalParams.txt
 INCLUDE SimulatedSensors.txt
 INCLUDE QuadEstimatorEKF.txt
-INCLUDE QuadControlParams_Estimator.txt
+INCLUDE QuadControlParams.txt
 
 # BASIC
 Sim.RunMode = Repeat

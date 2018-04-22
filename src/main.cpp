@@ -94,7 +94,7 @@ void LoadScenario(string scenarioFile)
 
   ResetSimulation();
 
-  visualizer->Reset();
+  visualizer->OnLoadScenario(_scenarioFile);
   visualizer->InitializeMenu(grapher->GetGraphableStrings());
   visualizer->quads = quads;
   visualizer->graph = grapher;
@@ -180,7 +180,7 @@ void OnTimer(int)
     {
       visualizer->SetArrow(quads[0]->Position() - force, quads[0]->Position());
     }
-    visualizer->Update();
+    visualizer->Update(simulationTime);
     grapher->DrawUpdate();
     lastDraw.Reset();
 

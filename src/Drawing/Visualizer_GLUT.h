@@ -24,6 +24,7 @@ public:
 	Visualizer_GLUT(int *argcp, char **argv);
 	~Visualizer_GLUT();
 
+  void OnLoadScenario(string scenario);
 	void Reset();
 
   void OnMouseClick(int button, int state, int x, int y);
@@ -33,7 +34,7 @@ public:
 
   void OnResize(int width, int height);
   void Paint();
-  void Update();
+  void Update(float _simTime);
 
   bool IsKeyDown(uint8_t key);
   bool IsSpecialKeyDown(int specialKey);
@@ -49,8 +50,6 @@ public:
 
   shared_ptr<GraphManager> graph;
 
-  shared_ptr<Trajectory> followed_traj;
-
   void VisualizeTrajectory(const Trajectory& traj, bool drawPoints, V3F color, float alpha=1, V3F pointColor=V3F(.1f,.2f,1), V3F curPointColor=V3F(1,0,0), V3F offset=V3F(), int style=0);
 
   void InitializeMenu(const vector<string>& strings);
@@ -62,7 +61,6 @@ public:
 protected:
 	void initializeGL(int *argcp, char **argv);
 	
-  
   shared_ptr<SLR::OpenGLDrawer> _glDraw;
   int _glutWindowNum;
 
@@ -86,17 +84,15 @@ private:
 
 
 protected:
-
-	
-	Timer _unlabeledMarkersTime;
-
 	GLUquadricObj *glQuadric;
 
 	bool _drawVolumeBoundaries;
 	V3F _bgColorBottomRight, _bgColorBottomLeft, _bgColorTopRight, _bgColorTopLeft;
-	void DrawBackground();
 	
+  void DrawBackground();
 	void DrawCoordinateReference();
+  void DrawBottomStatus(float simTime);
+
 	V3D _refLoc;
 
 	Timer _timeSinceLastPaint;
@@ -134,5 +130,7 @@ protected:
   int lastPosX, lastPosY;
   
   string _delayedScenarioLoader;
+  float _lastSimTime;
+  string _scenarioName;
 };
 

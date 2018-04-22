@@ -105,6 +105,7 @@ Visualizer_GLUT::Visualizer_GLUT(int *argcp, char **argv)
 	glQuadric = gluNewQuadric();
 
 	_volumeCallList = 0;
+  _lastSimTime = 0;
 
 	_cameraTrackingMode = "Independent";
 	
@@ -170,8 +171,9 @@ void Visualizer_GLUT::Reset()
 	}
 }
 
-void Visualizer_GLUT::Update()
+void Visualizer_GLUT::Update(float simTime)
 {
+  _lastSimTime = simTime;
   glutPostWindowRedisplay(_glutWindowNum);
   if (_exiting) return;
 }
@@ -446,9 +448,7 @@ void Visualizer_GLUT::Paint()
 	glGetDoublev(GL_PROJECTION_MATRIX,projMatrix);
 	glGetIntegerv(GL_VIEWPORT,viewport);
 
-  SetupLights(_glDraw);
-
-  
+  SetupLights(_glDraw);  
 
 	// enable color tracking
 	glEnable(GL_COLOR_MATERIAL);
@@ -486,6 +486,8 @@ void Visualizer_GLUT::Paint()
   glPopMatrix();
   glMatrixMode(GL_MODELVIEW);
 
+  DrawBottomStatus(_lastSimTime);
+
   // Draw graph if there is a graph
   if (graph)
   {
@@ -498,15 +500,6 @@ void Visualizer_GLUT::Paint()
 
     glPopMatrix();
   }
-
-  // Display the "paused" text if necessary
-  if (paused)
-  {
-    glColor3f(1,0,0);
-    DrawStrokeText("Paused", -1+0.1f, 1-0.2f, 0, 3.f);
-  }
-
-  //glutSwapBuffers();
   
   _last_draw_time_ms = (float)t.Seconds()*1000.f;
 
@@ -515,6 +508,23 @@ void Visualizer_GLUT::Paint()
     LoadScenario(_delayedScenarioLoader);
     _delayedScenarioLoader = "";
   }
+}
+
+void Visualizer_GLUT::OnLoadScenario(string scenario)
+{
+  _scenarioName = SLR::RightOfLast(scenario, '/').c_str();
+  _scenarioName = SLR::LeftOf(_scenarioName, '.');
+  Reset();
+}
+
+void Visualizer_GLUT::DrawBottomStatus(float simTime)
+{
+  char buf[100];
+
+  sprintf_s(buf, 100, "%s t=%.3f%s", _scenarioName.c_str(), simTime, paused?" Paused":"");
+  
+  glColor3f(0, 0, 1);
+  DrawStrokeText(buf, -1 + 0.025f, -0.975f, 0, 1.5, .5f, .5f);
 }
 
 void Visualizer_GLUT::VisualizeQuadCopter(shared_ptr<QuadDynamics> quad)
