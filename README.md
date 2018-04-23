@@ -99,7 +99,7 @@ Up until now we've only used the accelerometer and gyro for our state estimation
 
 **Hint: after implementing the magnetometer update, you may have to once again tune the parameter `QYawStd` to better balance between the long term drift and short-time noise from the magnetometer.**
 
-
+# Option 1 - Split Step 5 into 2 Steps #
 
 ## Step 5: Closed Loop + GPS Update ##
 
@@ -137,13 +137,45 @@ Up to this point, we have been working with a controller that has been relaxed t
 
 ***Success criteria:*** *Your objective is to complete the entire simulation cycle with estimated position error of < 1m.*
 
+# Option 2 - Break down Step 5 a little bit differently #
 
-## Comments to self ##
+## Step 5: Closed Loop + GPS Update ##
 
-TODO: may want to split step 5 from google doc into 2 steps, or some sub steps, since this one ends up being a lot of doing.  May not be as complex as the predict step, but ends up being pretty involved with the many different changes being made.
+Up to this point, you've been using a controller that has been tuned to work well with an estimated state.  In the last project, your controller was designed using perfect state information.  Removing this assumption and using an estimated state can result in your controller no longer working as desired.  In this step you will update your controller to work with the estimated state and take care of the last update required for your estimator, the GPS update.
 
-Roughly the steps are:
 
- - let's remove the assumption of an ideal estimator and see what happens (meaning, let's see how good your IMU + Mag estimator is with your controller, but still perfect sensors!)
- - now let's make our IMU not perfect, let's fly on a "real" looking IMU.  This is to show that your IMU only estimator, no matter how good, is going to be super drifty! (motivate the need for the GPS update).
- - now let's take into account GPS data and look at how much better that is!
+### Step 5a: Your Controller ###
+
+Let's bring in your controller and configure the simulation to run
+
+1. Replace `QuadController.cpp` with the controller you wrote in the last project.
+
+2. Replace `QuadControlParams.txt` with the control parameters you came up with in the last project.
+
+3. Let's change to using your estimator by setting `Quad.UseIdealEstimator` to 0 in `config/11_GPSUpdate.txt`.
+
+4. Now the simulation is configured to use your estimator AND your controller.  Rerun the scenario to see what happens.  **If your controller crashes immediately do not panic.** Flying from an estimated state (even with ideal sensors) is very different from flying with ideal pose. You may need to de-tune your controller. Decrease the position and velocity gains (we’ve seen about 30% detuning being effective) to stabilize it.
+
+### Step 5b: Your Controller, Noisy Sensors ###
+
+In the previous step, the simulation was still using perfect sensors.  Let's remove that assumption and once again re-tune your controller.
+
+1. Change the simulation to use a realistic IMU by commenting out these lines in `config/11_GPSUpdate.txt`:
+```
+#SimIMU.AccelStd = 0,0,0
+#SimIMU.GyroStd = 0,0,0
+```
+
+2. You may find your controller already works, or you may need to further de-tune your controller to keep your quad in the air.  Don't worry about your controlling drifting off the intended path, that will be taken care of in the next step; here your focus should be on making sure your quad don't crash suddenly or oscillate out of control, etc.
+
+### Step 5c: GPS Update ###
+
+Now that you have your controller and estimator working together, you will implement the final step: the GPS Update.  You'll notice that running the simulation in the previous step resulted in growing errors in position of the vehicle due to the fact that without GPS your position estimate will drift over time.  In this final step, you will write the GPS update step to get your controller and estimator successfully flying the quad along the intended path.
+
+1. Tune the process noise model in `QuadEstimatorEKF.txt` to try to approximately capture the error you see with the estimated uncertainty (standard deviation) of the filter.
+
+2. Implement the EKF GPS Update in the function `UpdateFromGPS()`.
+
+3. Now once again re-run the simulation.  Your objective is to complete the entire simulation cycle with estimated position error of < 1m (you’ll see a green box over the bottom graph if you succeed).  You may want to try experimenting with the GPS update parameters to try and get better performance.
+
+***Success criteria:*** *Your objective is to complete the entire simulation cycle with estimated position error of < 1m.*
