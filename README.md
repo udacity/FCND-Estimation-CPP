@@ -62,12 +62,12 @@ Once again, you will be building up your estimator in pieces.  At each step, the
 
 Project outline:
 
- - [Step 1: Sensor Noise](#step-1:-sensor-noise)
- - [Step 2: Attitude Estimation](#step-2:-attitude-estimation)
- - [Step 3: Prediction Step](#step-3:-prediction-step)
- - [Step 4: Magnetometer Update](#step-4:-magnetometer-update)
- - [Step 5: Closed Loop + GPS Update](#step-5:-closed-loop-+-gps-update)
- - [Step 6: Adding Your Controller](#step-6:-adding-your-controller)
+ - [Step 1: Sensor Noise](#step-1-sensor-noise)
+ - [Step 2: Attitude Estimation](#step-2-attitude-estimation)
+ - [Step 3: Prediction Step](#step-3-prediction-step)
+ - [Step 4: Magnetometer Update](#step-4-magnetometer-update)
+ - [Step 5: Closed Loop + GPS Update](#step-5-closed-loop-+-gps-update)
+ - [Step 6: Adding Your Controller](#step-6-adding-your-controller)
 
 
 
