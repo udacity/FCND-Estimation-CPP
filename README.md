@@ -1,6 +1,21 @@
-# Project #
+# Estimation Project #
 
 Welcome to the estimation project.  In this project, you will be developing the estimation portion of the controller used in the CPP simulator.  By the end of the project, your simulated quad will be flying with your estimator and your custom controller (from the previous project)!
+
+This README is broken down into the following sections:
+
+ - [Setup](#setup) - the environment and code setup required to get started and a brief overview of the project structure
+ - [The Tasks](#the-tasks) - the tasks you will need to complete for the project
+ - [Submission](#submission) - overview of the requirements for your project submission
+ - [Tips and Tricks](#tips-and-tricks) - some additional tips and tricks you may find useful along the way
+
+## Setup ##
+
+This project is 
+
+
+## The Tasks ##
+
 
 Once again, you will be building up your estimator in pieces.  At each step, there will be a set of success criteria that will be displayed both in the plots and in the terminal output to help you along the way.
 
@@ -134,48 +149,5 @@ Up to this point, we have been working with a controller that has been relaxed t
 3. Run scenario `11_GPSUpdate`. If your controller crashes immediately do not panic. Flying from an estimated state (even with ideal sensors) is very different from flying with ideal pose. You may need to de-tune your controller. Decrease the position and velocity gains (we’ve seen about 30% detuning being effective) to stabilize it.  Your goal is to once again complete the entire simulation cycle with an estimated position error of < 1m.
 
 **Hint: you may find it easiest to do your de-tuning as a 2 step process by reverting to ideal sensors and de-tuning under those conditions first.**
-
-***Success criteria:*** *Your objective is to complete the entire simulation cycle with estimated position error of < 1m.*
-
-# Option 2 - Break down Step 5 a little bit differently #
-
-## Step 5: Closed Loop + GPS Update ##
-
-Up to this point, you've been using a controller that has been tuned to work well with an estimated state.  In the last project, your controller was designed using perfect state information.  Removing this assumption and using an estimated state can result in your controller no longer working as desired.  In this step you will update your controller to work with the estimated state and take care of the last update required for your estimator, the GPS update.
-
-
-### Step 5a: Your Controller ###
-
-Let's bring in your controller and configure the simulation to run
-
-1. Replace `QuadController.cpp` with the controller you wrote in the last project.
-
-2. Replace `QuadControlParams.txt` with the control parameters you came up with in the last project.
-
-3. Let's change to using your estimator by setting `Quad.UseIdealEstimator` to 0 in `config/11_GPSUpdate.txt`.
-
-4. Now the simulation is configured to use your estimator AND your controller.  Rerun the scenario to see what happens.  **If your controller crashes immediately do not panic.** Flying from an estimated state (even with ideal sensors) is very different from flying with ideal pose. You may need to de-tune your controller. Decrease the position and velocity gains (we’ve seen about 30% detuning being effective) to stabilize it.
-
-### Step 5b: Your Controller, Noisy Sensors ###
-
-In the previous step, the simulation was still using perfect sensors.  Let's remove that assumption and once again re-tune your controller.
-
-1. Change the simulation to use a realistic IMU by commenting out these lines in `config/11_GPSUpdate.txt`:
-```
-#SimIMU.AccelStd = 0,0,0
-#SimIMU.GyroStd = 0,0,0
-```
-
-2. You may find your controller already works, or you may need to further de-tune your controller to keep your quad in the air.  Don't worry about your controlling drifting off the intended path, that will be taken care of in the next step; here your focus should be on making sure your quad don't crash suddenly or oscillate out of control, etc.
-
-### Step 5c: GPS Update ###
-
-Now that you have your controller and estimator working together, you will implement the final step: the GPS Update.  You'll notice that running the simulation in the previous step resulted in growing errors in position of the vehicle due to the fact that without GPS your position estimate will drift over time.  In this final step, you will write the GPS update step to get your controller and estimator successfully flying the quad along the intended path.
-
-1. Tune the process noise model in `QuadEstimatorEKF.txt` to try to approximately capture the error you see with the estimated uncertainty (standard deviation) of the filter.
-
-2. Implement the EKF GPS Update in the function `UpdateFromGPS()`.
-
-3. Now once again re-run the simulation.  Your objective is to complete the entire simulation cycle with estimated position error of < 1m (you’ll see a green box over the bottom graph if you succeed).  You may want to try experimenting with the GPS update parameters to try and get better performance.
 
 ***Success criteria:*** *Your objective is to complete the entire simulation cycle with estimated position error of < 1m.*
