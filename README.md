@@ -45,15 +45,19 @@ For this project, you will be interacting with a few more files than before.
 
 #### `config` Directory ####
 
-In the `config` directory, in addition to finding the configuration files for your controller and your estimator, you will also see configuration files for each of the simulations.  For this project, you will be working with simulations XX through XX and you may find it insightful to take a look at the configuration for the simulation.
+In the `config` directory, in addition to finding the configuration files for your controller and your estimator, you will also see configuration files for each of the simulations.  For this project, you will be working with simulations 06 through 11 and you may find it insightful to take a look at the configuration for the simulation.
 
-As an example, if we look through the configuration file for scenario XX, we see the following list of parameters:
+As an example, if we look through the configuration file for scenario 07, we see the following parameters controlling the sensor:
 
-TODO: insert parameters.
+```
+# Sensors
+Quad.Sensors = SimIMU
+# use a perfect IMU
+SimIMU.AccelStd = 0,0,0
+SimIMU.GyroStd = 0,0,0
+```
 
-This tells us that the simulation is using an ideal controller, and an ideal estimator with no noise....
-
-TODO: summarize some of the key parameters of interest that will help someone figure our what assumptions are being made by the simulator.
+This configuration tells us that the simulator is only using an IMU and the sensor data will have no noise.  You will notice that for each simulator these parameters will change slightly as additional sensors are being used and the noise behavior of the sensors change.
 
 
 ## The Tasks ##
