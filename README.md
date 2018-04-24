@@ -66,7 +66,7 @@ Project outline:
  - [Step 2: Attitude Estimation](#step-2-attitude-estimation)
  - [Step 3: Prediction Step](#step-3-prediction-step)
  - [Step 4: Magnetometer Update](#step-4-magnetometer-update)
- - [Step 5: Closed Loop + GPS Update](#step-5-closed-loop-+-gps-update)
+ - [Step 5: Closed Loop + GPS Update](#step-5-closed-loop--gps-update)
  - [Step 6: Adding Your Controller](#step-6-adding-your-controller)
 
 
