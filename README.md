@@ -62,15 +62,16 @@ Once again, you will be building up your estimator in pieces.  At each step, the
 
 Project outline:
 
- - [Step 1: Sensor Noise]()
- - [Step 2: Attitude Estimation]()
- - [Step 3: Prediction Step]()
- - [Step 4: Magnetometer Update]()
- - [Step 5: Closed Loop + GPS Update]()
+ - [Step 1: Sensor Noise](step-1:-sensor-noise)
+ - [Step 2: Attitude Estimation](step-2:-attitude-estimation)
+ - [Step 3: Prediction Step](step-3:-prediction-step)
+ - [Step 4: Magnetometer Update](step-4:-magnetometer-update)
+ - [Step 5: Closed Loop + GPS Update](step-5:-closed-loop-+-gps-update)
+ - [Step 6: Adding Your Controller](step-6:-adding-your-controller)
 
 
 
-## Step 1: Sensor Noise ##
+### Step 1: Sensor Noise ###
 
 For the controls project, the simulator was working with a perfect set of sensors, meaning none of the sensors had any noise.  The first step to adding additional realism to the problem, and developing an estimator, is adding noise to the quad's sensors.  For the first step, you will collect some simulated noisy sensor data and estimate the standard deviation of the quad's sensor.
 
@@ -89,7 +90,7 @@ For the controls project, the simulator was working with a perfect set of sensor
 NOTE: Your answer should match the settings in `SimulatedSensors.txt`, where you can also grab the simulated noise parameters for all the other sensors.
 
 
-## Step 2: Attitude Estimation ##
+### Step 2: Attitude Estimation ###
 
 Now let's look at the first step to our state estimation: including information from our IMU.  In this step, you will be improving the complementary filter-type attitude filter with a better rate gyro attitude integration scheme.
 
@@ -114,7 +115,7 @@ TODO: should I add a hint about functions in the Quaternion class???  There prob
 
 
 
-## Step 3: Prediction Step ##
+### Step 3: Prediction Step ###
 
 In this next step you will be implementing the prediction step of your filter.
 
@@ -141,7 +142,7 @@ TODO: add image of what we mean by make it look reasonable for a relatively shor
 ***Success criteria:*** *This step doesn't have any specific measurable criteria being checked.*
 
 
-## Step 4: Magnetometer Update ##
+### Step 4: Magnetometer Update ###
 
 Up until now we've only used the accelerometer and gyro for our state estimation.  In this step, you will be adding the information from the magnetometer to improve your filter's performance in estimating the vehicle's heading.
 
@@ -155,9 +156,8 @@ Up until now we've only used the accelerometer and gyro for our state estimation
 
 **Hint: after implementing the magnetometer update, you may have to once again tune the parameter `QYawStd` to better balance between the long term drift and short-time noise from the magnetometer.**
 
-# Option 1 - Split Step 5 into 2 Steps #
 
-## Step 5: Closed Loop + GPS Update ##
+### Step 5: Closed Loop + GPS Update ###
 
 1. Run scenario `11_GPSUpdate`.  At the moment this scenario is using both an ideal estimator and and ideal IMU.  Even with these ideal elements, watch the position and velocity errors (bottom right). As you see they are drifting away, since GPS update is not yet implemented.
 
@@ -179,7 +179,7 @@ Up until now we've only used the accelerometer and gyro for our state estimation
 
 At this point, congratulations on having a working estimator!
 
-## Step 6: Closed Loop + GPS Update Part 2 ##
+### Step 6: Adding Your Controller ###
 
 Up to this point, we have been working with a controller that has been relaxed to work with an estimated state instead of a real state.  So now, you will see how well your controller performs and de-tune your controller accordingly.
 
