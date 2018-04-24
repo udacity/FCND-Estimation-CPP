@@ -6,8 +6,9 @@ This README is broken down into the following sections:
 
  - [Setup](#setup) - the environment and code setup required to get started and a brief overview of the project structure
  - [The Tasks](#the-tasks) - the tasks you will need to complete for the project
- - [Submission](#submission) - overview of the requirements for your project submission
  - [Tips and Tricks](#tips-and-tricks) - some additional tips and tricks you may find useful along the way
+ - [Submission](#submission) - overview of the requirements for your project submission
+
 
 ## Setup ##
 
@@ -56,7 +57,6 @@ TODO: summarize some of the key parameters of interest that will help someone fi
 
 
 ## The Tasks ##
-
 
 Once again, you will be building up your estimator in pieces.  At each step, there will be a set of success criteria that will be displayed both in the plots and in the terminal output to help you along the way.
 
@@ -192,3 +192,24 @@ Up to this point, we have been working with a controller that has been relaxed t
 **Hint: you may find it easiest to do your de-tuning as a 2 step process by reverting to ideal sensors and de-tuning under those conditions first.**
 
 ***Success criteria:*** *Your objective is to complete the entire simulation cycle with estimated position error of < 1m.*
+
+
+## Tips and Tricks ##
+
+ - When it comes to transposing matrices, `.transposeInPlace()` is the function you want to use to transpose a matrix
+
+
+## Submission ##
+
+For this project, you will need to submit:
+
+ - a completed estimator that meets the performance criteria for each of the steps by submitting:
+   - `QuadEstimatorEKF.cpp`
+   - `config/QuadEstimatorEKF.txt`
+
+ - a re-tuned controller that, in conjunction with your tuned estimator, is capable of meeting the criteria laid out in Step 6 by submitting:
+   - `QuadController.cpp`
+   - `config/QuadControlParams.txt`
+
+ - a write up addressing all the points of the rubric
+
