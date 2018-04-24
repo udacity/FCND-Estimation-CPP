@@ -11,7 +11,48 @@ This README is broken down into the following sections:
 
 ## Setup ##
 
-This project is 
+This project will continue to use the C++ development environment you set up in the Controls C++ project.
+
+ 1. Clone the repository
+ ```
+ git clone https://github.com/udacity/FCND-Estimation-CPP.git
+ ```
+
+ 2. Import the code into your IDE like done in the [Controls C++ project](https://github.com/udacity/FCND-Controls-CPP#development-environment-setup)
+ 
+ 3. You should now be able to compile and run the estimation simulator just as you did in the controls project
+
+
+### Project Structure ###
+
+For this project, you will be interacting with a few more files than before.
+
+ - The EKF is already partially implemented for you in `QuadEstimatorEKF.cpp`
+
+ - Parameters for tuning the EKF are in the parameter file `QuadEstimatorEKF.txt`
+
+ - When you turn on various sensors (the scenarios configure them, e.g. `Quad.Sensors += SimIMU, SimMag, SimGPS`), additional sensor plots will become available to see what the simulated sensors measure.
+
+ - The EKF implementation exposes both the estimated state and a number of additional variables. In particular:
+
+   - `Quad.Est.E.X` is the error in estimated X position from true value.  More generally, the variables in `<vehicle>.Est.E.*` are relative errors, though some are combined errors (e.g. MaxEuler).
+
+   - `Quad.Est.S.X` is the estimated standard deviation of the X state (that is, the square root of the appropriate diagonal variable in the covariance matrix). More generally, the variables in `<vehicle>.Est.S.*` are standard deviations calculated from the estimator state covariance matrix.
+
+   - `Quad.Est.D` contains miscellaneous additional debug variables useful in diagnosing the filter. You may or might not find these useful but they were helpful to us in verifying the filter and may give you some ideas if you hit a block.
+
+
+#### `config` Directory ####
+
+In the `config` directory, in addition to finding the configuration files for your controller and your estimator, you will also see configuration files for each of the simulations.  For this project, you will be working with simulations XX through XX and you may find it insightful to take a look at the configuration for the simulation.
+
+As an example, if we look through the configuration file for scenario XX, we see the following list of parameters:
+
+TODO: insert parameters.
+
+This tells us that the simulation is using an ideal controller, and an ideal estimator with no noise....
+
+TODO: summarize some of the key parameters of interest that will help someone figure our what assumptions are being made by the simulator.
 
 
 ## The Tasks ##
