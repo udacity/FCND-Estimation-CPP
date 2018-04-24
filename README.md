@@ -105,18 +105,13 @@ Observe that there’s quite a bit of error in attitude estimation.
 
 2. In `QuadEstimatorEKF.cpp`, you will see the function `UpdateFromIMU()` contains a complementary filter-type attitude filter.  To reduce the errors in the estimated attitude (Euler Angles), implement a better rate gyro attitude integration scheme.  You should be able to reduce the attitude errors to get within 0.1 rad for each of the Euler angles, as shown in the screenshot below.
 
+![attitude example](images/attitude-screenshot.png)
 
-TODO: insert screenshot
-
-In screenshot above: attitude estimation using linear scheme (left) and using the improved nonlinear scheme (right). Note that Y axis on error is much greater on left.
+In the screenshot above the attitude estimation using linear scheme (left) and using the improved nonlinear scheme (right). Note that Y axis on error is much greater on left.
 
 ***Success criteria:*** *Your attitude estimator needs to get within 0.1 rad for each of the Euler angles for at least 3 seconds.*
 
 TODO: direct students to where in the document the equations can be found for the integration scheme to be used.
-
-TODO: should I add a hint about functions in the Quaternion class???  There probably should be some resource set that is linked to that contains the functions, etc, of stuff that the different classes being used have.  Not sure how to recommend to students to use the quaternion class when doing the integration....  the overleaf doc is lacking a little bit on the non-linear complimentary filter.
-
-
 
 
 ### Step 3: Prediction Step ###
