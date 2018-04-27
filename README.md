@@ -212,3 +212,6 @@ For this project, you will need to submit:
 
  - a write up addressing all the points of the rubric
 
+## Authors ##
+
+Thanks to Fotokite for the initial development of the project code and simulator.
