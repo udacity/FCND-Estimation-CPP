@@ -14,7 +14,7 @@ QuadEstimatorEKF::QuadEstimatorEKF(string config, string name)
   cov(QUAD_EKF_NUM_STATES, QUAD_EKF_NUM_STATES),
   Q(QUAD_EKF_NUM_STATES, QUAD_EKF_NUM_STATES),
   R_GPS(6, 6),
-  R_Yaw(1, 1),
+  R_Mag(1, 1),
   trueError(QUAD_EKF_NUM_STATES)
 
 {
@@ -42,16 +42,19 @@ void QuadEstimatorEKF::Init()
 
   pitchEst = 0;
   rollEst = 0;
-
+  
+  // GPS measurement model covariance
   R_GPS.setZero();
   R_GPS(0, 0) = R_GPS(1, 1) = powf(paramSys->Get(_config + ".GPSPosXYStd", 0), 2);
   R_GPS(2, 2) = powf(paramSys->Get(_config + ".GPSPosZStd", 0), 2);
   R_GPS(3, 3) = R_GPS(4, 4) = powf(paramSys->Get(_config + ".GPSVelXYStd", 0), 2);
   R_GPS(5, 5) = powf(paramSys->Get(_config + ".GPSVelZStd", 0), 2);
 
-  R_Yaw.setZero();
-  R_Yaw(0, 0) = powf(paramSys->Get(_config + ".MagYawStd", 0), 2);
+  // magnetometer measurement model covariance
+  R_Mag.setZero();
+  R_Mag(0, 0) = powf(paramSys->Get(_config + ".MagYawStd", 0), 2);
 
+  // load the transition model covariance
   Q.setZero();
   Q(0, 0) = Q(1, 1) = powf(paramSys->Get(_config + ".QPosXYStd", 0), 2);
   Q(2, 2) = powf(paramSys->Get(_config + ".QPosZStd", 0), 2);
@@ -245,6 +248,8 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   // - you may find the current estimated attitude in variables rollEst, pitchEst, state(6).
   //
   // - use the class MatrixXf for matrices. To create a 3x5 matrix A, use MatrixXf A(3,5).
+  //
+  // - the transition model covariance, Q, is loaded up from a parameter file in member variable Q
   // 
   // - This is unfortunately a messy step. Try to split this up into clear, manageable steps:
   //   1) Calculate the necessary helper matrices, building up the transition jacobian
@@ -302,6 +307,7 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
 
   // GPS UPDATE
   // Hints: 
+  //  - The GPS measurement covariance is available in member variable R_Mag
   //  - this is a very simple update
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
@@ -335,6 +341,7 @@ void QuadEstimatorEKF::UpdateFromMag(float magYaw)
   //  - Your current estimated yaw can be found in the state vector: state(6)
   //  - Make sure to normalize the difference between your measured and estimated yaw
   //    (you don't want to update your yaw the long way around the circle)
+  //  - The magnetomer measurement covariance is available in member variable R_Mag
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
 
@@ -351,7 +358,7 @@ void QuadEstimatorEKF::UpdateFromMag(float magYaw)
 
   hPrime(0, 6) = 1;
 
-  Update(z, hPrime, R_Yaw, hOfU);
+  Update(z, hPrime, R_Mag, hOfU);
 
   //////////////////////////////// END SOLUTION ///////////////////////////////
 }

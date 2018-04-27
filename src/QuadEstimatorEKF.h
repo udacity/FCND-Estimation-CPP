@@ -40,7 +40,7 @@ public:
 	MatrixXf R_GPS;
 
 	// Magnetometer measurement covariance
-	MatrixXf R_Yaw;
+	MatrixXf R_Mag;
 
   // attitude filter state
   float pitchEst, rollEst;
