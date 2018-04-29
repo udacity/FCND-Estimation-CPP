@@ -48,12 +48,16 @@ public:
 	V3F accelG;
 	V3F lastGyro;
 
-  // generic update
-  void Update(VectorXf& z, MatrixXf& H, MatrixXf& R, VectorXf& hOfU);
+  // generic EKF update
+  // z: measurement
+  // H: Jacobian of observation function evaluated at the current estimated state
+  // R: observation error model covariance 
+  // zFromX: measurement prediction based on current state
+  void Update(VectorXf& z, MatrixXf& H, MatrixXf& R, VectorXf& zFromX);
 
-  // EKF state  
-	VectorXf state;
-	MatrixXf cov;
+  // EKF state and covariance
+	VectorXf ekfState;
+	MatrixXf ekfCov;
 
   // params
   float attitudeTau;
@@ -73,17 +77,17 @@ public:
 
 	virtual V3F EstimatedPosition() 
 	{
-		return V3F(state(0), state(1), state(2));
+		return V3F(ekfState(0), ekfState(1), ekfState(2));
 	}
 
 	virtual V3F EstimatedVelocity()
 	{
-		return V3F(state(3), state(4), state(5));
+		return V3F(ekfState(3), ekfState(4), ekfState(5));
 	}
 
 	virtual Quaternion<float> EstimatedAttitude()
 	{
-		return Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, state(6));
+		return Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, ekfState(6));
 	}
 
 	virtual V3F EstimatedOmega()

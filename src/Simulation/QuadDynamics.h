@@ -93,11 +93,10 @@ protected:
 
   double controllerUpdateInterval, timeSinceLastControllerUpdate;
 
-	V3F _rawGyro;
   float _lastPosFollowErr;
 
   V3F color;  
   string _flightMode;
 	bool _useIdealEstimator; 
-  
+
 };

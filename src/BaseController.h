@@ -23,12 +23,6 @@ public:
   virtual void Init();
   virtual void Reset();
 
-  void OnSensor_IMU(V3F accel, V3F gyros);
-  void OnSensor_OpticalFlow(float x, float y);
-  void OnSensor_Range(float z);
-  void OnSensor_GPS(V3D LLA); 
-  void OnSensor_Magnetometer(V3F);
-
   TrajectoryPoint GetNextTrajectoryPoint(float mission_time);
 
   // update the vehicle state estimates the controller will use to do control
@@ -56,12 +50,6 @@ public:
   V3F estVel;
   V3F estPos;
   V3F estOmega;
-
-  // measurements
-  float optFlowX, optFlowY;
-  V3F gyros;
-  V3F accels;
-  float range;
 
   Trajectory trajectory;
   TrajectoryPoint curTrajPoint;
