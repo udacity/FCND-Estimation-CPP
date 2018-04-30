@@ -31,12 +31,14 @@ QuadEstimatorEKF.attitudeTau = 100
 # GRAPHING
 Commands += Toggle.ActualTrajectory
 
-Commands += AddGraph1.Quad.Pos.Y
-Commands += AddGraph1.Quad.Vel.y
-Commands += AddGraph1.Quad.Est.Y
-Commands += AddGraph1.Quad.Est.VY
+Commands += SetTitle(1,"Y Pos/Vel: True vs Predicted")
+Commands += Plot(1,Quad.Pos.Y,"true Y")
+Commands += Plot(1,Quad.Est.Y,"est Y")
+Commands += Plot(1,Quad.Vel.Y,"true vY")
+Commands += Plot(1,Quad.Est.VY,"est vY")
 
-Commands += AddGraph2.Quad.Pos.Z
-Commands += AddGraph2.Quad.Vel.Z
-Commands += AddGraph2.Quad.Est.Z
-Commands += AddGraph2.Quad.Est.VZ
+Commands += SetTitle(2,"Z Pos/Vel: True vs Predicted")
+Commands += Plot(2,Quad.Pos.Z,"true z")
+Commands += Plot(2,Quad.Est.Z,"est z")
+Commands += Plot(2,Quad.Vel.Z,"true vz")
+Commands += Plot(2,Quad.Est.VZ,"est vz")

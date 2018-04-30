@@ -199,6 +199,52 @@ void DrawStrokeText(const char* str, float x, float y, float z, float lineWidth,
   glPopMatrix();
 }
 
+void DrawStrokeText_Align(const char* str, float x, float y, float z, float lineWidth, float scaleX, float scaleY, int align)
+{
+  char *c;
+  glPushMatrix();
+  glTranslatef(x, y, z);
+  glScalef(0.0006f*scaleX, 0.0008f*scaleY, z);
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_LINE_SMOOTH);
+  glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+  glEnable(GL_LINE_SMOOTH);
+  glLineWidth(lineWidth);
+
+  // note: we divide spaces by 2 since they appear to be huge in the stroke font
+  int width = 0, spaceWAdjust=0;
+  for (c = (char*)str; *c != 0; c++)
+  {
+    int w = glutStrokeWidth(GLUT_STROKE_ROMAN, *c);
+    if (*c == ' ')
+    {
+      w /= 2;
+      spaceWAdjust = w;
+    }
+    width += w;
+  }
+
+  if (align == GLD_ALIGN_RIGHT)
+  {
+    glTranslatef(-(float)width, 0, 0);
+  }
+  else if (align == GLD_ALIGN_CENTER)
+  {
+    glTranslatef(-(float)width/2, 0, 0);
+  }
+
+  for (c = (char*)str; *c != 0; c++)
+  {
+    glutStrokeCharacter(GLUT_STROKE_ROMAN, *c);
+    if (*c == ' ') glTranslatef(-(float)spaceWAdjust, 0, 0);
+  }
+  glLineWidth(1.0);
+  glPopMatrix();
+}
+
+
 void DrawX3D(V3D markingColor, V3D bodyColor, double alpha, bool solidPart, bool transPart, GLUquadricObj *glQuadric)
 {	
   const float armL = .17f;    // .17 for hummingbird

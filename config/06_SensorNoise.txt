@@ -29,10 +29,13 @@ QuadControlParams.Trajectory=0,0,-1
 #   the threshold visualization turns green
 
 # graphing commands
-Commands += AddGraph1.Quad.GPS.X
+Commands += SetTitle(1,"GPS")
+Commands += Plot(1,Quad.GPS.X,"x position",0,1,1)
 Commands += AddGraph1.SigmaThreshold(Quad.GPS.X, Quad.Pos.X, MeasuredStdDev_GPSPosXY,64,73,2)
 Commands += AddGraph1.LogToFile
-Commands += AddGraph2.Quad.IMU.AX
+
+Commands += SetTitle(2,"Accelerometer")
+Commands += Plot(2,Quad.IMU.AX,"x accel",.5,.7,1)
 Commands += AddGraph2.SigmaThreshold(Quad.IMU.AX, 0, MeasuredStdDev_AccelXY,64,73,2)
 Commands += AddGraph2.LogToFile
 

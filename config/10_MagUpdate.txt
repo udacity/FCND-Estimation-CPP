@@ -23,11 +23,13 @@ Quad.Sensors = SimIMU, SimMag
 # GRAPHING
 Commands += Toggle.ActualTrajectory
 
-Commands += AddGraph1.Quad.MagYaw
-Commands += AddGraph1.Quad.Est.Yaw
-Commands += AddGraph1.Quad.Yaw
+Commands += SetTitle(1,"Yaw")
+Commands += Plot(1,Quad.MagYaw,"Mag")
+Commands += Plot(1,Quad.Est.Yaw,"Estimated")
+Commands += Plot(1,Quad.Yaw,"True")
 
-Commands += AddGraph2.Quad.Est.E.Yaw
+Commands += SetTitle(2,"Yaw Error")
+Commands += Plot(2,Quad.Est.E.Yaw,"yaw error", 1, 1, 0)
 Commands += AddGraph2.WindowThreshold(Quad.Est.E.Yaw, .12 ,10)
 Commands += AddGraph2.SigmaThreshold(Quad.Est.E.Yaw, 0, Quad.Est.S.Yaw,55,85,2)
 Commands += AddGraph2.SetYAxis(-0.15,0.15)

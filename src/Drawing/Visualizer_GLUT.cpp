@@ -844,7 +844,7 @@ void Visualizer_GLUT::OnMenu(string cmd)
   }
   else
   {
-    graph->AddGraph(cmd);
+    graph->GraphCommand(cmd);
   }
 }
 
