@@ -10,6 +10,7 @@ class BaseQuadEstimator : public DataSource
 {
 public:
   BaseQuadEstimator(string config);
+  virtual ~BaseQuadEstimator();
 
   virtual void Init() {};
 

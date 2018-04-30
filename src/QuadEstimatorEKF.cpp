@@ -10,17 +10,21 @@ const int QuadEstimatorEKF::QUAD_EKF_NUM_STATES;
 
 QuadEstimatorEKF::QuadEstimatorEKF(string config, string name)
   : BaseQuadEstimator(config),
-  ekfState(QUAD_EKF_NUM_STATES),
-  ekfCov(QUAD_EKF_NUM_STATES, QUAD_EKF_NUM_STATES),
   Q(QUAD_EKF_NUM_STATES, QUAD_EKF_NUM_STATES),
   R_GPS(6, 6),
   R_Mag(1, 1),
+  ekfState(QUAD_EKF_NUM_STATES),
+  ekfCov(QUAD_EKF_NUM_STATES, QUAD_EKF_NUM_STATES),
   trueError(QUAD_EKF_NUM_STATES)
-
 {
   _name = name;
   Init();
-};
+}
+
+QuadEstimatorEKF::~QuadEstimatorEKF()
+{
+
+}
 
 void QuadEstimatorEKF::Init()
 {

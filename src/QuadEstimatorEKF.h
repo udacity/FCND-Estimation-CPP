@@ -17,6 +17,7 @@ class QuadEstimatorEKF : public BaseQuadEstimator
 {
 public:
   QuadEstimatorEKF(string config, string name);
+  virtual ~QuadEstimatorEKF();
 
   virtual void Init();
 
