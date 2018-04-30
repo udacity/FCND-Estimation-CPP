@@ -148,7 +148,7 @@ TrajectoryPoint Trajectory::NextTrajectoryPoint(float time)
     {
       _curTrajPoint = i;
 			// interpolation
-			if (i == traj.size() - 1)
+			if (i == (int)traj.size() - 1)
 			{
 				// we're at the end of the trajectory
 				return traj.at(i);

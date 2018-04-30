@@ -18,8 +18,6 @@ void BaseController::Init()
 #ifndef __PX4_NUTTX
   ParamsHandle config = SimpleConfig::GetInstance();
 
-  optFlowX = 0;
-  optFlowY = 0;
   mass = config->Get(_config+".Mass", 1.f);
   L = config->Get(_config+".L", 0.1f);
   Ixx = config->Get(_config+".Ixx", 0.001f);
@@ -37,7 +35,6 @@ void BaseController::Init()
   }
 #else
 
-
 #endif
 }
 
@@ -45,22 +42,6 @@ void BaseController::Reset()
 {
   // Reinitialise the physical parameters
   Init();
-}
-
-void BaseController::OnSensor_IMU(V3F accel, V3F gyros)
-{
-  // todo
-}
-
-void BaseController::OnSensor_OpticalFlow(float x, float y)
-{
-  optFlowX = x;
-  optFlowY = y;
-}
-
-void BaseController::OnSensor_Range(float z)
-{
-  range = z;
 }
 
 void BaseController::UpdateEstimates(V3F pos, V3F vel, Quaternion<float> attitude, V3F omega)

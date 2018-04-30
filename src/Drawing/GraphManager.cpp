@@ -191,14 +191,78 @@ vector<string> GraphManager::GetGraphableStrings()
   return ret;
 }
 
-void GraphManager::AddGraph(string path)
+vector<string> ParseFunction(string cmd)
 {
-  if (path.find("AddGraph1.") == 0)
+  vector<string> ret;
+
+  if (cmd.empty()) return ret;
+  if (cmd[cmd.size() - 1] != ')') return ret;
+
+  string f = SLR::LeftOf(cmd, '(');
+  if (f.find_first_of('"') != string::npos) return ret;
+
+  string args = cmd.substr(f.size() + 1, cmd.size() - f.size() - 2);
+
+  ret.push_back(f);
+
+  bool quote = false;
+  unsigned int i=0, s = 0;
+  for (i = 0; i < args.size(); i++)
   {
-    graph1->AddItem(path.substr(10));
+    if (args[i] == '"')
+    {
+      quote = !quote;
+      if (quote) s = i;
+      continue;
+    }
+    if (args[i] == ',' && !quote)
+    {
+      ret.push_back(SLR::Trim(args.substr(s, i - s)));
+      s = i+1;
+    }
   }
-  if (path.find("AddGraph2.") == 0)
+
+  if (s != i)
   {
-    graph2->AddItem(path.substr(10));
+    ret.push_back(SLR::Trim(args.substr(s, i - s)));
   }
+
+  return ret;
+}
+
+void GraphManager::GraphCommand(string cmd)
+{
+  // old-style commands
+  if (cmd.find("AddGraph1.") == 0)
+  {
+    graph1->AddItem(cmd.substr(10));
+    return;
+  }
+  else if (cmd.find("AddGraph2.") == 0)
+  {
+    graph2->AddItem(cmd.substr(10));
+    return;
+  }
+
+  vector<string> s = ParseFunction(cmd);
+
+  if (s.size() == 3 && s[0] == "SetTitle")
+  {
+    int graphNum = atoi(s[1].c_str());
+    shared_ptr<Graph> g = (graphNum == 1) ? graph1 : graph2;
+    g->SetTitle(SLR::UnQuote(s[2]));
+  }
+  else if (s.size() >= 3 && s[0] == "Plot")
+  {
+    int graphNum = atoi(s[1].c_str());
+    shared_ptr<Graph> g = (graphNum == 1) ? graph1 : graph2;
+    vector<string> args(s.begin() + 2, s.end());
+    g->AddSeries(s[2], true, V3F(), args);
+  }
+  else
+  {
+    printf("Broken graphing command: [%s]\n", cmd.c_str());
+  }
+
+  
 }

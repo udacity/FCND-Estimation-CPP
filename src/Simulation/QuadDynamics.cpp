@@ -156,12 +156,7 @@ void QuadDynamics::Run(float dt, float simulationTime, int &idum, V3F externalFo
   {
     if(timeSinceLastControllerUpdate >= controllerUpdateInterval)
     {
-      // generate virtual gyro and accelerometer data
-			V3F newRawGyro = V3F(omega+sqrtf(gyroNoiseInt/dt)*V3F(gasdev(idum),gasdev(idum),gasdev(idum)));
-			const float c = expf(-dt/0.004f); // the real gyro filter has 250Hz bandwidth
-			_rawGyro = (1.f-c)*newRawGyro + c*_rawGyro;
-
-      for (auto i = sensors.begin(); i != sensors.end(); i++)
+            for (auto i = sensors.begin(); i != sensors.end(); i++)
       {
         (*i)->Update(*this, estimator, controllerUpdateInterval, idum);
       }

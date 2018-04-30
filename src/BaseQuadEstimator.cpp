@@ -6,3 +6,8 @@ BaseQuadEstimator::BaseQuadEstimator(string config)
   _config = config;
   Init();
 }
+
+BaseQuadEstimator::~BaseQuadEstimator()
+{
+
+}

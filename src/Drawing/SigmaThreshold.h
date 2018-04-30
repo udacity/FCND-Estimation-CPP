@@ -202,7 +202,7 @@ public:
 
 		const float dx = maxX - minX;
 		const float dy = maxY - minY;
-		const float left = minX + dx*.07f;
+		const float left = minX + dx*.1f;
 		const float bot = minY + dy / 2.f;
 
 		glColor4f(.8f, g, .8f, .8f);

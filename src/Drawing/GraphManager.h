@@ -16,7 +16,7 @@ public:
   void UpdateData(double time);
   void DrawUpdate();
   
-  void AddGraph(string path);
+  void GraphCommand(string path);
   void InitPaint();
   void Paint();
 

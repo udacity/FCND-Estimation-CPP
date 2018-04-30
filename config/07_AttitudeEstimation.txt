@@ -24,15 +24,16 @@ Quad.InitialPos=0,0,-1
 QuadControlParams.Trajectory=traj/AttitudeTest.txt
 
 # Graphing commands
-
-Commands += AddGraph1.Quad.Est.E.Yaw
-Commands += AddGraph1.Quad.Est.E.Roll
-Commands += AddGraph1.Quad.Est.E.Pitch
+Commands += SetTitle(1,"Estimated Attitude Error")
+Commands += Plot(1,Quad.Est.E.Yaw,"Yaw")
+Commands += Plot(1,Quad.Est.E.Pitch,"Pitch")
+Commands += Plot(1,Quad.Est.E.Roll,"Roll")
 Commands += AddGraph1.WindowThreshold(Quad.Est.E.MaxEuler, .1, 3)
 
-Commands += AddGraph2.Quad.Roll
-Commands += AddGraph2.Quad.Est.Roll
-Commands += AddGraph2.Quad.Pitch
-Commands += AddGraph2.Quad.Est.Pitch
-Commands += AddGraph2.Quad.Yaw
-Commands += AddGraph2.Quad.Est.Yaw
+Commands += SetTitle(2,"Estimated vs Actual Attitude")
+Commands += Plot(2,Quad.Roll,"true roll")
+Commands += Plot(2,Quad.Est.Roll,"est roll")
+Commands += Plot(2,Quad.Pitch,"true pitch")
+Commands += Plot(2,Quad.Est.Pitch,"est pitch")
+Commands += Plot(2,Quad.Yaw,"true yaw")
+Commands += Plot(2,Quad.Est.Yaw,"est yaw")

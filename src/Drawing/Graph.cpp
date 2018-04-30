@@ -54,6 +54,11 @@ void Graph::AddItem(string path)
   }
 }
 
+void Graph::AddItem(string path, vector<string> options)
+{
+
+}
+
 void Graph::AddAbsThreshold(string path)
 {
   path = SLR::Trim(path);
@@ -136,7 +141,7 @@ void Graph::AddSigmaThreshold(string path)
 	_analyzers.push_back(thr);
 }
 
-void Graph::AddSeries(string path, bool autoColor, V3F color)
+void Graph::AddSeries(string path, bool autoColor, V3F color, vector<string> options)
 {
 	ParamsHandle config = SimpleConfig::GetInstance();
 
@@ -145,40 +150,47 @@ void Graph::AddSeries(string path, bool autoColor, V3F color)
 
   if (path.find(',') != string::npos)
   {
-    vector<string> options = SLR::Split(path, ',');
+    options = SLR::Split(path, ',');
     path = options[0];
-    int colorNum = 0;
+  }
+  int colorNum =0;
+
+  newSeries._legend = path;
     
-    for (size_t i = 1; i < options.size(); i++)
+  for (size_t i = 1; i < options.size(); i++)
+  {
+    options[i] = Trim(options[i]);
+    if (options[i].size() >= 2 && options[i][0] == '"' && options[i][options[i].size()-1] == '"')
     {
-      options[i] = Trim(options[i]);
-      if (ToUpper(options[i]) == "NOLEGEND")
+      newSeries._legend = SLR::UnQuote(options[i]);
+    }
+    else if (ToUpper(options[i]) == "NOLEGEND")
+    {
+      newSeries.noLegend = true;
+    }
+    else if (ToUpper(options[i]) == "BOLD")
+    {
+      newSeries.bold = true;
+    }
+    else if (ToUpper(options[i]) == "NEGATE")
+    {
+      newSeries.negate = true;
+    }
+    else if (ToUpper(options[i]) == "FORCE")
+    {
+      force = true;
+    }
+    else if (!HasLetters(options[i]))
+    {
+      if (colorNum < 3)
       {
-        newSeries.noLegend = true;
-      }
-      else if (ToUpper(options[i]) == "BOLD")
-      {
-        newSeries.bold = true;
-      }
-      else if (ToUpper(options[i]) == "NEGATE")
-      {
-        newSeries.negate = true;
-      }
-      else if (ToUpper(options[i]) == "FORCE")
-      {
-        force = true;
-      }
-      else if (!HasLetters(options[i]))
-      {
-        if (colorNum < 3)
-        {
-          color[colorNum] = (float)atof(options[i].c_str());
-          autoColor = false;
-          colorNum++;
-        }
+        color[colorNum] = (float)atof(options[i].c_str());
+        autoColor = false;
+        colorNum++;
       }
     }
   }
+
   
   newSeries._yName = path;
   
@@ -217,6 +229,7 @@ bool Graph::IsSeriesPlotted(string path)
 
 void Graph::RemoveAllElements()
 {
+  _title = "";
   _series.clear();
   _analyzers.clear(); 
   _graphYLow = -numeric_limits<float>::infinity();
@@ -466,6 +479,12 @@ void Graph::Draw()
   float rangeY = highY - lowY;
   lowY -= rangeY * 0.05f;
   highY += rangeY * 0.05f;
+  
+  // if we have a title, expand up by further 11%
+  if (!_title.empty())
+  {
+    highY += rangeY * 0.11f;
+  }
 
   lowX -= (highX - lowX) * .1f;
 
@@ -529,11 +548,19 @@ void Graph::Draw()
   
   // series names
   int j = 0;
+  if (!_title.empty()) j = 1;
   for (unsigned int i = 0; i < _series.size(); i++)
   {
     if (_series[i].noLegend) continue;
     glColor3f(_series[i]._color[0], _series[i]._color[1], _series[i]._color[2]);
-    DrawStrokeText(ToLower(_series[i]._yName).c_str(), .3f, .8f - j * .205f, 0, 1.5f, 1.f, 2.f);
+    DrawStrokeText_Align(ToLower(_series[i]._legend).c_str(), .95f, .8f - j * .205f, 0, 1.5f, 1.f, 2.f,GLD_ALIGN_RIGHT);
     j++;
+  }
+
+  // draw title
+  if (!_title.empty())
+  {
+    glColor3f(1, 1, 1);
+    DrawStrokeText_Align(_title.c_str(), 0.01f, .8f, 0, 1.5f, 1.f, 2.f,GLD_ALIGN_CENTER);
   }
 }

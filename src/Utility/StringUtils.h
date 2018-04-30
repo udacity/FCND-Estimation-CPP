@@ -76,6 +76,16 @@ inline std::string RightOfLast(const std::string& s, char c)
   return s.substr(i + 1);
 }
 
+inline std::string UnQuote(const std::string& s)
+{
+  string arg = SLR::Trim(s);
+  if (arg.size() >= 2 && arg[0] == '"' && arg[arg.size() - 1] == '"')
+  {
+    arg = arg.substr(1, arg.size() - 2);
+  }
+  return arg;
+}
+
 inline std::vector<string> Split(const char* str, char c = ' ')
 {
   std::vector<std::string> result;

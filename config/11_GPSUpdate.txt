@@ -31,15 +31,15 @@ SimIMU.GyroStd = 0,0,0
 # GRAPHING
 Commands += Toggle.ActualTrajectory
 
-Commands += AddGraph1.Quad.Pos.Y
-Commands += AddGraph1.Quad.Vel.y
-Commands += AddGraph1.Quad.Est.Y
-Commands += AddGraph1.Quad.Est.VY
+Commands += SetTitle(1,"Y Pos/Vel: True vs Predicted")
+Commands += Plot(1,Quad.Pos.Y,"true Y")
+Commands += Plot(1,Quad.Est.Y,"est Y")
+Commands += Plot(1,Quad.Vel.Y,"true vY")
+Commands += Plot(1,Quad.Est.VY,"est vY")
 
+Commands += SetTitle(2,"Pos error vs Z std")
 Commands += AddGraph2.Quad.Est.E.Pos
-Commands += AddGraph2.Quad.Est.E.Vel
 Commands += AddGraph2.Quad.Est.S.Z
-Commands += AddGraph2.Quad.Est.S.VZ
 
 Commands += AddGraph2.WindowThreshold(Quad.Est.E.Pos,1,20)
 

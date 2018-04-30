@@ -21,13 +21,15 @@ public:
 
   void Draw();
   void AddItem(string path);
-  void AddSeries(string path, bool autoColor = true, V3F color = V3F());
+  void AddItem(string path, vector<string> options);
+  void AddSeries(string path, bool autoColor = true, V3F color = V3F(), vector<string> options=vector<string>());
   void AddAbsThreshold(string path);
   void AddWindowThreshold(string path);
   void SetYAxis(string argsString);
 	void AddSigmaThreshold(string path);
   bool IsSeriesPlotted(string path);
   void RemoveAllElements();
+  void SetTitle(string title) { _title = title; }
 
 	void BeginLogToFile();
 
@@ -36,7 +38,7 @@ public:
   {
     Series();
     V3F _color;
-    string _yName;
+    string _yName, _legend;
     string _objName, _fieldName;
     FixedQueue<float> x;
     FixedQueue<float> y;
@@ -58,4 +60,5 @@ public:
 	FILE* _logFile;
 
   float _graphYLow, _graphYHigh;
+  string _title;
 };

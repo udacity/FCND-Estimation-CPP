@@ -20,6 +20,11 @@ void GLCross(const V3F& center, const V3F& dims, bool gl_begin_line=true);
 void DrawQuarterX3D_TransparentPart(double alpha, GLUquadricObj *glQuadric, float armLength);
 void DrawStrokeText(const char* str, float x, float y, float z, float lineWidth, float scaleX=1, float scaleY=1);
 
+#define GLD_ALIGN_LEFT -1
+#define GLD_ALIGN_CENTER 0
+#define GLD_ALIGN_RIGHT 1
+void DrawStrokeText_Align(const char* str, float x, float y, float z, float lineWidth, float scaleX = 1, float scaleY = 1, int align=GLD_ALIGN_CENTER);
+
 using SLR::Quaternion;
 
 namespace SLR {
