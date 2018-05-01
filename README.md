@@ -155,7 +155,9 @@ Up until now we've only used the accelerometer and gyro for our state estimation
 
 ![mag drift](images/mag-drift.png)
 
-3. Implement magnetometer update in the function `UpdateFromMag()`.
+3. Implement magnetometer update in the function `UpdateFromMag()`.  Once completed, you should see a resulting plot similar to this one:
+
+![mag good](images/mag-good-solution.png)
 
 ***Success criteria:*** *Your goal is to both have an estimated standard deviation that accurately captures the error and maintain an error of less than 0.1rad in heading for at least 10 seconds of the simulation.*
 
