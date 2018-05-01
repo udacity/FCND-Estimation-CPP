@@ -117,7 +117,6 @@
 		DB49FB6F202A0CC600DED4E6 /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
 		DB49FB70202A0CC600DED4E6 /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
 		DB49FB71202A0CC600DED4E6 /* VehicleDatatypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VehicleDatatypes.h; sourceTree = "<group>"; };
-		DB56306F20743A190070F86B /* 6_EstimatorEKF.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 6_EstimatorEKF.txt; path = ../config/6_EstimatorEKF.txt; sourceTree = "<group>"; };
 		DB56307020743A190070F86B /* QuadEstimatorEKF.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = QuadEstimatorEKF.txt; path = ../config/QuadEstimatorEKF.txt; sourceTree = "<group>"; };
 		DB56307120743A1A0070F86B /* SimulatedSensors.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SimulatedSensors.txt; path = ../config/SimulatedSensors.txt; sourceTree = "<group>"; };
 		DB56307220743A4E0070F86B /* SimulatedGPS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimulatedGPS.h; sourceTree = "<group>"; };
@@ -127,15 +126,21 @@
 		DB56307620743A730070F86B /* BaseQuadEstimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseQuadEstimator.h; sourceTree = "<group>"; };
 		DB56307720743A730070F86B /* QuadEstimatorEKF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadEstimatorEKF.h; sourceTree = "<group>"; };
 		DB56307820743A730070F86B /* BaseQuadEstimator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseQuadEstimator.cpp; sourceTree = "<group>"; };
+		DB953DA52097BC4400B82E7B /* 08_PredictState.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 08_PredictState.txt; path = ../config/08_PredictState.txt; sourceTree = "<group>"; };
+		DB953DA62097BC4400B82E7B /* 03_PositionControl.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 03_PositionControl.txt; path = ../config/03_PositionControl.txt; sourceTree = "<group>"; };
+		DB953DA72097BC4400B82E7B /* 09_PredictCovariance.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 09_PredictCovariance.txt; path = ../config/09_PredictCovariance.txt; sourceTree = "<group>"; };
+		DB953DA82097BC4400B82E7B /* 10_MagUpdate.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 10_MagUpdate.txt; path = ../config/10_MagUpdate.txt; sourceTree = "<group>"; };
+		DB953DA92097BC4400B82E7B /* 04_Nonidealities.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 04_Nonidealities.txt; path = ../config/04_Nonidealities.txt; sourceTree = "<group>"; };
+		DB953DAA2097BC4400B82E7B /* 02_AttitudeControl.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 02_AttitudeControl.txt; path = ../config/02_AttitudeControl.txt; sourceTree = "<group>"; };
+		DB953DAB2097BC4500B82E7B /* 01_Intro.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 01_Intro.txt; path = ../config/01_Intro.txt; sourceTree = "<group>"; };
+		DB953DAC2097BC4500B82E7B /* 07_AttitudeEstimation.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 07_AttitudeEstimation.txt; path = ../config/07_AttitudeEstimation.txt; sourceTree = "<group>"; };
+		DB953DAD2097BC4500B82E7B /* 05_TrajectoryFollow.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 05_TrajectoryFollow.txt; path = ../config/05_TrajectoryFollow.txt; sourceTree = "<group>"; };
+		DB953DAE2097BC4500B82E7B /* 11_GPSUpdate.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 11_GPSUpdate.txt; path = ../config/11_GPSUpdate.txt; sourceTree = "<group>"; };
+		DB953DAF2097BC4500B82E7B /* 06_SensorNoise.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 06_SensorNoise.txt; path = ../config/06_SensorNoise.txt; sourceTree = "<group>"; };
 		DBD204F12036369000E0F55A /* QuadControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QuadControl.h; sourceTree = "<group>"; };
 		DBD204F22036369000E0F55A /* QuadControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuadControl.cpp; sourceTree = "<group>"; };
-		DBD204F4203636AA00E0F55A /* 2_AttitudeControl.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 2_AttitudeControl.txt; path = ../config/2_AttitudeControl.txt; sourceTree = "<group>"; };
 		DBD204F5203636AA00E0F55A /* Scenarios.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Scenarios.txt; path = ../config/Scenarios.txt; sourceTree = "<group>"; };
-		DBD204F6203636AA00E0F55A /* 3_PositionControl.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 3_PositionControl.txt; path = ../config/3_PositionControl.txt; sourceTree = "<group>"; };
-		DBD204F7203636AA00E0F55A /* 4_Nonidealities.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 4_Nonidealities.txt; path = ../config/4_Nonidealities.txt; sourceTree = "<group>"; };
-		DBD204F8203636AA00E0F55A /* 5_TrajectoryFollow.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 5_TrajectoryFollow.txt; path = ../config/5_TrajectoryFollow.txt; sourceTree = "<group>"; };
 		DBD204F9203636AA00E0F55A /* QuadControlParams.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = QuadControlParams.txt; path = ../config/QuadControlParams.txt; sourceTree = "<group>"; };
-		DBD204FA203636AA00E0F55A /* 1_Intro.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = 1_Intro.txt; path = ../config/1_Intro.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,12 +159,17 @@
 		DB31989C2033405F008ACD56 /* config */ = {
 			isa = PBXGroup;
 			children = (
-				DBD204FA203636AA00E0F55A /* 1_Intro.txt */,
-				DBD204F4203636AA00E0F55A /* 2_AttitudeControl.txt */,
-				DBD204F6203636AA00E0F55A /* 3_PositionControl.txt */,
-				DBD204F7203636AA00E0F55A /* 4_Nonidealities.txt */,
-				DBD204F8203636AA00E0F55A /* 5_TrajectoryFollow.txt */,
-				DB56306F20743A190070F86B /* 6_EstimatorEKF.txt */,
+				DB953DAB2097BC4500B82E7B /* 01_Intro.txt */,
+				DB953DAA2097BC4400B82E7B /* 02_AttitudeControl.txt */,
+				DB953DA62097BC4400B82E7B /* 03_PositionControl.txt */,
+				DB953DA92097BC4400B82E7B /* 04_Nonidealities.txt */,
+				DB953DAD2097BC4500B82E7B /* 05_TrajectoryFollow.txt */,
+				DB953DAF2097BC4500B82E7B /* 06_SensorNoise.txt */,
+				DB953DAC2097BC4500B82E7B /* 07_AttitudeEstimation.txt */,
+				DB953DA52097BC4400B82E7B /* 08_PredictState.txt */,
+				DB953DA72097BC4400B82E7B /* 09_PredictCovariance.txt */,
+				DB953DA82097BC4400B82E7B /* 10_MagUpdate.txt */,
+				DB953DAE2097BC4500B82E7B /* 11_GPSUpdate.txt */,
 				DB3198A320334078008ACD56 /* QuadPhysicalParams.txt */,
 				DBD204F9203636AA00E0F55A /* QuadControlParams.txt */,
 				DB56307020743A190070F86B /* QuadEstimatorEKF.txt */,
