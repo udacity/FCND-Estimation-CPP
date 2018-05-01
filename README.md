@@ -111,7 +111,7 @@ In the screenshot above the attitude estimation using linear scheme (left) and u
 
 ***Success criteria:*** *Your attitude estimator needs to get within 0.1 rad for each of the Euler angles for at least 3 seconds.*
 
-TODO: direct students to where in the document the equations can be found for the integration scheme to be used.
+**Hint: see section 7.1.2 of *Estimation for Quadrotors* for a refresher on a good non-linear complimentary filter for attitude using quaternions.**
 
 
 ### Step 3: Prediction Step ###
@@ -130,7 +130,9 @@ In this next step you will be implementing the prediction step of your filter.
    - The bottom graph shows 10 (prediction-only) velocity estimates
 You will notice however that the estimated covariance (white bounds) currently do not capture the growing errors.
 
-4. In `QuadEstimatorEKF.cpp`, calculate the partial derivative of the body-to-global rotation matrix (see section 7.2 of the overlead document) in the function `GetRbgPrime()`.  Once you have that function implement, implement the rest of the prediction step (predict the state covariance forward) in `Predict()`.
+4. In `QuadEstimatorEKF.cpp`, calculate the partial derivative of the body-to-global rotation matrix in the function `GetRbgPrime()`.  Once you have that function implement, implement the rest of the prediction step (predict the state covariance forward) in `Predict()`.
+
+**Hint: see section 7.2 of *Estimation for Quadrotors* for a refresher on the the transition model and the partial derivatives you may need**
 
 **Hint: When it comes to writing the function for GetRbgPrime, make sure to triple check you've set all the correct parts of the matrix.**
 
@@ -159,6 +161,8 @@ Up until now we've only used the accelerometer and gyro for our state estimation
 
 **Hint: after implementing the magnetometer update, you may have to once again tune the parameter `QYawStd` to better balance between the long term drift and short-time noise from the magnetometer.**
 
+**Hint: see section 7.3.2 of *Estimation for Quadrotors* for a refresher on the magnetometer update.**
+
 
 ### Step 5: Closed Loop + GPS Update ###
 
@@ -179,6 +183,8 @@ Up until now we've only used the accelerometer and gyro for our state estimation
 6. Now once again re-run the simulation.  Your objective is to complete the entire simulation cycle with estimated position error of < 1m (you’ll see a green box over the bottom graph if you succeed).  You may want to try experimenting with the GPS update parameters to try and get better performance.
 
 ***Success criteria:*** *Your objective is to complete the entire simulation cycle with estimated position error of < 1m.*
+
+**Hint: see section 7.3.1 of *Estimation for Quadrotors* for a refresher on the GPS update.**
 
 At this point, congratulations on having a working estimator!
 
