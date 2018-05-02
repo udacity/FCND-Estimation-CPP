@@ -191,45 +191,6 @@ vector<string> GraphManager::GetGraphableStrings()
   return ret;
 }
 
-vector<string> ParseFunction(string cmd)
-{
-  vector<string> ret;
-
-  if (cmd.empty()) return ret;
-  if (cmd[cmd.size() - 1] != ')') return ret;
-
-  string f = SLR::LeftOf(cmd, '(');
-  if (f.find_first_of('"') != string::npos) return ret;
-
-  string args = cmd.substr(f.size() + 1, cmd.size() - f.size() - 2);
-
-  ret.push_back(f);
-
-  bool quote = false;
-  unsigned int i=0, s = 0;
-  for (i = 0; i < args.size(); i++)
-  {
-    if (args[i] == '"')
-    {
-      quote = !quote;
-      if (quote) s = i;
-      continue;
-    }
-    if (args[i] == ',' && !quote)
-    {
-      ret.push_back(SLR::Trim(args.substr(s, i - s)));
-      s = i+1;
-    }
-  }
-
-  if (s != i)
-  {
-    ret.push_back(SLR::Trim(args.substr(s, i - s)));
-  }
-
-  return ret;
-}
-
 void GraphManager::GraphCommand(string cmd)
 {
   // old-style commands
@@ -244,7 +205,7 @@ void GraphManager::GraphCommand(string cmd)
     return;
   }
 
-  vector<string> s = ParseFunction(cmd);
+  vector<string> s = SimpleFunctionParser(cmd);
 
   if (s.size() == 3 && s[0] == "SetTitle")
   {
