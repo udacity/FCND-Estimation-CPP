@@ -825,6 +825,7 @@ void Visualizer_GLUT::InitializeMenu(const vector<string>& strings)
 
 void Visualizer_GLUT::OnMenu(string cmd)
 {
+  vector<string> s = SimpleFunctionParser(cmd);
   if (cmd == "Toggle.RefTrajectory")
   {
     showRefTrajectory = !showRefTrajectory;
@@ -841,6 +842,24 @@ void Visualizer_GLUT::OnMenu(string cmd)
   {
     string name = string("../config/")+cmd.substr(9)+".txt";
     _delayedScenarioLoader = name;
+  }
+  else if (s.size() == 3 && s[0] == "PrintParam")
+  {
+    ParamsHandle config = SimpleConfig::GetInstance();
+
+    if (s[1] == "V3F")
+    {
+      V3F p;
+      if (!config->GetV3F(s[2], p))
+      {
+        printf("Command [%s] error: parameter get failed\n", cmd.c_str());
+      }
+      else
+      {
+        printf("V3F %s = %lf %lf %lf\n", s[2].c_str(), p.x, p.y, p.z);
+      }
+    }
+
   }
   else
   {
