@@ -111,7 +111,7 @@ In the screenshot above the attitude estimation using linear scheme (left) and u
 
 ***Success criteria:*** *Your attitude estimator needs to get within 0.1 rad for each of the Euler angles for at least 3 seconds.*
 
-**Hint: see section 7.1.2 of *Estimation for Quadrotors* for a refresher on a good non-linear complimentary filter for attitude using quaternions.**
+**Hint: see section 7.1.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on a good non-linear complimentary filter for attitude using quaternions.**
 
 
 ### Step 3: Prediction Step ###
@@ -132,7 +132,7 @@ You will notice however that the estimated covariance (white bounds) currently d
 
 4. In `QuadEstimatorEKF.cpp`, calculate the partial derivative of the body-to-global rotation matrix in the function `GetRbgPrime()`.  Once you have that function implement, implement the rest of the prediction step (predict the state covariance forward) in `Predict()`.
 
-**Hint: see section 7.2 of *Estimation for Quadrotors* for a refresher on the the transition model and the partial derivatives you may need**
+**Hint: see section 7.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on the the transition model and the partial derivatives you may need**
 
 **Hint: When it comes to writing the function for GetRbgPrime, make sure to triple check you've set all the correct parts of the matrix.**
 
@@ -163,7 +163,7 @@ Up until now we've only used the accelerometer and gyro for our state estimation
 
 **Hint: after implementing the magnetometer update, you may have to once again tune the parameter `QYawStd` to better balance between the long term drift and short-time noise from the magnetometer.**
 
-**Hint: see section 7.3.2 of *Estimation for Quadrotors* for a refresher on the magnetometer update.**
+**Hint: see section 7.3.2 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on the magnetometer update.**
 
 
 ### Step 5: Closed Loop + GPS Update ###
@@ -186,7 +186,7 @@ Up until now we've only used the accelerometer and gyro for our state estimation
 
 ***Success criteria:*** *Your objective is to complete the entire simulation cycle with estimated position error of < 1m.*
 
-**Hint: see section 7.3.1 of *Estimation for Quadrotors* for a refresher on the GPS update.**
+**Hint: see section 7.3.1 of [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) for a refresher on the GPS update.**
 
 At this point, congratulations on having a working estimator!
 
@@ -209,6 +209,7 @@ Up to this point, we have been working with a controller that has been relaxed t
 
  - When it comes to transposing matrices, `.transposeInPlace()` is the function you want to use to transpose a matrix
 
+ - The [Estimation for Quadrotors](https://www.overleaf.com/read/vymfngphcccj) document contains a helpful mathematical breakdown of the core elements on your estimator
 
 ## Submission ##
 
