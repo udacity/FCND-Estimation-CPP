@@ -105,6 +105,21 @@
   <ItemGroup>
     <None Include="..\lib\matrix\LICENSE" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\config\06_SensorNoise.txt" />
+    <Text Include="..\config\07_AttitudeEstimation.txt" />
+    <Text Include="..\config\08_PredictState.txt" />
+    <Text Include="..\config\09_PredictionCovariance.txt" />
+    <Text Include="..\config\10_MagUpdate.txt" />
+    <Text Include="..\config\11_GPSUpdate.txt" />
+    <Text Include="..\config\LastScenario.txt" />
+    <Text Include="..\config\QuadControlParams.txt" />
+    <Text Include="..\config\QuadEstimatorEKF.txt" />
+    <Text Include="..\config\QuadPhysicalParams.txt" />
+    <Text Include="..\config\Scenarios.txt" />
+    <Text Include="..\config\SimulatedSensors.txt" />
+    <Text Include="..\config\Simulation.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{D8435B4A-B444-4C1B-ABC8-6D1C779B268D}</ProjectGuid>
@@ -185,6 +200,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>../lib/freeglut/lib/freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>xcopy /d /y "$(ProjectDir)..\lib\freeglut\bin\*.dll" "$(OutDir)" </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -194,11 +212,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);WIN32</PreprocessorDefinitions>
       <PrecompiledHeaderFile />
+      <AdditionalIncludeDirectories>../lib/freeglut/include;../src;../lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>../lib/freeglut/lib/x64/freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>xcopy /d /y "$(ProjectDir)..\lib\freeglut\bin\x64\*.dll" "$(OutDir)" </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -229,12 +252,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../lib/freeglut/include;../src;../lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>../lib/freeglut/lib/x64/freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
