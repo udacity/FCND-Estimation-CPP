@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE6D34BD25FE67CA00470293 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE6D34BC25FE67CA00470293 /* Metal.framework */; };
 		DB076C8B202A34C500386052 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB076C8A202A34C500386052 /* GLUT.framework */; };
 		DB47A220205151FE00F34E67 /* MavlinkNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DB47A219205151FD00F34E67 /* MavlinkNode.cpp */; };
 		DB47A221205151FE00F34E67 /* MavlinkTranslation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DB47A21E205151FE00F34E67 /* MavlinkTranslation.cpp */; };
@@ -49,6 +50,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CE6D34BC25FE67CA00470293 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		DB076C8A202A34C500386052 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		DB31989E20334078008ACD56 /* Simulation.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Simulation.txt; path = ../config/Simulation.txt; sourceTree = "<group>"; };
 		DB3198A320334078008ACD56 /* QuadPhysicalParams.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = QuadPhysicalParams.txt; path = ../config/QuadPhysicalParams.txt; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB076C8B202A34C500386052 /* GLUT.framework in Frameworks */,
+				CE6D34BD25FE67CA00470293 /* Metal.framework in Frameworks */,
 				DB49FB22202A060F00DED4E6 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -215,6 +218,7 @@
 		DB49FB20202A060F00DED4E6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CE6D34BC25FE67CA00470293 /* Metal.framework */,
 				DB076C8A202A34C500386052 /* GLUT.framework */,
 				DB49FB21202A060F00DED4E6 /* OpenGL.framework */,
 			);
@@ -353,7 +357,7 @@
 		DB49FAD6202A039100DED4E6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 1240;
 				ORGANIZATIONNAME = Fotokite;
 				TargetAttributes = {
 					DB49FADD202A039100DED4E6 = {
@@ -368,6 +372,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = DB49FAD5202A039100DED4E6;
 			productRefGroup = DB49FADF202A039100DED4E6 /* Products */;
@@ -440,6 +445,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -497,6 +503,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -526,6 +533,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					../src,
@@ -545,6 +553,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					../src/,

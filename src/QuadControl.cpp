@@ -69,12 +69,20 @@ VehicleCommand QuadControl::GenerateMotorCommands(float collThrustCmd, V3F momen
   // You'll need the arm length parameter L, and the drag/thrust ratio kappa
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-
-  cmd.desiredThrustsN[0] = mass * 9.81f / 4.f; // front left
-  cmd.desiredThrustsN[1] = mass * 9.81f / 4.f; // front right
-  cmd.desiredThrustsN[2] = mass * 9.81f / 4.f; // rear left
-  cmd.desiredThrustsN[3] = mass * 9.81f / 4.f; // rear right
-
+    // declaring variables
+    float s = collThrustCmd;
+    float x = momentCmd.x;
+    float y = momentCmd.y;
+    float z = momentCmd.z;
+    
+    
+    cmd.desiredThrustsN[0] = (1.0/4.0)*s+(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa; // front left
+    cmd.desiredThrustsN[1] = (1.0/4.0)*s+(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa; // front right
+    cmd.desiredThrustsN[2] = (1.0/4.0)*s+(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa; // rear left
+    cmd.desiredThrustsN[3] = (1.0/4.0)*s+(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa; // rear right
+    for(int i =0; i<4 ; ++i){
+            cmd.desiredThrustsN[i] = CONSTRAIN(cmd.desiredThrustsN[i], minMotorThrust, maxMotorThrust);
+        }
   /////////////////////////////// END STUDENT CODE ////////////////////////////
   
   /////////////////////////////// BEGIN SOLUTION //////////////////////////////
