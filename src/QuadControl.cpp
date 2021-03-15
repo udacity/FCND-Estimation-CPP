@@ -148,13 +148,7 @@ V3F QuadControl::RollPitchControl(V3F accelCmd, Quaternion<float> attitude, floa
   // Calculate a desired pitch and roll angle rates based on a desired global
   //   lateral acceleration, the current attitude of the quad, and desired
   //   collective thrust command
-  // INPUTS: 
-  //   accelCmd: desired acceleration in global XY coordinates [m/s2]
-  //   attitude: current or estimated attitude of the vehicle
-  //   collThrustCmd: desired collective thrust of the quad [N]
-  // OUTPUT:
-  //   return a V3F containing the desired pitch and roll rates. The Z
-  //     element of the V3F should be left at its default value (0)
+
 
   // HINTS: 
   //  - we already provide rotation matrix R: to get element R[1,2] (python) use R(1,2) (C++)
@@ -166,13 +160,38 @@ V3F QuadControl::RollPitchControl(V3F accelCmd, Quaternion<float> attitude, floa
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
+    // INPUTS:
+    //   accelCmd: desired acceleration in global XY coordinates [m/s2]
+    //   attitude: current or estimated attitude of the vehicle
+    //   collThrustCmd: desired collective thrust of the quad [N]
+    // OUTPUT:
+    //   return a V3F containing the desired pitch and roll rates. The Z
+    //     element of the V3F should be left at its default value (0)
+    
+    // Converting roll pitch angles and collective thrust
+    float bax = R(0, 2);
+    float bay = R(1, 2);
+    float collAccelCmd= -collThrustCmd / mass;
+    float bax_target = atan(accelCmd.x/collAccelCmd);
+    float bay_target = atan(accelCmd.y/collAccelCmd);
+    
+    // Defining constrain angles
+    bax_target = CONSTRAIN(bax_target, -maxTiltAngle, maxTiltAngle);
+    bay_target = CONSTRAIN(bax_target, -maxTiltAngle, maxTiltAngle);
+    // Calulating the desired rate using the Proportional
+    float bcx_dot = kpBank*(bax_target-bax);
+    float bcy_dot = kpBank*(bay_target-bay);
+    
+    // Body frame rate conversion
+    pqrCmd.x = 1.0/R(2,2)*(R(1,0)*bcx_dot-R(0,0)*bcy_dot);
+    pqrCmd.y = 1.0/R(2,2)*(R(1,0)*bcx_dot-R(0,0)*bcy_dot);
 
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   /////////////////////////////// BEGIN SOLUTION //////////////////////////////
 
-  
+  /*
   float target_R13 = -CONSTRAIN(accelCmd[0] / (collThrustCmd / mass), -maxTiltAngle, maxTiltAngle);
   float target_R23 = -CONSTRAIN(accelCmd[1] / (collThrustCmd / mass), -maxTiltAngle, maxTiltAngle);
     
@@ -183,7 +202,7 @@ V3F QuadControl::RollPitchControl(V3F accelCmd, Quaternion<float> attitude, floa
   }
   pqrCmd.x = (1 / R(2, 2))*(-R(1, 0) * kpBank*(R(0, 2) - target_R13) + R(0, 0) * kpBank*(R(1, 2) - target_R23));
   pqrCmd.y = (1 / R(2, 2))*(-R(1, 1) * kpBank*(R(0, 2) - target_R13) + R(0, 1) * kpBank*(R(1, 2) - target_R23));
-
+*/
   //////////////////////////////// END SOLUTION ///////////////////////////////
   return pqrCmd;
 }
