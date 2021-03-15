@@ -110,11 +110,7 @@ VehicleCommand QuadControl::GenerateMotorCommands(float collThrustCmd, V3F momen
 V3F QuadControl::BodyRateControl(V3F pqrCmd, V3F pqr)
 {
   // Calculate a desired 3-axis moment given a desired and current body rate
-  // INPUTS: 
-  //   pqrCmd: desired body rates [rad/s]
-  //   pqr: current or estimated body rates [rad/s]
-  // OUTPUT:
-  //   return a V3F containing the desired moments for each of the 3 axes
+
 
   // HINTS: 
   //  - you can use V3Fs just like scalars: V3F a(1,1,1), b(2,3,4), c; c=a-b;
@@ -125,14 +121,22 @@ V3F QuadControl::BodyRateControl(V3F pqrCmd, V3F pqr)
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
-  
-
+    // INPUTS:
+    //   pqrCmd: desired body rates [rad/s]
+    //   pqr: current or estimated body rates [rad/s]
+    // OUTPUT:
+    //   return a V3F containing the desired moments for each of the 3 axes
+    
+    
   /////////////////////////////// END STUDENT CODE ////////////////////////////
-
+    V3F inertia_vector(Ixx, Iyy, Izz);
+    momentCmd = inertia_vector*kpPQR*(pqrCmd - pqr);
+    
+    
   /////////////////////////////// BEGIN SOLUTION //////////////////////////////
-  V3F rate_error = pqrCmd - pqr;
-  V3F omega_dot_des = rate_error * kpPQR;
-  momentCmd = omega_dot_des * V3F(Ixx, Iyy, Izz);
+  //V3F rate_error = pqrCmd - pqr;
+  //V3F omega_dot_des = rate_error * kpPQR;
+  //momentCmd = omega_dot_des * V3F(Ixx, Iyy, Izz);
   //////////////////////////////// END SOLUTION ///////////////////////////////
 
   return momentCmd;
