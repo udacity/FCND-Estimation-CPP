@@ -351,7 +351,7 @@ void QuadEstimatorEKF::UpdateFromMag(float magYaw)
     zFromX(0) = ekfState(6);
     hPrime(0,6) = 1;
     float yaw_difference = z(0) - zFromX(0);
-    if (yaw_difference <-F_PI) z(0) += 2.f*F_PI
+    if (yaw_difference <-F_PI) z(0) += 2.f*F_PI;
     if (yaw_difference > -F_PI) z(0) += 2.f*F_PI;
     
   /////////////////////////////// END STUDENT CODE ////////////////////////////
