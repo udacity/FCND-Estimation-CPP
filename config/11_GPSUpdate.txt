@@ -22,7 +22,7 @@ QuadControlParams.Trajectory=traj/Square.txt
 #                                    #
 ######################################
 
-Quad.UseIdealEstimator = 1
+Quad.UseIdealEstimator = 0
 SimIMU.AccelStd = 0,0,0
 SimIMU.GyroStd = 0,0,0
 
