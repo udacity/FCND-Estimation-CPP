@@ -91,6 +91,7 @@ void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
   // SMALL ANGLE GYRO INTEGRATION:
   // (replace the code below)
+    
   // make sure you comment it out when you add your own code -- otherwise e.g. you might integrate yaw twice
 
     Quaternion<float> qt;
@@ -103,7 +104,7 @@ void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
     ekfState(6) = qtbar.Yaw();
     
     if (ekfState(6)> F_PI) ekfState(6) -= 2.f*F_PI;
-    if (ekfState(6)<-F_PI) ekfState(6) += 2.f*F_PI;
+    if (ekfState(6)< -F_PI) ekfState(6) += 2.f*F_PI;
     
     
     
