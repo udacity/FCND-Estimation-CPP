@@ -332,11 +332,7 @@ V3F QuadControl::LateralPositionControl(V3F posCmd, V3F velCmd, V3F pos, V3F vel
 float QuadControl::YawControl(float yawCmd, float yaw)
 {
   // Calculate a desired yaw rate to control yaw to yawCmd
-  // INPUTS: 
-  //   yawCmd: commanded yaw [rad]
-  //   yaw: current yaw [rad]
-  // OUTPUT:
-  //   return a desired yaw rate [rad/s]
+
   // HINTS: 
   //  - use fmodf(foo,b) to unwrap a radian angle measure float foo to range [0,b]. 
   //  - use the yaw control gain parameter kpYaw
@@ -344,11 +340,21 @@ float QuadControl::YawControl(float yawCmd, float yaw)
   float yawRateCmd=0;
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
-
+    // INPUTS:
+    //   yawCmd: commanded yaw [rad]
+    //   yaw: current yaw [rad]
+    // OUTPUT:
+    //   return a desired yaw rate [rad/s]
+    float pi = 3.14159265;
+    yaw = fmodf(yaw, 2*pi);
+    float yaw_err = yawCmd-yaw;
+    yawRateCmd = yaw_err*kpYaw;
+    yawRateCmd = CONSTRAIN(yawRateCmd, -0.03, 0.03);
+    
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   /////////////////////////////// BEGIN SOLUTION //////////////////////////////
-
+/*
   float yawError = yawCmd - yaw;
   yawError = fmodf(yawError, F_PI*2.f);
   if (yawError > F_PI)
@@ -360,7 +366,7 @@ float QuadControl::YawControl(float yawCmd, float yaw)
     yawError += 2.f * F_PI;
   }
   yawRateCmd = yawError * kpYaw;
-
+*/
   //////////////////////////////// END SOLUTION ///////////////////////////////
   
   return yawRateCmd;
