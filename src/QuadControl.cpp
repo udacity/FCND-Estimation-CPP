@@ -269,15 +269,7 @@ V3F QuadControl::LateralPositionControl(V3F posCmd, V3F velCmd, V3F pos, V3F vel
 {
   // Calculate a desired horizontal acceleration based on 
   //  desired lateral position/velocity/acceleration and current pose
-  // INPUTS: 
-  //   posCmd: desired position, in NED [m]
-  //   velCmd: desired velocity, in NED [m/s]
-  //   pos: current position, NED [m]
-  //   vel: current velocity, NED [m/s]
-  //   accelCmdFF: feed-forward acceleration, NED [m/s2]
-  // OUTPUT:
-  //   return a V3F with desired horizontal accelerations. 
-  //     the Z component should be 0
+
   // HINTS: 
   //  - use the gain parameters kpPosXY and kpVelXY
   //  - make sure you limit the maximum horizontal velocity and acceleration
@@ -295,12 +287,29 @@ V3F QuadControl::LateralPositionControl(V3F posCmd, V3F velCmd, V3F pos, V3F vel
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
-  
+    // INPUTS:
+    //   posCmd: desired position, in NED [m]
+    //   velCmd: desired velocity, in NED [m/s]
+    //   pos: current position, NED [m]
+    //   vel: current velocity, NED [m/s]
+    //   accelCmdFF: feed-forward acceleration, NED [m/s2]
+    // OUTPUT:
+    //   return a V3F with desired horizontal accelerations.
+    //     the Z component should be 0
+    
+        V3F position_err =  posCmd - pos;
+        V3F velocity_err =  velCmd - vel;
+        
+        accelCmd.x = accelCmd.x + position_err.x * kpPosXY + velocity_err.x * kpVelXY;
+        accelCmd.y = accelCmd.y + position_err.y * kpPosXY + velocity_err.y * kpVelXY;
+        accelCmd.x = CONSTRAIN(accelCmd.x, -maxAccelXY, maxAccelXY );
+        accelCmd.y = CONSTRAIN(accelCmd.y, -maxAccelXY, maxAccelXY );
+    
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   /////////////////////////////// BEGIN SOLUTION //////////////////////////////
-
+/*
   velCmd += kpPosXY * (posCmd - pos);
 
   if (velCmd.mag() > maxSpeedXY)
@@ -313,7 +322,7 @@ V3F QuadControl::LateralPositionControl(V3F posCmd, V3F velCmd, V3F pos, V3F vel
   {
     accelCmd = accelCmd * maxAccelXY / accelCmd.mag();
   }
-
+*/
   //////////////////////////////// END SOLUTION ///////////////////////////////
 
   return accelCmd;
