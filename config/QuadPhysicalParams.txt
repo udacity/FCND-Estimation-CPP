@@ -10,7 +10,7 @@
 
 [Quad]
 # mass [kg]
-Mass = 0.5
+Mass = 0.499
 
 # distance from vehicle origin to motors [m]
 L = 0.17
