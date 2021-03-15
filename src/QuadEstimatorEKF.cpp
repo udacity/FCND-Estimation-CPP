@@ -147,14 +147,7 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
   assert(curState.size() == QUAD_EKF_NUM_STATES);
   VectorXf predictedState = curState;
   // Predict the current state forward by time dt using current accelerations and body rates as input
-  // INPUTS: 
-  //   curState: starting state
-  //   dt: time step to predict forward by [s]
-  //   accel: acceleration of the vehicle, in body frame, *not including gravity* [m/s2]
-  //   gyro: body rates of the vehicle, in body frame [rad/s]
-  //   
-  // OUTPUT:
-  //   return the predicted state as a vector
+
 
   // HINTS 
   // - dt is the time duration for which you should predict. It will be very short (on the order of 1ms)
@@ -166,6 +159,24 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
   Quaternion<float> attitude = Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, curState(6));
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+
+    // INPUTS:
+    //   curState: starting state
+    //   dt: time step to predict forward by [s]
+    //   accel: acceleration of the vehicle, in body frame, *not including gravity* [m/s2]
+    //   gyro: body rates of the vehicle, in body frame [rad/s]
+    //
+    // OUTPUT:
+    //   return the predicted state as a vector
+    
+    predictedState(0) = curState(0) + curState(3)* dt;
+    predictedState(1) = curState(1) + curState(4)* dt;
+    predictedState(2) = curState(2) + curState(5)* dt;
+    
+    predictedState(3) = curState(3) + attitude.Rotate_BtoI(accel).x*dt;
+    predictedState(4) = curState(4) + attitude.Rotate_BtoI(accel).y*dt;
+    predictedState(5) = curState(5) - 9.81*dt + attitude.Rotate_BtoI(accel).z*dt;
+    predictedState(6) = curState(6);
 
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
