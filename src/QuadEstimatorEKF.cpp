@@ -191,11 +191,7 @@ MatrixXf QuadEstimatorEKF::GetRbgPrime(float roll, float pitch, float yaw)
   RbgPrime.setZero();
 
   // Return the partial derivative of the Rbg rotation matrix with respect to yaw. We call this RbgPrime.
-  // INPUTS: 
-  //   roll, pitch, yaw: Euler angles at which to calculate RbgPrime
-  //   
-  // OUTPUT:
-  //   return the 3x3 matrix representing the partial derivative at the given point
+
 
   // HINTS
   // - this is just a matter of putting the right sin() and cos() functions in the right place.
@@ -204,9 +200,31 @@ MatrixXf QuadEstimatorEKF::GetRbgPrime(float roll, float pitch, float yaw)
   //   that your calculations are reasonable
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+    // INPUTS:
+    //   roll, pitch, yaw: Euler angles at which to calculate RbgPrime
+    //
+    // OUTPUT:
+    //   return the 3x3 matrix representing the partial derivative at the given point
+    
+    // declaring inputs
+    float psi = yaw;
+    float phi = pitch;
+    float theta = roll;
+    // Calculating RbgPrime
+    RbgPrime(0,0) = -cos(theta)*sin(psi);
+    RbgPrime(0,1) = -sin(phi)*sin(theta)*sin(psi) - cos(phi)*cos(psi);
+    RbgPrime(0,2) = -cos(phi)*sin(theta)*sin(psi) + sin(phi)*cos(psi);
 
+    RbgPrime(1,0) =  cos(theta)*cos(psi);
+    RbgPrime(1,1) =  sin(phi)*sin(theta)*cos(psi) - cos(phi)*sin(psi);
+    RbgPrime(1,2) =  cos(phi)*sin(theta)*cos(psi) + sin(phi)*sin(psi);
+    
+    RbgPrime(2,0) = 0;
+    RbgPrime(2,1) = 0;
+    RbgPrime(2,2) = 0;
+  
 
-  /////////////////////////////// END STUDENT CODE ////////////////////////////
+    /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   return RbgPrime;
 }
@@ -217,14 +235,7 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   VectorXf newState = PredictState(ekfState, dt, accel, gyro);
 
   // Predict the current covariance forward by dt using the current accelerations and body rates as input.
-  // INPUTS: 
-  //   dt: time step to predict forward by [s]
-  //   accel: acceleration of the vehicle, in body frame, *not including gravity* [m/s2]
-  //   gyro: body rates of the vehicle, in body frame [rad/s]
-  //   state (member variable): current state (state at the beginning of this prediction)
-  //   
-  // OUTPUT:
-  //   update the member variable cov to the predicted covariance
+
 
   // HINTS
   // - update the covariance matrix cov according to the EKF equation.
@@ -250,8 +261,36 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
   gPrime.setIdentity();
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-
-
+    // INPUTS:
+    //   dt: time step to predict forward by [s]
+    //   accel: acceleration of the vehicle, in body frame, *not including gravity* [m/s2]
+    //   gyro: body rates of the vehicle, in body frame [rad/s]
+    //   state (member variable): current state (state at the beginning of this prediction)
+    //
+    // OUTPUT:
+    //   update the member variable cov to the predicted covariance
+    
+    gPrime(0, 0) = 1;
+    gPrime(1, 1) = 1;
+    gPrime(2, 2) = 1;
+    gPrime(3, 3) = 1;
+    gPrime(4, 4) = 1;
+    gPrime(5, 5) = 1;
+    gPrime(6, 6) = 1;
+    gPrime(0, 3) = dt;
+    gPrime(1, 4) = dt;
+    gPrime(2, 5) = dt;
+    
+    MatrixXf rbgP(3,3);
+    
+    gPrime() = dt*(accel.x * rbgP(0,0) + accel.y * rbgP(0,1) + accel.z * rbgP(0,2));
+    gPrime() = dt*(accel.x * rbgP(0,0) + accel.y * rbgP(0,1) + accel.z * rbgP(0,2));
+    gPrime() = dt*(accel.x * rbgP(0,0) + accel.y * rbgP(0,1) + accel.z * rbgP(0,2));
+    
+    MatrixXf gPrime_T(7, 7);
+    gPrime_T = (gPrime.Transpose());
+    ekfCov = gPrime*ekfCov*gPrime_T+Q;
+    
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   ekfState = newState;
@@ -275,7 +314,20 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
   //  - The GPS measurement covariance is available in member variable R_GPS
   //  - this is a very simple update
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-
+    zFromX(0); = ekfState(0);
+    zFromX(0) = ekfState(1);
+    zFromX(0) = ekfState(2);
+    zFromX(0) = ekfState(3);
+    zFromX(0) = ekfState(4);
+    zFromX(0); = ekfState(5);
+    
+    hPrime(0,0) = 1;
+    hPrime(1,1) = 1;
+    hPrime(2,2) = 1;
+    hPrime(3,3) = 1;
+    hPrime(4,4) = 1;
+    hPrime(5,5) = 1;
+    
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   Update(z, hPrime, R_GPS, zFromX);
@@ -296,8 +348,12 @@ void QuadEstimatorEKF::UpdateFromMag(float magYaw)
   //    (you don't want to update your yaw the long way around the circle)
   //  - The magnetomer measurement covariance is available in member variable R_Mag
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-
-
+    zFromX(0) = ekfState(6);
+    hPrime(0,6) = 1;
+    float yaw_difference = z(0) - zFromX(0);
+    if (yaw_difference <-F_PI) z(0) += 2.f*F_PI
+    if (yaw_difference > -F_PI) z(0) += 2.f*F_PI;
+    
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   Update(z, hPrime, R_Mag, zFromX);
