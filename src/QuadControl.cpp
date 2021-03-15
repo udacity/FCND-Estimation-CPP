@@ -212,13 +212,7 @@ float QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, flo
   // Calculate desired quad thrust based on altitude setpoint, actual altitude,
   //   vertical velocity setpoint, actual vertical velocity, and a vertical 
   //   acceleration feed-forward command
-  // INPUTS: 
-  //   posZCmd, velZCmd: desired vertical position and velocity in NED [m]
-  //   posZ, velZ: current vertical position and velocity in NED [m]
-  //   accelZCmd: feed-forward vertical acceleration in NED [m/s2]
-  //   dt: the time step of the measurements [seconds]
-  // OUTPUT:
-  //   return a collective thrust command in [N]
+
 
   // HINTS: 
   //  - we already provide rotation matrix R: to get element R[1,2] (python) use R(1,2) (C++)
@@ -231,13 +225,30 @@ float QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, flo
   float thrust = 0;
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+    // INPUTS:
+    //   posZCmd, velZCmd: desired vertical position and velocity in NED [m]
+    //   posZ, velZ: current vertical position and velocity in NED [m]
+    //   accelZCmd: feed-forward vertical acceleration in NED [m/s2]
+    //   dt: the time step of the measurements [seconds]
+    // OUTPUT:
+    //   return a collective thrust command in [N]
 
+
+      ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+        velZCmd = CONSTRAIN(velZCmd, -maxAscentRate, maxDescentRate);
+
+        float position_err = posZCmd - posZ;
+        float velocity_err = velZCmd - velZ;
+
+        integratedAltitudeError += dt*position_err * KiPosZ;
+        float z_accel = position_err * kpPosZ + velocity_err*kpVelZ + accelZCmd + integratedAltitudeError;
+        thrust = (9.81 - z_accel) *mass / R(2,2);
 
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   /////////////////////////////// BEGIN SOLUTION //////////////////////////////
-
+/*
   velZCmd += kpPosZ * (posZCmd - posZ);
 
   integratedAltitudeError += (posZCmd - posZ) * dt;
@@ -247,7 +258,7 @@ float QuadControl::AltitudeControl(float posZCmd, float velZCmd, float posZ, flo
   float desAccel = kpVelZ * (velZCmd - velZ) + KiPosZ * integratedAltitudeError + accelZCmd - 9.81f;
 
   thrust = -(desAccel / R(2, 2) * mass);
-
+*/
   //////////////////////////////// END SOLUTION ///////////////////////////////
   
   return thrust;
