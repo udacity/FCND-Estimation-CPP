@@ -74,35 +74,28 @@ VehicleCommand QuadControl::GenerateMotorCommands(float collThrustCmd, V3F momen
     float x = momentCmd.x;
     float y = momentCmd.y;
     float z = momentCmd.z;
+    float length=L/pow(2.f, 0.5);
     
+    float F = (1.0/4.0)*s +(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa;
+    float F2 = (1.0/4.0)*s +(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa;
+    float F3 = (1.0/4.0)*s +(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa;
+    float F4 = (1.0/4.0)*s +(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa;
+    // front left
+    cmd.desiredThrustsN[0] = F;
+    // front right
+    cmd.desiredThrustsN[1] = F2;
+    // rear left
+    cmd.desiredThrustsN[2] = F3;
+    // rear right
+    cmd.desiredThrustsN[3] = F4;
     
-    cmd.desiredThrustsN[0] = (1.0/4.0)*s+(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa; // front left
-    cmd.desiredThrustsN[1] = (1.0/4.0)*s+(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa; // front right
-    cmd.desiredThrustsN[2] = (1.0/4.0)*s+(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa; // rear left
-    cmd.desiredThrustsN[3] = (1.0/4.0)*s+(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa; // rear right
-    for(int i =0; i<4 ; ++i){
-            cmd.desiredThrustsN[i] = CONSTRAIN(cmd.desiredThrustsN[i], minMotorThrust, maxMotorThrust);
-        }
+
   /////////////////////////////// END STUDENT CODE ////////////////////////////
-  
-  /////////////////////////////// BEGIN SOLUTION //////////////////////////////
-  // Convert desired moment into differential thrusts
-  V3F diffThrust;
 
-  // for X shaped quad
-  diffThrust.x = momentCmd.x / L / 2.f / sqrtf(2);
-  diffThrust.y = momentCmd.y / L / 2.f / sqrtf(2);
-  diffThrust.z = momentCmd.z / 4.f / kappa;
-
-  // MIXING
-  // combine the collective thrust with the differential thrust commands to find desired motor thrusts
-  // X Shaped Quad (NED Frame)
-  cmd.desiredThrustsN[0] = collThrustCmd / 4.f - diffThrust.z + diffThrust.y + diffThrust.x; // front left
-  cmd.desiredThrustsN[1] = collThrustCmd / 4.f + diffThrust.z + diffThrust.y - diffThrust.x; // front right
-  cmd.desiredThrustsN[2] = collThrustCmd / 4.f + diffThrust.z - diffThrust.y + diffThrust.x; // rear left
-  cmd.desiredThrustsN[3] = collThrustCmd / 4.f - diffThrust.z - diffThrust.y - diffThrust.x; // rear right
-  
-  //////////////////////////////// END SOLUTION ///////////////////////////////
+    
+    
+    
+    
 
   return cmd;
 }
