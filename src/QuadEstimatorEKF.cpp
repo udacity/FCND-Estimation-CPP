@@ -71,7 +71,7 @@ void QuadEstimatorEKF::Init()
   posErrorMag = velErrorMag = 0;
 }
 
-void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
+void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
 {
   // Improve a complementary filter-type attitude filter
   // 
@@ -99,24 +99,15 @@ void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
     qt = qt.FromEuler123_RPY(rollEst, pitchEst, ekfState(6));
     Quaternion<float> qtbar = dq.IntegrateBodyRate(gyro, dtIMU) * qt;
     
+    // posing Euler angles in the world frame
     float predictedPitch = qtbar.Pitch();
     float predictedRoll = qtbar.Roll();
     ekfState(6) = qtbar.Yaw();
     
+    // Normalising yaw
     if (ekfState(6)> F_PI) ekfState(6) -= 2.f*F_PI;
     if (ekfState(6)< -F_PI) ekfState(6) += 2.f*F_PI;
-    
-    
-    
-    /*
-  float predictedPitch = pitchEst + dtIMU * gyro.y;
-  float predictedRoll = rollEst + dtIMU * gyro.x;
-  ekfState(6) = ekfState(6) + dtIMU * gyro.z;	// yaw
 
-  // normalize yaw to -pi .. pi
-  if (ekfState(6) > F_PI) ekfState(6) -= 2.f*F_PI;
-  if (ekfState(6) < -F_PI) ekfState(6) += 2.f*F_PI;
-*/
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   // CALCULATE UPDATE
