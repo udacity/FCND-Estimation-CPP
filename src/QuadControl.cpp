@@ -120,17 +120,13 @@ V3F QuadControl::BodyRateControl(V3F pqrCmd, V3F pqr)
     // OUTPUT:
     //   return a V3F containing the desired moments for each of the 3 axes
     
+    V3F inertia_vector(Ixx, Iyy, Izz);
+    V3F error_rate = pqrCmd - pqr;
+    
+    momentCmd = inertia_vector * kpPQR * error_rate;
     
   /////////////////////////////// END STUDENT CODE ////////////////////////////
-    V3F inertia_vector(Ixx, Iyy, Izz);
-    momentCmd = inertia_vector*kpPQR*(pqrCmd - pqr);
-    
-    
-  /////////////////////////////// BEGIN SOLUTION //////////////////////////////
-  //V3F rate_error = pqrCmd - pqr;
-  //V3F omega_dot_des = rate_error * kpPQR;
-  //momentCmd = omega_dot_des * V3F(Ixx, Iyy, Izz);
-  //////////////////////////////// END SOLUTION ///////////////////////////////
+
 
   return momentCmd;
 }
