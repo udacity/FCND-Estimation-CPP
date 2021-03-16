@@ -4,7 +4,7 @@ INCLUDE QuadPhysicalParams.txt
 
 # simulation setup
 Sim.RunMode = Repeat
-Sim.EndTime = 2
+Sim.EndTime = 3
 Sim.Vehicle1 = Quad1
 Sim.Vehicle2 = Quad2
 
