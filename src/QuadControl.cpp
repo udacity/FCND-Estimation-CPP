@@ -158,22 +158,17 @@ V3F QuadControl::RollPitchControl(V3F accelCmd, Quaternion<float> attitude, floa
     //     element of the V3F should be left at its default value (0)
     
     // Converting roll pitch angles and collective thrust
-    float bax = R(0, 2);
-    float bay = R(1, 2);
-    float collAccelCmd= -collThrustCmd / mass;
-    float bax_target = atan(accelCmd.x/collAccelCmd);
-    float bay_target = atan(accelCmd.y/collAccelCmd);
-    
-    // Defining constrain angles
-    bax_target = CONSTRAIN(bax_target, -maxTiltAngle, maxTiltAngle);
-    bay_target = CONSTRAIN(bax_target, -maxTiltAngle, maxTiltAngle);
-    // Calulating the desired rate using the Proportional
-    float bcx_dot = kpBank*(bax_target-bax);
-    float bcy_dot = kpBank*(bay_target-bay);
-    
-    // Body frame rate conversion
-    pqrCmd.x = 1.0/R(2,2)*(R(1,0)*bcx_dot-R(0,0)*bcy_dot);
-    pqrCmd.y = 1.0/R(2,2)*(R(1,0)*bcx_dot-R(0,0)*bcy_dot);
+    float desired_coll_thrust = collThrustCmd / mass;
+    float bx, by;
+    float bx_dot, by_dot;
+        
+        bx = CONSTRAIN((accelCmd.x / c), -sin(maxTiltAngle), sin(maxTiltAngle));
+        by = CONSTRAIN((accelCmd.y / c), -sin(maxTiltAngle), sin(maxTiltAngle));
+        bx_dot = kpBank * (bx - R (0,2));
+        by_dot = kpBank * (by - R (1,2));
+
+        pqrCmd.x = (R(1,0) * bx_dot - R(0,0) * by_dot) / R(2,2);
+        pqrCmd.y = (R(1,1) * bx_dot - R(0,1) * by_dot) / R(2,2);;
 
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
