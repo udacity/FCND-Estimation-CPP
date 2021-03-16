@@ -130,10 +130,29 @@ V3F QuadControl::BodyRateControl(V3F pqrCmd, V3F pqr)
     // OUTPUT:
     //   return a V3F containing the desired moments for each of the 3 axes
     
-    V3F inertia_vector(Ixx, Iyy, Izz);
-    V3F error_rate = pqrCmd - pqr;
+    //V3F inertia_vector(Ixx, Iyy, Izz);
+    //V3F error_rate = pqrCmd - pqr;
     
-    momentCmd = inertia_vector * kpPQR * error_rate;
+    //momentCmd = inertia_vector * kpPQR * error_rate;
+    
+    // Calculate a desired 3-axis moment given a desired and current body rate
+     // INPUTS:
+       float pdot_cmd, qdot_cmd, rdot_cmd;
+       float tau_cmd[3];
+     //   pqrCmd: desired body rates [rad/s]
+       pdot_cmd = kpPQR.x * (pqrCmd.x - pqr.x);
+       qdot_cmd = kpPQR.y * (pqrCmd.y - pqr.y);
+       rdot_cmd = kpPQR.z * (pqrCmd.z - pqr.z);
+       
+     //   pqr: current or estimated body rates [rad/s]
+       tau_cmd[0] = Ixx * pdot_cmd;
+       tau_cmd[1] = Iyy * qdot_cmd;
+       tau_cmd[2] = Izz * rdot_cmd;
+       
+     // OUTPUT:
+     //   return a V3F containing the desired moments for each of the 3 axes
+       momentCmd = tau_cmd;
+    
     
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
