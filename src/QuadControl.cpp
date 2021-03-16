@@ -53,6 +53,18 @@ void QuadControl::Init()
 #endif
 }
 
+float QuadControl::AttenuateTilt(float x)
+{
+    if (x < -maxTiltAngle){
+        return -maxTiltAngle;
+    } else if (x > maxTiltAngle){
+        return maxTiltAngle;
+    } else {
+        return x;
+    }
+    
+}
+
 VehicleCommand QuadControl::GenerateMotorCommands(float collThrustCmd, V3F momentCmd)
 {
   // Convert a desired 3-axis moment and collective thrust command to 
@@ -175,18 +187,28 @@ V3F QuadControl::RollPitchControl(V3F accelCmd, Quaternion<float> attitude, floa
     //   return a V3F containing the desired pitch and roll rates. The Z
     //     element of the V3F should be left at its default value (0)
     
-    float c = - collThrustCmd / mass;
-    float bx, by;
-    float bx_dot, by_dot;
-    
-    bx = CONSTRAIN((accelCmd.x / c), -sin(maxTiltAngle), sin(maxTiltAngle));
-    by = CONSTRAIN((accelCmd.y / c), -sin(maxTiltAngle), sin(maxTiltAngle));
-    bx_dot = kpBank * (bx - R (0,2));
-    by_dot = kpBank * (by - R (1,2));
 
-    pqrCmd.x = (R(1,0) * bx_dot - R(0,0) * by_dot) / R(2,2);
-    pqrCmd.y = (R(1,1) * bx_dot - R(0,1) * by_dot) / R(2,2);
+    float c_d = collThrustCmd / mass;
+    float desired_R13, desired_R23, pitch_rate, roll_rate;
+
+    if (collThrustCmd > 0.0) {
+        desired_R13 = -AttenuateTilt(accelCmd[0] / c_d);
+        desired_R23 = -AttenuateTilt(accelCmd[1] / c_d);
+
+        float b_dot_x_c = kpBank * (R(0,2) - desired_R13);
+        float b_dot_y_c = kpBank * (R(1,2) - desired_R23);
+
+        pitch_rate = (1 / R(2,2)) * (-R(1,0) * b_dot_x_c + R(0,0) * b_dot_y_c);
+        roll_rate = (1 / R(2,2)) * (-R(1,1) * b_dot_x_c + R(0,1) * b_dot_y_c);
+    } else {
+        pitch_rate = 0.0;
+        roll_rate = 0.0;
+    }
+
+    pqrCmd[0] = pitch_rate;
+    pqrCmd[1] = roll_rate;
     
+    ////////////////////////////// END STUDENT CODE ///////////////////////////
     
   return pqrCmd;
 }
