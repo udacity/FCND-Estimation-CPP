@@ -71,54 +71,59 @@ void QuadEstimatorEKF::Init()
   posErrorMag = velErrorMag = 0;
 }
 
-void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
+
+void QuadEstimatorEKF::UpdateFromIMU(<#V3F accel#>, <#V3F gyro#>)
 {
-  // Improve a complementary filter-type attitude filter
-  // 
-  // Currently a small-angle approximation integration method is implemented
-  // The integrated (predicted) value is then updated in a complementary filter style with attitude information from accelerometers
-  // 
-  // Implement a better integration method that uses the current attitude estimate (rollEst, pitchEst and ekfState(6))
-  // to integrate the body rates into new Euler angles.
-  //
-  // HINTS:
-  //  - there are several ways to go about this, including:
-  //    1) create a rotation matrix based on your current Euler angles, integrate that, convert back to Euler angles
-  //    OR 
-  //    2) use the Quaternion<float> class, which has a handy FromEuler123_RPY function for creating a quaternion from Euler Roll/PitchYaw
-  //       (Quaternion<float> also has a IntegrateBodyRate function, though this uses quaternions, not Euler angles)
-
-  ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
-  // SMALL ANGLE GYRO INTEGRATION:
-  // (replace the code below)
     
-  // make sure you comment it out when you add your own code -- otherwise e.g. you might integrate yaw twice
+    // Improve a complementary filter-type attitude filter
+    //
+    // Currently a small-angle approximation integration method is implemented
+    // The integrated (predicted) value is then updated in a complementary filter style with attitude information from accelerometers
+    //
+    // Implement a better integration method that uses the current attitude estimate (rollEst, pitchEst and ekfState(6))
+    // to integrate the body rates into new Euler angles.
+    //
+    // HINTS:
+    //  - there are several ways to go about this, including:
+    //    1) create a rotation matrix based on your current Euler angles, integrate that, convert back to Euler angles
+    //    OR
+    //    2) use the Quaternion<float> class, which has a handy FromEuler123_RPY function for creating a quaternion from Euler Roll/PitchYaw
+    //       (Quaternion<float> also has a IntegrateBodyRate function, though this uses quaternions, not Euler angles)
 
-    Quaternion<float> qt;
-    Quaternion<float> dq;
-    qt = qt.FromEuler123_RPY(rollEst, pitchEst, ekfState(6));
-    Quaternion<float> qtbar = dq.IntegrateBodyRate(gyro, dtIMU) * qt;
+    ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+    // SMALL ANGLE GYRO INTEGRATION:
+    // (replace the code below)
+      
+    // make sure you comment it out when you add your own code -- otherwise e.g. you might integrate yaw twice
+
+      Quaternion<float> qt;
+      Quaternion<float> dq;
+      qt = qt.FromEuler123_RPY(rollEst, pitchEst, ekfState(6));
+      Quaternion<float> qtbar = dq.IntegrateBodyRate(gyro, dtIMU) * qt;
+      
+      // posing Euler angles in the world frame
+      float predictedPitch = qtbar.Pitch();
+      float predictedRoll = qtbar.Roll();
+      ekfState(6) = qtbar.Yaw();
+      
+      // Normalising yaw
+      if (ekfState(6)> F_PI) ekfState(6) -= 2.f*F_PI;
+      if (ekfState(6)< -F_PI) ekfState(6) += 2.f*F_PI;
+
+    /////////////////////////////// END STUDENT CODE ////////////////////////////
+
+    // CALCULATE UPDATE
+    accelRoll = atan2f(accel.y, accel.z);
+    accelPitch = atan2f(-accel.x, 9.81f);
+
+    // FUSE INTEGRATION AND UPDATE
+    rollEst = attitudeTau / (attitudeTau + dtIMU) * (predictedRoll)+dtIMU / (attitudeTau + dtIMU) * accelRoll;
+    pitchEst = attitudeTau / (attitudeTau + dtIMU) * (predictedPitch)+dtIMU / (attitudeTau + dtIMU) * accelPitch;
+
+    lastGyro = gyro;
+
     
-    // posing Euler angles in the world frame
-    float predictedPitch = qtbar.Pitch();
-    float predictedRoll = qtbar.Roll();
-    ekfState(6) = qtbar.Yaw();
     
-    // Normalising yaw
-    if (ekfState(6)> F_PI) ekfState(6) -= 2.f*F_PI;
-    if (ekfState(6)< -F_PI) ekfState(6) += 2.f*F_PI;
-
-  /////////////////////////////// END STUDENT CODE ////////////////////////////
-
-  // CALCULATE UPDATE
-  accelRoll = atan2f(accel.y, accel.z);
-  accelPitch = atan2f(-accel.x, 9.81f);
-
-  // FUSE INTEGRATION AND UPDATE
-  rollEst = attitudeTau / (attitudeTau + dtIMU) * (predictedRoll)+dtIMU / (attitudeTau + dtIMU) * accelRoll;
-  pitchEst = attitudeTau / (attitudeTau + dtIMU) * (predictedPitch)+dtIMU / (attitudeTau + dtIMU) * accelPitch;
-
-  lastGyro = gyro;
 }
 
 void QuadEstimatorEKF::UpdateTrueError(V3F truePos, V3F trueVel, Quaternion<float> trueAtt)
