@@ -82,42 +82,25 @@ VehicleCommand QuadControl::GenerateMotorCommands(float collThrustCmd, V3F momen
 
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
     // declaring variables
-    float s = collThrustCmd;
-    float x = momentCmd.x;
-    float y = momentCmd.y;
-    float z = momentCmd.z;
-    float length=L/pow(2.f, 0.5);
+    float len = L/pow(2.f, 0.5);
+    float c = collThrustCmd;
     
-    // INPUTS:
-    //   collThrustCmd: desired collective thrust [N]
-      S = collThrustCmd/4.f;
-      
-    //   momentCmd: desired rotation moment about each axis [N m]
-      X = momentCmd.x/(l*4.f);
-      Y = momentCmd.y/(l*4.f);
-      Z = momentCmd.z/(kappa*4.f);
-      
-      F = S + X + Y - Z;
-      F1 = S - X + Y + Z;
-      F2 = S + X - Y + Z;
-      F3 = S - X - Y - Z;
+    float F = (c * kappa * len + kappa * (momentCmd.x + momentCmd.y) - len * momentCmd.z) / (4.0 * kappa * len);
+    float F2 = (c * kappa * len - kappa * (momentCmd.x - momentCmd.y) + len * momentCmd.z) / (4.0 * kappa * len);
+    float F3 = (c * kappa * len - kappa * (momentCmd.x + momentCmd.y) - len * momentCmd.z) / (4.0 * kappa * len);
+    float F4 = (c * kappa * len + kappa * (momentCmd.x - momentCmd.y) + len * momentCmd.z) / (4.0 * kappa * len);
+
     
     // front left
     cmd.desiredThrustsN[0] = F;
     // front right
     cmd.desiredThrustsN[1] = F2;
     // rear left
-    cmd.desiredThrustsN[2] = F3;
+    cmd.desiredThrustsN[2] = F4;
     // rear right
-    cmd.desiredThrustsN[3] = F4;
+    cmd.desiredThrustsN[3] = F3;
     
-
   /////////////////////////////// END STUDENT CODE ////////////////////////////
-
-    
-    
-    
-    
 
   return cmd;
 }
