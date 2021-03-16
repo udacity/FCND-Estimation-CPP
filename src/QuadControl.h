@@ -29,6 +29,8 @@ public:
   V3F RollPitchControl(V3F accelCmd, Quaternion<float> attitude, float collThrustCmd);
 
   float AltitudeControl(float posZCmd, float velZCmd, float posZ, float velZ, Quaternion<float> attitude, float accelZCmd, float dt);
+    // returns x value as a opposing the tilt
+    float TiltOff(float x);
 
   // -------------- PARAMETERS --------------
 

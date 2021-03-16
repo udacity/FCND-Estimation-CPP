@@ -53,7 +53,8 @@ void QuadControl::Init()
 #endif
 }
 
-float QuadControl::AttenuateTilt(float x)
+
+float QuadControl::TiltOff(float x)
 {
     if (x < -maxTiltAngle){
         return -maxTiltAngle;
@@ -175,8 +176,8 @@ V3F QuadControl::RollPitchControl(V3F accelCmd, Quaternion<float> attitude, floa
     float desired_R13, desired_R23, pitch_rate, roll_rate;
 
     if (collThrustCmd > 0.0) {
-        desired_R13 = -AttenuateTilt(accelCmd[0] / c_d);
-        desired_R23 = -AttenuateTilt(accelCmd[1] / c_d);
+        desired_R13 = -TiltOff(accelCmd[0] / c_d);
+        desired_R23 = -TiltOff(accelCmd[1] / c_d);
 
         float b_dot_x_c = kpBank * (R(0,2) - desired_R13);
         float b_dot_y_c = kpBank * (R(1,2) - desired_R23);
