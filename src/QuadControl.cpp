@@ -76,10 +76,20 @@ VehicleCommand QuadControl::GenerateMotorCommands(float collThrustCmd, V3F momen
     float z = momentCmd.z;
     float length=L/pow(2.f, 0.5);
     
-    float F = (1.0/4.0)*s +(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa;
-    float F2 = (1.0/4.0)*s +(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa;
-    float F3 = (1.0/4.0)*s +(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa;
-    float F4 = (1.0/4.0)*s +(1.0/4.0)*sqrt(1.0/4.0)*x/L+(1.0/4.0)*sqrt(2.0)*y/L-(1.0/4.0)*z/kappa;
+    // INPUTS:
+    //   collThrustCmd: desired collective thrust [N]
+      S = collThrustCmd/4.f;
+      
+    //   momentCmd: desired rotation moment about each axis [N m]
+      X = momentCmd.x/(l*4.f);
+      Y = momentCmd.y/(l*4.f);
+      Z = momentCmd.z/(kappa*4.f);
+      
+      F = S + X + Y - Z;
+      F1 = S - X + Y + Z;
+      F2 = S + X - Y + Z;
+      F3 = S - X - Y - Z;
+    
     // front left
     cmd.desiredThrustsN[0] = F;
     // front right
