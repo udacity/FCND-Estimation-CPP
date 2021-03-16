@@ -139,7 +139,6 @@ void QuadEstimatorEKF::UpdateTrueError(V3F truePos, V3F trueVel, Quaternion<floa
   pitchErr = pitchEst - trueAtt.Pitch();
   rollErr = rollEst - trueAtt.Roll();
   maxEuler = MAX(fabs(pitchErr), MAX(fabs(rollErr), fabs(trueError(6))));
-
   posErrorMag = truePos.dist(V3F(ekfState(0), ekfState(1), ekfState(2)));
   velErrorMag = trueVel.dist(V3F(ekfState(3), ekfState(4), ekfState(5)));
 }
@@ -316,19 +315,21 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
   //  - The GPS measurement covariance is available in member variable R_GPS
   //  - this is a very simple update
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
+
+    // setting estimated position
     zFromX(0) = ekfState(0);
     zFromX(1) = ekfState(1);
     zFromX(2) = ekfState(2);
     zFromX(3) = ekfState(3);
     zFromX(4) = ekfState(4);
     zFromX(5) = ekfState(5);
-    
-    hPrime(0,0) = 1;
-    hPrime(1,1) = 1;
-    hPrime(2,2) = 1;
-    hPrime(3,3) = 1;
-    hPrime(4,4) = 1;
-    hPrime(5,5) = 1;
+    // setting diagonal elements of Jacobian model to 1.
+    hPrime(0,0) = 1.0;
+    hPrime(1,1) = 1.0;
+    hPrime(2,2) = 1.0;
+    hPrime(3,3) = 1.0;
+    hPrime(4,4) = 1.0;
+    hPrime(5,5) = 1.0;
     
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
