@@ -72,7 +72,7 @@ void QuadEstimatorEKF::Init()
 }
 
 
-void QuadEstimatorEKF::UpdateFromIMU(<#V3F accel#>, <#V3F gyro#>)
+void QuadEstimatorEKF::UpdateFromIMU(V3F accel, V3F gyro)
 {
     
     // Improve a complementary filter-type attitude filter
@@ -96,15 +96,16 @@ void QuadEstimatorEKF::UpdateFromIMU(<#V3F accel#>, <#V3F gyro#>)
       
     // make sure you comment it out when you add your own code -- otherwise e.g. you might integrate yaw twice
 
-      Quaternion<float> qt;
-      Quaternion<float> dq;
-      qt = qt.FromEuler123_RPY(rollEst, pitchEst, ekfState(6));
-      Quaternion<float> qtbar = dq.IntegrateBodyRate(gyro, dtIMU) * qt;
+      Quaternion<float> Qt = Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, ekfState(6));
+    // Quaternion with integrated body rate measured from Gyroscope
+    V3D pqr(gyro.x, gyro.y, gyro.z);
+    // Calculating Quaternion
+    Quaternion<float> QtBarPqr = Qt.IntegrateBodyRate(pqr, dtIMU) * Qt;
       
       // posing Euler angles in the world frame
-      float predictedPitch = qtbar.Pitch();
-      float predictedRoll = qtbar.Roll();
-      ekfState(6) = qtbar.Yaw();
+      float predictedPitch = QtBarPqr.Pitch();
+      float predictedRoll = QtBarPqr.Roll();
+      ekfState(6) = QtBarPqr.Yaw();
       
       // Normalising yaw
       if (ekfState(6)> F_PI) ekfState(6) -= 2.f*F_PI;
