@@ -13,7 +13,7 @@ QYawStd = .91 // magnetometer update
 
 # GPS measurement std deviations
 GPSPosXYStd = 1
-GPSPosZStd = 10
+GPSPosZStd = 90 // minimising the error
 GPSVelXYStd = .1
 GPSVelZStd = .51
 
