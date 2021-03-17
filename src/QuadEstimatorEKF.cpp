@@ -309,6 +309,8 @@ void QuadEstimatorEKF::Predict(float dt, V3F accel, V3F gyro)
 
 void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
 {
+  
+  // Implementation of the EKF GPS Update
   // setting up vector with 6X6 values
   VectorXf z(6), zFromX(6);
   z(0) = pos.x;
